@@ -1,0 +1,11 @@
+{
+  "rules": {
+    "socios": {
+      ".read": true,
+      ".write": true,
+      "$code": {
+        ".validate": "newData.hasChildren(['nombre','objetivo','codigo']) || newData.hasChildren(['nombre','objetivo'])"
+      }
+    }
+  }
+}

@@ -13,6 +13,9 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Fitness Pro">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -438,6 +441,41 @@ body.r-redondo .card,body.r-redondo .kpi,body.r-redondo .macro-c,body.r-redondo 
 <body>
 <div id="bg-capa"></div>
 
+
+<!-- ═══ S-FBSETUP: Configurar Firebase ═══ -->
+<div class="sc" id="s-fbsetup">
+  <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:20px;">
+    <div class="login-card" style="max-width:460px;border-color:rgba(255,160,0,0.3);">
+      <div class="lc-tag" style="color:#e67e22">CONFIGURACIÓN INICIAL</div>
+      <div class="lc-title" style="font-size:26px;">CONECTAR<br><span style="color:#e67e22">FIREBASE</span></div>
+      <div class="lc-sub" style="margin-bottom:14px">Pega aquí el objeto firebaseConfig de tu proyecto.<br>Solo se hace una vez — queda guardado en el dispositivo.</div>
+      <div style="margin-bottom:10px;padding:11px 14px;background:var(--in-bg);border:1px solid var(--b);border-radius:10px;">
+        <div style="font-family:'DM Mono';font-size:9px;letter-spacing:2px;color:var(--mu);margin-bottom:6px">CÓMO OBTENERLO:</div>
+        <div style="font-size:10px;color:var(--mu);font-family:'DM Mono';line-height:1.8">
+          1. console.firebase.google.com<br>
+          2. Tu proyecto → Configuración del proyecto<br>
+          3. Agrega una app web → copia el firebaseConfig<br>
+          4. Pégalo completo abajo (con llaves { })
+        </div>
+      </div>
+      <textarea id="fb-config-input" rows="9" value='' placeholder='{\n  "apiKey": "...",
+  "authDomain": "...",
+  "databaseURL": "https://TU-PROYECTO-rtdb.firebaseio.com",
+  "projectId": "...",
+  "storageBucket": "...",
+  "messagingSenderId": "...",
+  "appId": "..."
+}' style="width:100%;padding:11px 13px;background:var(--in-bg);border:1px solid var(--b);border-radius:10px;font-family:'DM Mono';font-size:10px;color:var(--tx);outline:none;resize:vertical;caret-color:var(--v);line-height:1.5;margin-bottom:10px;"></textarea>
+      <div class="login-err" id="fb-err">❌ Config inválida. Verifica que incluya apiKey y databaseURL.</div>
+      <button class="btn-main" onclick="fbConectar()">CONECTAR →</button>
+      <div style="margin-top:12px;text-align:center;font-size:10px;color:var(--mu);font-family:'DM Mono';line-height:1.7">
+        🔒 Tu config se guarda solo en este dispositivo.<br>
+        No contiene contraseñas — solo identifica tu proyecto.
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ═══ TOPBAR GLOBAL ═══ -->
 <div class="tb" id="global-tb">
   <div class="tb-logo">
@@ -477,6 +515,7 @@ body.r-redondo .card,body.r-redondo .kpi,body.r-redondo .macro-c,body.r-redondo 
         <div class="if-pill"><span class="dot-pulse"></span><span id="inicio-fecha">—</span></div>
         <div class="if-pill">CLUB CAMPESTRE AGS</div>
         <div class="if-pill" style="color:var(--g);border-color:rgba(255,214,0,0.2)"><span id="inicio-socios">—</span> SOCIOS REGISTRADOS</div>
+        <div class="if-pill" id="inicio-fb-pill" style="display:none"></div>
       </div>
       <div style="margin-top:12px;width:100%;">
         <div onclick="go('s-staff-login')" style="font-family:'DM Mono';font-size:10px;color:var(--mu);cursor:pointer;text-align:center;padding:8px;border-radius:8px;border:1px dashed rgba(255,255,255,0.08);transition:all .2s;" onmouseover="this.style.color='var(--n)'" onmouseout="this.style.color='var(--mu)'">
@@ -840,10 +879,12 @@ body.r-redondo .card,body.r-redondo .kpi,body.r-redondo .macro-c,body.r-redondo 
       <div class="lm">F</div>
       <div class="ln">FITNESS SYSTEM PRO</div>
       <div id="staff-role-badge" style="padding:3px 9px;border-radius:20px;font-family:'DM Mono';font-size:9px;letter-spacing:2px;background:rgba(0,229,255,0.08);color:var(--n);border:1px solid rgba(0,229,255,0.2);display:none"></div>
+      <div id="fb-status-badge" style="padding:3px 9px;border-radius:20px;font-family:'DM Mono';font-size:9px;letter-spacing:1px;display:none"></div>
       <span id="staff-nombre" style="font-family:'DM Mono';font-size:10px;color:var(--mu)"></span>
     </div>
     <div style="display:flex;gap:8px;">
       <div class="tb-btn" onclick="resetDemo()" style="color:var(--g);border-color:rgba(255,214,0,0.2)">⟲ RESET DATOS</div>
+      <div class="tb-btn" onclick="go('s-fbsetup');fbAbrirSetup();" style="color:var(--n);border-color:rgba(0,229,255,0.2)">🔥 FIREBASE</div>
       <div class="tb-btn" onclick="staffLogout()" style="color:var(--r);border-color:rgba(255,69,96,0.2)">CERRAR SESIÓN</div>
     </div>
   </div>
@@ -879,25 +920,66 @@ body.r-redondo .card,body.r-redondo .kpi,body.r-redondo .macro-c,body.r-redondo 
 
 <script>
 // ═════════════════════════════════════════
-// CAPA DE DATOS — persistencia localStorage
-// (lista para migrar a Firebase: solo
-//  reemplazar dbSave/dbLoad por set/on)
+// CAPA DE DATOS — Firebase Realtime Database
+// + localStorage como caché offline
 // ═════════════════════════════════════════
-const LS_KEY = 'fitkiosk_pro_v1';
+const LS_KEY    = 'fitkiosk_pro_v1';
+const LS_FB_CFG = 'fitkiosk_fb_cfg';
 const DIAS_ORDER = ['lun','mar','mie','jue','vie','sab','dom'];
 const DIAS_NAMES = {lun:'LUNES',mar:'MARTES',mie:'MIÉRCOLES',jue:'JUEVES',vie:'VIERNES',sab:'SÁBADO',dom:'DOMINGO'};
-const HOY_KEY = ['dom','lun','mar','mie','jue','vie','sab'][new Date().getDay()];
+const HOY_KEY   = ['dom','lun','mar','mie','jue','vie','sab'][new Date().getDay()];
 
-let DB = dbLoad() || seedDB();
+// ── Estado Firebase ──
+let fbApp  = null;
+let fbDB   = null;
+let fbListo = false;
 
-function dbLoad(){
-  try{ const raw = localStorage.getItem(LS_KEY); return raw ? JSON.parse(raw) : null; }
-  catch(e){ return null; }
+// ── Caché en memoria (siempre disponible, siempre sync) ──
+let DB = { socios: {}, version: 1 };
+
+function guardarFbConfig(cfg){ try{ localStorage.setItem(LS_FB_CFG,JSON.stringify(cfg)); }catch(e){} }
+function leerFbConfig(){ try{ return JSON.parse(localStorage.getItem(LS_FB_CFG)); }catch(e){ return null; } }
+
+function initFirebase(cfg){
+  if(typeof firebase==='undefined'){
+    console.warn('Firebase SDK no cargado aún — reintentando en 500ms');
+    setTimeout(()=>{ if(!fbListo){ initFirebase(cfg); fbEscuchar(); actualizarFbBadge(); }}, 500);
+    return false;
+  }
+  try{
+    if(!firebase.apps.length) firebase.initializeApp(cfg);
+    fbApp=firebase.app(); fbDB=firebase.database(); fbListo=true;
+    return true;
+  }catch(e){ console.warn('Firebase init error',e); return false; }
 }
-function dbSave(){
-  try{ localStorage.setItem(LS_KEY, JSON.stringify(DB)); }catch(e){ console.warn('No se pudo guardar', e); }
+
+function fbEscuchar(){
+  if(!fbListo) return;
+  fbDB.ref('/socios').on('value', snap=>{
+    const data=snap.val();
+    if(data){
+      DB.socios=data;
+      try{ localStorage.setItem(LS_KEY,JSON.stringify({socios:DB.socios,version:1})); }catch(e){}
+      if(document.getElementById('s-panel')?.classList.contains('on')) staffRenderList();
+    } else {
+      // Primera vez — base vacía: sembrar demo
+      const seeded=seedDB();
+      fbDB.ref('/socios').set(seeded.socios).catch(()=>{});
+    }
+  }, ()=>{ const l=lsLoad(); if(l) DB=l; });
 }
-function getSocio(code){ return DB.socios[code] || null; }
+
+function dbSave(socioCode){
+  // Backup local inmediato
+  try{ localStorage.setItem(LS_KEY,JSON.stringify({socios:DB.socios,version:1})); }catch(e){}
+  if(!fbListo) return;
+  const ref=socioCode ? fbDB.ref('/socios/'+socioCode) : fbDB.ref('/socios');
+  const val=socioCode ? DB.socios[socioCode] : DB.socios;
+  ref.set(val).catch(e=>{ showToast('⚠ Sin conexión — cambio guardado localmente'); });
+}
+
+function getSocio(code){ return DB.socios[code]||null; }
+function lsLoad(){ try{ const r=localStorage.getItem(LS_KEY); return r?JSON.parse(r):null; }catch(e){return null;} }
 function fechaISO(d){ return d.toISOString().split('T')[0]; }
 function fmtFecha(iso){
   const [y,m,d]=iso.split('-');
@@ -1163,10 +1245,15 @@ function resetDemo(){
   if(!confirm('¿Reiniciar todos los datos del kiosco? Se borrarán socios nuevos, sesiones y registros.')) return;
   localStorage.removeItem(LS_KEY);
   const ses=leerSesion(); if(ses&&ses.tipo==='socio') borrarSesion();
-  DB = seedDB();
-  staffRenderList();
-  document.getElementById('staff-content').innerHTML = '<div style="flex:1;display:flex;align-items:center;justify-content:center;color:var(--mu);font-family:\'DM Mono\';font-size:11px;">Datos reiniciados ✓</div>';
-  showToast('⟲ Datos demo reiniciados');
+  const seeded=seedDB();
+  if(fbListo){
+    fbDB.ref('/socios').set(seeded.socios)
+      .then(()=>{ staffRenderList(); showToast('⟲ Datos demo reiniciados en Firebase'); })
+      .catch(()=>{ showToast('⚠ Error al reiniciar en Firebase'); });
+  } else {
+    staffRenderList(); showToast('⟲ Datos demo reiniciados localmente');
+  }
+  document.getElementById('staff-content').innerHTML = '<div style="flex:1;display:flex;align-items:center;justify-content:center;color:var(--mu);font-family:\'DM Mono\';font-size:11px;">Reiniciando...</div>';
 }
 
 // ═════════════════════════════════════════
@@ -1214,13 +1301,37 @@ function registrarAsistencia(s){
   if(!yaRegistrado){
     s.logs.asistencia.unshift(registro);
     if(s.logs.asistencia.length>90) s.logs.asistencia = s.logs.asistencia.slice(0,90);
-    dbSave();
+    dbSave(s.code);
   }
   return { registro, yaRegistrado };
 }
 
 window.addEventListener('load', ()=>{
   limpiarPrefs();
+  // ── Config real del proyecto gym-campestre ──
+  const FIREBASE_CONFIG = {
+  "apiKey": "AIzaSyADuYE2LQ_XxmjoapBAmtQ0U3IDgVjABZA",
+  "authDomain": "gym-campestre.firebaseapp.com",
+  "databaseURL": "https://gym-campestre-default-rtdb.firebaseio.com",
+  "projectId": "gym-campestre",
+  "storageBucket": "gym-campestre.firebasestorage.app",
+  "messagingSenderId": "355837299373",
+  "appId": "1:355837299373:web:8f117a8a4d850ab9081424",
+  "measurementId": "G-Z0PPSRKV1L"
+};
+  const cfg = leerFbConfig() || FIREBASE_CONFIG;
+  guardarFbConfig(cfg); // Guardar para siguientes cargas
+  const ok = initFirebase(cfg);
+  if(!ok){
+    const local=lsLoad(); if(local) DB=local; else seedDB();
+  } else {
+    fbEscuchar();
+    // Mostrar badge de conexión en pantalla de inicio
+    setTimeout(()=>{
+      const pill=document.getElementById('inicio-fb-pill');
+      if(pill&&fbListo){ pill.style.display='flex'; pill.textContent='🔥 gym-campestre · Firebase'; }
+    }, 1200);
+  }
   initGeofence();
   restaurarSesion();
   // Footer del inicio
@@ -1644,7 +1755,7 @@ function confirmarRutina(){
     logs:{ sesiones:[], pesoCorporal:[{fecha:fechaISO(new Date()),kg:qAnswers.peso}], prs:{}, asistencia:[] }
   };
   DB.socios[code]=nuevo;
-  dbSave();
+  dbSave(code);
 
   window._rutinaTemp=null;
   // limpiar quiz
@@ -1939,7 +2050,7 @@ function guardarPeso(){
   const hoy=fechaISO(new Date());
   const ex=s.logs.pesoCorporal.find(p=>p.fecha===hoy);
   if(ex) ex.kg=v; else s.logs.pesoCorporal.push({fecha:hoy,kg:v});
-  dbSave();
+  dbSave(s.code);
   showToast('✓ Peso registrado: '+v+' kg');
   renderProgresoTab();
 }
@@ -2123,7 +2234,7 @@ function setPref(key,val,rerender){
   if(!s.prefs) s.prefs=defaultPrefs();
   s.prefs[key]=val;
   aplicarPrefs(s);
-  dbSave();
+  dbSave(s.code);
   if(rerender!==false) renderEspacioTab();
 }
 
@@ -2220,7 +2331,7 @@ function setPrefVelo(v){ setPref('velo',v/100,false); }
 function espRestablecer(){
   const s=activeSocio; if(!s) return;
   s.prefs=defaultPrefs();
-  aplicarPrefs(s); dbSave(); renderEspacioTab();
+  aplicarPrefs(s); dbSave(s.code); renderEspacioTab();
   showToast('⟲ Estilo original restaurado');
 }
 
@@ -2375,7 +2486,7 @@ function finalizarSesion(){
     fecha:hoy, ts:Date.now(), diaKey:sesionTemp.diaKey,
     tipo:d.tipo, ejercicios:hechos||d.ejercicios.length, volumen:Math.round(volumen)
   });
-  dbSave();
+  dbSave(s.code);
   sesionTemp=null;
   showToast('🔥 ¡Sesión registrada! Tu evolución se actualizó');
   go('s-dash'); refreshDash(); dashTab('progreso');
@@ -2411,9 +2522,39 @@ function doStaffLogin(){
   staffActivoId=null;
   staffRenderList();
   go('s-panel');
+  actualizarFbBadge();
 }
 
 function staffLogout(){ borrarSesion(); staffActivoId=null; go('s-inicio'); }
+function fbAbrirSetup(){
+  const ta=document.getElementById('fb-config-input');
+  if(ta && !ta.value.trim()){
+    const cfg=leerFbConfig();
+    if(cfg) ta.value=JSON.stringify(cfg,null,2);
+  }
+}
+function fbConectar(){
+  const raw=document.getElementById('fb-config-input').value.trim();
+  let cfg;
+  try{ cfg=JSON.parse(raw); }catch(e){ cfg=null; }
+  if(!cfg||!cfg.apiKey||!cfg.databaseURL){ document.getElementById('fb-err').style.display='block'; return; }
+  document.getElementById('fb-err').style.display='none';
+  if(!initFirebase(cfg)){ document.getElementById('fb-err').textContent='❌ No se pudo conectar. Revisa el databaseURL.'; document.getElementById('fb-err').style.display='block'; return; }
+  guardarFbConfig(cfg);
+  fbEscuchar();
+  actualizarFbBadge();
+  showToast('🔥 Firebase conectado correctamente');
+  go('s-inicio');
+}
+function actualizarFbBadge(){
+  const b=document.getElementById('fb-status-badge'); if(!b) return;
+  if(fbListo){ b.style.display='inline-block'; b.style.background='rgba(0,255,136,0.1)'; b.style.color='#1e7a4b'; b.style.border='1px solid rgba(0,255,136,0.3)'; b.textContent='🔥 FIREBASE'; }
+  else { b.style.display='inline-block'; b.style.background='rgba(255,214,0,0.1)'; b.style.color='#a8841c'; b.style.border='1px solid rgba(255,214,0,0.3)'; b.textContent='📦 LOCAL'; }
+}
+function fbDesconectar(){
+  try{ localStorage.removeItem(LS_FB_CFG); }catch(e){}
+  showToast('Firebase desconectado — recarga la app'); borrarSesion(); location.reload();
+}
 function staffGetSocios(){
   return Object.values(DB.socios);
 }
@@ -2556,12 +2697,12 @@ function staffAprobar(code){
   const s=getSocio(code); if(!s) return;
   s.status='activo';
   if(s.asignado==='—') s.asignado=document.getElementById('staff-nombre').textContent||'Staff';
-  dbSave(); staffRenderList(); staffRenderContent(s);
+  dbSave(s.code); staffRenderList(); staffRenderContent(s);
   showToast('✓ Plan aprobado y activado — el socio ya puede entrenar');
 }
 function staffGuardar(code){
   const s=getSocio(code); if(!s) return;
-  dbSave(); staffRenderList();
+  dbSave(s.code); staffRenderList();
   showToast('✓ Cambios guardados — visibles para el socio al instante');
 }
 
