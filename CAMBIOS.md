@@ -96,3 +96,43 @@ Cada disciplina solo tenía 6-7 ejercicios en su banco propio, y el generador to
 Ahora cada día combina 2 movimientos firma de la disciplina (rotando cuáles, para usar los 6-7 a lo largo de la semana) con 3 ejercicios del catálogo general elegidos según el enfoque del día (fuerza, potencia, resistencia, core, movilidad), sin repetir ninguno ya usado esa semana. Probado con una rutina de tenis a 4 días: 0 ejercicios repetidos entre la mayoría de los días, máximo 2 compartidos entre dos de ellos.
 
 Esto aplica a las 11 disciplinas del catálogo (tenis, golf, natación, gimnasia, fútbol, pádel, frontenis, básquet, taekwondo, squash, fitness grupal).
+
+
+---
+
+# Versión 4 — Diseño nuevo, sesiones, socios y conocimiento
+
+## Diseño
+- Nuevo aspecto (vidrio, degradados, tipografía Bricolage + Figtree) con **solo dos temas: claro y oscuro** (selector sol/luna). Se quitó **Mi Espacio**.
+- Inicio con fondo de destellos y latido; panel del socio con anillo semanal, tira de la semana y barra de navegación flotante.
+
+## Corrección: las sesiones no se guardaban
+- **Causa**: Firebase no guarda listas ni objetos vacíos. Un socio nuevo se guardaba con `sesiones: []`, y al volver de Firebase ese campo ya no existía; al pulsar *Finalizar sesión* el código fallaba en silencio (`s.logs.sesiones.push` sobre `undefined`) y no se guardaba nada.
+- **Segunda causa**: los récords se guardaban con el nombre del ejercicio como llave. Si el nombre llevaba `/`, `.`, `#`, `$`, `[` o `]` (p. ej. "Caminata Inclinada / Elíptica") Firebase rechazaba TODO el guardado.
+- **Arreglo**: se restauran los campos faltantes al cargar y antes de guardar, las llaves de récords se limpian, y cualquier error ahora se muestra en pantalla en lugar de fallar en silencio. Al terminar aparece "Sesión guardada".
+- También: la configuración (lineamientos, conocimiento) ya no se pierde en modo local; y si la app queda abierta pasada la medianoche, el "hoy" se actualiza.
+
+## Coordinador: editar y eliminar socios
+- En la ficha del socio (solo coordinador): **Editar datos** (nombre, edad, estatura, peso, género, nivel, objetivo, frecuencia, estado, entrenador, limitaciones y código de acceso) y **Eliminar** (doble confirmación).
+- Si se elimina a un socio con la sesión abierta en su teléfono, la app lo saca automáticamente.
+- **Importante:** para poder eliminar hay que **pegar las reglas nuevas** de `firebase-rules.json` en Firebase Console → Realtime Database → Reglas → Publicar.
+
+## Conocimiento: agregar lo que falte (coordinador)
+- **Ejercicios** (con músculos, zona, enfoque, tipo, series/reps/carga sugeridas, descripción propioceptiva y lesiones a evitar), **métodos de intensidad**, **principios del club** y **notas y descripciones** libres. Se pueden editar y quitar.
+- Los ejercicios y métodos agregados los usa el sistema al crear rutinas nuevas, en las opciones "área ocupada" y en las indicaciones para la IA. Los principios y las notas van a la IA.
+
+## Panel del coordinador / entrenador: rediseño
+- **Barra superior limpia**: en celular las acciones (Entrenadores, Nuevo entrenador, Conocimiento, Resumen, Respaldo, Firebase, Cerrar sesión) están en un botón **Menú**, agrupadas. El rol, el estado de conexión y el nombre van en una línea aparte.
+- **Lista y ficha por separado** en celular: primero ves la lista de socios (con buscador, filtros con conteo y tarjetas grandes); al tocar uno se abre su ficha con el botón **Volver a socios**. En pantallas grandes siguen lado a lado.
+- **Ficha del socio ordenada**: datos clave en etiquetas, botones *Editar datos* y *Métodos y opciones*, resumen de números, y **Guardar cambios** (y **Aprobar plan** si está pendiente) fijos abajo, siempre a la mano.
+- **Editar la rutina**: cada día se abre al tocarlo; cada ejercicio tiene campos con nombre (Series, Repeticiones, Peso, Nota propioceptiva) y lo avanzado (método, grupo, descanso, opciones) queda dentro de un desplegable.
+- **Eliminar socio** quedó en una *Zona de peligro* al final de la ficha, para no tocarlo por accidente.
+
+## Diseño v5 — según los prototipos (claro y oscuro)
+- Nueva paleta: **lima + blanco** (claro) y **lima + negro azulado** (oscuro), tarjetas planas, íconos de línea en recuadros y tipografía deportiva (Kanit) en títulos.
+- **Barra inferior de 5 secciones**: Inicio · Rutina · Progreso · Nutrición · Perfil.
+- **Inicio**: saludo, foto principal con la frase del gimnasio, tarjeta *Entrenamiento de hoy* con anillo semanal y botón **Iniciar entrenamiento**, tres números clave y la semana.
+- **Rutina (Mi plan)**: objetivo, días/nivel/entrenador y la semana en tarjetas con foto.
+- **Detalle del día**: portada con foto, resumen (ejercicios, series, nivel), avance y cada ejercicio con su miniatura.
+- **Progreso** y **Nutrición** con tarjetas e íconos nuevos; **Perfil** nuevo (datos, logros, apariencia claro/oscuro, PDF y cerrar sesión).
+- **Banco de imágenes**: carpeta `img/` (lee `img/LEEME.md`). Donde falta una foto se ve un fondo con ícono; puedes ir agregándolas poco a poco. `img/LISTA-DE-IMAGENES.csv` trae los nombres exactos de archivo.

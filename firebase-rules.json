@@ -3,7 +3,7 @@
     "socios": {
       ".read": true,
       "$code": {
-        ".write": "newData.exists()",
+        ".write": true,
         ".validate": "newData.hasChildren(['nombre','objetivo'])"
       }
     },
@@ -16,7 +16,7 @@
     "config": {
       ".read": true,
       "$k": {
-        ".write": "newData.exists()"
+        ".write": true
       }
     }
   }
