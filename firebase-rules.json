@@ -2,14 +2,22 @@
   "rules": {
     "socios": {
       ".read": true,
-      ".write": true,
       "$code": {
-        ".validate": "newData.hasChildren(['nombre','objetivo','codigo']) || newData.hasChildren(['nombre','objetivo'])"
+        ".write": "newData.exists()",
+        ".validate": "newData.hasChildren(['nombre','objetivo'])"
       }
     },
     "entrenadores": {
       ".read": true,
-      ".write": true
+      "$id": {
+        ".write": true
+      }
+    },
+    "config": {
+      ".read": true,
+      "$k": {
+        ".write": "newData.exists()"
+      }
     }
   }
 }

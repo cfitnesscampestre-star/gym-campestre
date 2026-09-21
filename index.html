@@ -16,6 +16,325 @@
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script>
+/* ════════════════════════════════════════════════════════════════════
+   BASE DE CONOCIMIENTO — Fitness System Pro · Club Campestre Aguascalientes
+   ────────────────────────────────────────────────────────────────────
+   Es la "biblioteca" que consulta el sistema al crear rutinas:
+   · PRINCIPIOS  → la metodología del club (va en cada prompt de IA)
+   · METODOS     → métodos de intensidad con reglas de cuándo usarlos
+   · EJERCICIOS  → catálogo con zona del gimnasio y ALTERNATIVAS por enfoque
+                   (para cuando el área está ocupada en hora pico)
+   Para agregar un ejercicio o método basta con editar este archivo.
+   ════════════════════════════════════════════════════════════════════ */
+
+const KB_PRINCIPIOS = [
+  'Diagnóstico antes que rutina: las limitaciones son variables de diseño, no obstáculos.',
+  'Secuencia de fases Fuerza → Resistencia → Hipertrofia. Tendones y articulaciones se adaptan antes que el volumen.',
+  'Lesión = sustitución, nunca eliminación del grupo muscular.',
+  'Cada ejercicio lleva nota propioceptiva: qué músculo, en qué ángulo, hacia dónde dirigir la sensación.',
+  'Orden de la sesión: patrón principal (compuesto) primero con la mente fresca; accesorios y aislamiento después; métodos de alta fatiga al final.',
+  'Los métodos de intensidad son herramientas con propósito, no decoración: cada sesión usa los que su nivel tolera y su objetivo necesita.',
+  'Ningún método de alta fatiga (drop set, rest-pause, series gigantes) sobre la zona lesionada ni en ejercicios de alta demanda técnica en principiantes.',
+  'Cada ejercicio tiene al menos una opción en OTRA zona del gimnasio que trabaje el mismo enfoque, para no detener la sesión en hora pico.',
+  'El cardio es trabajo cardiovascular con propósito, no castigo al final.',
+  'Ante estancamiento: técnica y estímulo (tempo, ángulo, método) antes que subir carga.',
+];
+
+/* ── ZONAS DEL GIMNASIO (para elegir alternativas en otra área) ── */
+const KB_ZONAS = {
+  rack:'Rack / barra libre', banco:'Bancos + barra', mancuernas:'Área de mancuernas',
+  maquina:'Máquinas guiadas', polea:'Poleas / cables', corporal:'Peso corporal / tapete',
+  cardio:'Equipos de cardio', funcional:'Zona funcional (kettlebell, TRX, cajón)'
+};
+
+/* ── MÉTODOS DE INTENSIDAD ──
+   nivel: mínimo requerido (1 principiante · 2 intermedio · 3 avanzado)
+   fatiga: 1 baja · 2 media · 3 alta     aplica: compuesto | aislamiento | ambos
+   pareja: requiere 2+ ejercicios encadenados (se marca grupo A1/A2...)
+   obj: objetivos donde más encaja (F fuerza · H hipertrofia · R resistencia/pérdida de peso)
+   series/reps: formato sugerido que se escribe en la rutina                           */
+const KB_METODOS = {
+  tempo:       {nm:'Tempo excéntrico', nivel:1, fatiga:1, aplica:'ambos', obj:'FHR',
+                reps:'10 reps · tempo 3-1-1', como:'Baja en 3 segundos, pausa 1 segundo abajo, sube en 1 segundo. Más tiempo bajo tensión sin subir el peso.'},
+  pausa:       {nm:'Repeticiones con pausa', nivel:1, fatiga:1, aplica:'compuesto', obj:'FH',
+                reps:'6-8 reps · pausa 2 s', como:'Sostén 2 segundos en el punto más difícil del recorrido sin rebotar. Elimina la inercia y fortalece el punto débil.'},
+  superserie_ant:{nm:'Superserie antagonista', nivel:1, fatiga:2, aplica:'ambos', pareja:true, obj:'HR',
+                como:'Haz este ejercicio e inmediatamente el siguiente del mismo grupo (músculos opuestos). Descansa solo al terminar ambos.'},
+  circuito:    {nm:'Circuito', nivel:1, fatiga:2, aplica:'ambos', pareja:true, obj:'R',
+                como:'Encadena los ejercicios del grupo uno tras otro con 15-20 s de transición. Descansa 90 s al terminar la vuelta.'},
+  piramide_asc:{nm:'Pirámide ascendente', nivel:2, fatiga:2, aplica:'compuesto', obj:'FH', series:4,
+                reps:'12-10-8-6', como:'Cada serie sube el peso y baja las repeticiones (12, 10, 8, 6). La última serie es la más pesada y técnica.'},
+  piramide_desc:{nm:'Pirámide descendente', nivel:2, fatiga:2, aplica:'compuesto', obj:'FH', series:4,
+                reps:'6-8-10-12', como:'Empiezas con la serie más pesada tras calentar bien; cada serie siguiente bajas peso y subes repeticiones (6, 8, 10, 12).'},
+  drop_set:    {nm:'Drop set (series descendentes)', nivel:2, fatiga:3, aplica:'aislamiento', obj:'H',
+                reps:'10 + drop + drop', como:'En la ÚLTIMA serie, al llegar cerca del fallo baja el peso 20-30% y sigue sin descanso; repite la bajada una vez más.'},
+  rest_pause:  {nm:'Rest-pause', nivel:2, fatiga:3, aplica:'aislamiento', obj:'H',
+                reps:'10 + 3 + 3', como:'Última serie: llega cerca del fallo, descansa 15 s y saca 2-4 reps más; repite una vez. Mismo peso.'},
+  biserie:     {nm:'Biserie (mismo músculo)', nivel:2, fatiga:2, aplica:'ambos', pareja:true, obj:'H',
+                como:'Dos ejercicios del MISMO músculo seguidos sin descanso: primero el pesado, luego el de aislamiento. Descansa al terminar.'},
+  pre_agot:    {nm:'Pre-agotamiento', nivel:2, fatiga:2, aplica:'aislamiento', pareja:true, obj:'H',
+                como:'Primero el aislamiento del músculo objetivo e inmediatamente el compuesto. Así el músculo objetivo, no los auxiliares, limita la serie.'},
+  emom:        {nm:'EMOM', nivel:2, fatiga:2, aplica:'ambos', obj:'R', reps:'EMOM 10 min · 8 reps',
+                como:'Al inicio de cada minuto haces las repeticiones indicadas; descansas lo que sobre del minuto. 10 minutos.'},
+  escalera:    {nm:'Escalera ascendente-descendente', nivel:3, fatiga:3, aplica:'compuesto', obj:'FH', series:7,
+                reps:'12-10-8-6-8-10-12', como:'Subes peso bajando reps hasta la cima (6) y después bajas peso subiendo reps de regreso. Mucho volumen efectivo en un solo ejercicio.'},
+  cluster:     {nm:'Series cluster', nivel:3, fatiga:2, aplica:'compuesto', obj:'F', series:4,
+                reps:'2+2+1 · 15 s entre bloques', como:'Serie partida: con un peso alto haces 2 reps, descansas 15 s, 2 más, 15 s, 1 más. Más reps de calidad con cargas altas.'},
+  drop_mec:    {nm:'Drop set mecánico', nivel:3, fatiga:3, aplica:'ambos', obj:'H',
+                como:'Al acercarte al fallo NO bajas el peso: cambias a una variante más fácil del mismo movimiento (p. ej. inclinado → plano) y sigues sin descanso.'},
+  triserie:    {nm:'Triserie', nivel:3, fatiga:3, aplica:'ambos', pareja:true, obj:'HR',
+                como:'Tres ejercicios encadenados sin descanso. Descansa 2 min al terminar los tres.'},
+  serie_gigante:{nm:'Serie gigante', nivel:3, fatiga:3, aplica:'ambos', pareja:true, obj:'R',
+                como:'Cuatro o más ejercicios encadenados sin descanso para un mismo bloque corporal.'},
+  post_agot:   {nm:'Post-agotamiento', nivel:3, fatiga:3, aplica:'aislamiento', pareja:true, obj:'H',
+                como:'Después del compuesto, sin descanso, un aislamiento del músculo objetivo para terminar de agotarlo.'},
+  metodo21:    {nm:'Método 21', nivel:3, fatiga:3, aplica:'aislamiento', obj:'H', reps:'7+7+7',
+                como:'7 reps en la mitad inferior del recorrido, 7 en la mitad superior y 7 completas, sin descanso.'},
+  una_y_media: {nm:'1½ repeticiones', nivel:3, fatiga:2, aplica:'ambos', obj:'H', reps:'8 reps de 1½',
+                como:'Cada repetición: recorrido completo + medio recorrido extra en la zona más difícil. Cuenta como 1.'},
+  contraste:   {nm:'Contraste (fuerza + potencia)', nivel:3, fatiga:2, aplica:'compuesto', pareja:true, obj:'F',
+                como:'Serie pesada de 3-5 reps y enseguida 5 saltos o lanzamientos explosivos del mismo patrón. Descansa 2-3 min.'},
+};
+
+/* Métodos que NO se usan con ciertas lesiones/condiciones (sobre la zona afectada) */
+const KB_METODO_EVITAR = {
+  cardiaca: ['drop_set','rest_pause','cluster','escalera','serie_gigante','triserie','metodo21','contraste','drop_mec','emom'],
+  _lesion_zona: ['drop_set','rest_pause','cluster','escalera','drop_mec','metodo21','contraste'],
+};
+
+/* ── CATÁLOGO DE EJERCICIOS ──
+   z: zona del gimnasio · t: c=compuesto a=aislamiento
+   enf: enfoque por defecto · alt: alternativas POR ENFOQUE (ids del catálogo)
+   ev: lesiones donde evitarlo (rodilla, lumbar, hombro, cadera, cuello)
+   aka: otros nombres con los que puede aparecer                                  */
+const KB_EJERCICIOS = [
+  // ── PIERNA · CUÁDRICEPS / GLÚTEO ──
+  {id:'sentadilla', nm:'Sentadilla libre', ms:'Cuádriceps · Glúteo', z:'rack', t:'c', enf:'cuadriceps', ev:['rodilla','lumbar'],
+   alt:{cuadriceps:['prensa','hack','goblet','bulgara'], gluteo:['hip_thrust','bulgara']}, aka:['sentadilla trasera','back squat','sentadilla con barra']},
+  {id:'goblet', nm:'Sentadilla goblet', ms:'Cuádriceps · Glúteo', z:'mancuernas', t:'c', enf:'cuadriceps', ev:['rodilla'],
+   alt:{cuadriceps:['prensa','ext_cuad','hack'], gluteo:['hip_thrust','puente']}, aka:[]},
+  {id:'frontal', nm:'Sentadilla frontal', ms:'Cuádriceps · Core', z:'rack', t:'c', enf:'cuadriceps', ev:['rodilla','lumbar'],
+   alt:{cuadriceps:['hack','goblet','prensa_baja']}, aka:['front squat']},
+  {id:'hack', nm:'Sentadilla hack', ms:'Cuádriceps', z:'maquina', t:'c', enf:'cuadriceps', ev:['rodilla'],
+   alt:{cuadriceps:['prensa_baja','goblet','ext_cuad']}, aka:['hack squat']},
+  {id:'prensa', nm:'Prensa de piernas', ms:'Cuádriceps · Glúteo', z:'maquina', t:'c', enf:'cuadriceps', ev:[],
+   alt:{cuadriceps:['goblet','bulgara','ext_cuad'], gluteo:['hip_thrust','step_up']}, aka:['prensa','leg press','prensa de piernas (rango parcial)']},
+  {id:'prensa_baja', nm:'Prensa con pies bajos', ms:'Cuádriceps', z:'maquina', t:'c', enf:'cuadriceps', ev:['rodilla'],
+   alt:{cuadriceps:['goblet','ext_cuad','sissy']}, aka:[]},
+  {id:'desplante', nm:'Desplante', ms:'Cuádriceps · Glúteo', z:'mancuernas', t:'c', enf:'cuadriceps', ev:['rodilla'],
+   alt:{cuadriceps:['ext_cuad','prensa_baja','hack'], gluteo:['hip_thrust','patada_polea','step_up']}, aka:['zancadas','zancada','lunge','desplantes','zancadas caminando']},
+  {id:'bulgara', nm:'Sentadilla búlgara', ms:'Cuádriceps · Glúteo', z:'mancuernas', t:'c', enf:'cuadriceps', ev:['rodilla'],
+   alt:{cuadriceps:['ext_cuad','prensa_baja','goblet'], gluteo:['hip_thrust','step_up','patada_polea']}, aka:['split squat','bulgara']},
+  {id:'step_up', nm:'Step-up al cajón', ms:'Glúteo · Cuádriceps', z:'funcional', t:'c', enf:'gluteo', ev:[],
+   alt:{gluteo:['hip_thrust','patada_polea'], cuadriceps:['prensa','ext_cuad']}, aka:['step-up bajo','subida al cajón','step up']},
+  {id:'ext_cuad', nm:'Extensión de cuádriceps', ms:'Cuádriceps', z:'maquina', t:'a', enf:'cuadriceps', ev:[],
+   alt:{cuadriceps:['sissy','goblet','isom_cuad']}, aka:['extensión de rodilla','extension de piernas','leg extension']},
+  {id:'sissy', nm:'Sentadilla sissy asistida', ms:'Cuádriceps', z:'corporal', t:'a', enf:'cuadriceps', ev:['rodilla'],
+   alt:{cuadriceps:['ext_cuad','goblet']}, aka:[]},
+  {id:'isom_cuad', nm:'Isométrico de cuádriceps', ms:'Cuádriceps', z:'corporal', t:'a', enf:'cuadriceps', ev:[],
+   alt:{cuadriceps:['ext_cuad','sentadilla_pared']}, aka:['isométrico de cuádriceps']},
+  {id:'sentadilla_pared', nm:'Sentadilla isométrica en pared', ms:'Cuádriceps', z:'corporal', t:'a', enf:'cuadriceps', ev:[],
+   alt:{cuadriceps:['isom_cuad','ext_cuad']}, aka:['wall sit']},
+  // ── PIERNA · CADENA POSTERIOR ──
+  {id:'peso_muerto', nm:'Peso muerto convencional', ms:'Glúteo · Femorales · Espalda', z:'rack', t:'c', enf:'gluteo', ev:['lumbar'],
+   alt:{gluteo:['hip_thrust','pm_rumano_mancuerna'], femoral:['pm_rumano_mancuerna','curl_fem']}, aka:['peso muerto','deadlift']},
+  {id:'pm_rumano', nm:'Peso muerto rumano', ms:'Femorales · Glúteo', z:'rack', t:'c', enf:'femoral', ev:['lumbar'],
+   alt:{femoral:['pm_rumano_mancuerna','curl_fem','curl_fem_sentado'], gluteo:['hip_thrust','hiperext']}, aka:['peso muerto rumano','rdl']},
+  {id:'pm_rumano_mancuerna', nm:'Peso muerto rumano con mancuernas', ms:'Femorales · Glúteo', z:'mancuernas', t:'c', enf:'femoral', ev:['lumbar'],
+   alt:{femoral:['curl_fem','curl_fem_sentado'], gluteo:['hip_thrust','patada_polea']}, aka:[]},
+  {id:'hip_thrust', nm:'Hip thrust', ms:'Glúteo mayor', z:'banco', t:'c', enf:'gluteo', ev:[],
+   alt:{gluteo:['puente','patada_polea','abduccion']}, aka:['empuje de cadera','hip thrust con barra']},
+  {id:'puente', nm:'Puente de glúteo', ms:'Glúteo', z:'corporal', t:'a', enf:'gluteo', ev:[],
+   alt:{gluteo:['hip_thrust','patada_polea']}, aka:['puente de gluteo','glute bridge']},
+  {id:'patada_polea', nm:'Patada de glúteo en polea', ms:'Glúteo mayor', z:'polea', t:'a', enf:'gluteo', ev:[],
+   alt:{gluteo:['puente','abduccion','hip_thrust']}, aka:['patada de gluteo']},
+  {id:'abduccion', nm:'Abducción de cadera en máquina', ms:'Glúteo medio', z:'maquina', t:'a', enf:'gluteo', ev:[],
+   alt:{gluteo:['monster_walk','patada_polea']}, aka:['abductores','abducción']},
+  {id:'monster_walk', nm:'Caminata lateral con banda', ms:'Glúteo medio', z:'corporal', t:'a', enf:'gluteo', ev:[],
+   alt:{gluteo:['abduccion','puente']}, aka:['monster walk']},
+  {id:'curl_fem', nm:'Curl femoral acostado', ms:'Femorales', z:'maquina', t:'a', enf:'femoral', ev:[],
+   alt:{femoral:['curl_fem_sentado','nordico','pm_rumano_mancuerna']}, aka:['curl femoral','leg curl']},
+  {id:'curl_fem_sentado', nm:'Curl femoral sentado', ms:'Femorales', z:'maquina', t:'a', enf:'femoral', ev:[],
+   alt:{femoral:['curl_fem','curl_fem_fitball']}, aka:[]},
+  {id:'curl_fem_fitball', nm:'Curl femoral en fitball', ms:'Femorales', z:'corporal', t:'a', enf:'femoral', ev:[],
+   alt:{femoral:['curl_fem','nordico']}, aka:[]},
+  {id:'nordico', nm:'Curl nórdico asistido', ms:'Femorales', z:'corporal', t:'a', enf:'femoral', ev:['rodilla'],
+   alt:{femoral:['curl_fem','curl_fem_fitball']}, aka:['nordic curl']},
+  {id:'hiperext', nm:'Hiperextensión 45°', ms:'Erectores · Glúteo', z:'banco', t:'a', enf:'gluteo', ev:['lumbar'],
+   alt:{gluteo:['puente','hip_thrust']}, aka:['extensiones lumbares','hiperextensiones']},
+  {id:'pantorrilla', nm:'Elevación de talones de pie', ms:'Gemelos', z:'maquina', t:'a', enf:'pantorrilla', ev:[],
+   alt:{pantorrilla:['pantorrilla_prensa','pantorrilla_escalon']}, aka:['elevación de talones','pantorrillas','calf raise']},
+  {id:'pantorrilla_prensa', nm:'Pantorrilla en prensa', ms:'Gemelos', z:'maquina', t:'a', enf:'pantorrilla', ev:[],
+   alt:{pantorrilla:['pantorrilla','pantorrilla_escalon']}, aka:[]},
+  {id:'pantorrilla_escalon', nm:'Pantorrilla unilateral en escalón', ms:'Gemelos', z:'corporal', t:'a', enf:'pantorrilla', ev:[],
+   alt:{pantorrilla:['pantorrilla','pantorrilla_prensa']}, aka:[]},
+
+  // ── PECHO ──
+  {id:'press_banca', nm:'Press banca plano', ms:'Pecho mayor · Tríceps', z:'banco', t:'c', enf:'pecho', ev:['hombro'],
+   alt:{pecho:['press_mancuerna','press_maquina','lagartija']}, aka:['press de banca','bench press','press banca']},
+  {id:'press_inclinado', nm:'Press inclinado con barra', ms:'Pecho superior', z:'banco', t:'c', enf:'pecho_sup', ev:['hombro'],
+   alt:{pecho_sup:['press_incl_mancuerna','press_maquina_incl','cruce_bajo']}, aka:[]},
+  {id:'press_incl_mancuerna', nm:'Press inclinado con mancuernas', ms:'Pecho superior', z:'mancuernas', t:'c', enf:'pecho_sup', ev:['hombro'],
+   alt:{pecho_sup:['press_maquina_incl','cruce_bajo','press_inclinado']}, aka:['press inclinado mancuernas']},
+  {id:'press_mancuerna', nm:'Press plano con mancuernas', ms:'Pecho mayor', z:'mancuernas', t:'c', enf:'pecho', ev:['hombro'],
+   alt:{pecho:['press_maquina','press_banca','lagartija']}, aka:[]},
+  {id:'press_maquina', nm:'Press de pecho en máquina', ms:'Pecho mayor', z:'maquina', t:'c', enf:'pecho', ev:[],
+   alt:{pecho:['press_mancuerna','lagartija','cruce_poleas']}, aka:['press de pecho en maquina','chest press']},
+  {id:'press_maquina_incl', nm:'Press inclinado en máquina', ms:'Pecho superior', z:'maquina', t:'c', enf:'pecho_sup', ev:[],
+   alt:{pecho_sup:['press_incl_mancuerna','cruce_bajo']}, aka:[]},
+  {id:'lagartija', nm:'Lagartijas', ms:'Pecho · Tríceps · Core', z:'corporal', t:'c', enf:'pecho', ev:['hombro'],
+   alt:{pecho:['press_maquina','press_mancuerna']}, aka:['flexiones','push up','push-ups']},
+  {id:'fondos', nm:'Fondos en paralelas', ms:'Pecho inferior · Tríceps', z:'funcional', t:'c', enf:'pecho', ev:['hombro'],
+   alt:{pecho:['press_maquina','cruce_alto'], triceps:['ext_triceps','press_cerrado']}, aka:['dips']},
+  {id:'cruce_poleas', nm:'Cruce de poleas', ms:'Pecho (porción media)', z:'polea', t:'a', enf:'pecho', ev:[],
+   alt:{pecho:['pec_deck','aperturas_mancuerna']}, aka:['aperturas en cable','cruces en polea','crossover']},
+  {id:'cruce_bajo', nm:'Cruce de poleas de abajo hacia arriba', ms:'Pecho superior', z:'polea', t:'a', enf:'pecho_sup', ev:[],
+   alt:{pecho_sup:['press_incl_mancuerna','aperturas_mancuerna']}, aka:[]},
+  {id:'cruce_alto', nm:'Cruce de poleas de arriba hacia abajo', ms:'Pecho inferior', z:'polea', t:'a', enf:'pecho', ev:[],
+   alt:{pecho:['pec_deck','fondos']}, aka:[]},
+  {id:'pec_deck', nm:'Pec deck (aperturas en máquina)', ms:'Pecho', z:'maquina', t:'a', enf:'pecho', ev:[],
+   alt:{pecho:['cruce_poleas','aperturas_mancuerna']}, aka:['peck deck','aperturas en maquina']},
+  {id:'aperturas_mancuerna', nm:'Aperturas con mancuernas', ms:'Pecho', z:'mancuernas', t:'a', enf:'pecho', ev:['hombro'],
+   alt:{pecho:['pec_deck','cruce_poleas']}, aka:['aperturas']},
+
+  // ── ESPALDA ──
+  {id:'dominadas', nm:'Dominadas', ms:'Dorsal ancho · Bíceps', z:'funcional', t:'c', enf:'dorsal', ev:['hombro'],
+   alt:{dorsal:['jalon','dominada_asistida','jalon_unilateral']}, aka:['pull up','dominada']},
+  {id:'dominada_asistida', nm:'Dominada asistida en máquina', ms:'Dorsal ancho', z:'maquina', t:'c', enf:'dorsal', ev:[],
+   alt:{dorsal:['jalon','jalon_unilateral']}, aka:[]},
+  {id:'jalon', nm:'Jalón al pecho', ms:'Dorsal ancho', z:'polea', t:'c', enf:'dorsal', ev:[],
+   alt:{dorsal:['dominada_asistida','pullover_polea','remo_mancuerna']}, aka:['jalon al pecho','lat pulldown','jalón']},
+  {id:'jalon_unilateral', nm:'Jalón unilateral en polea', ms:'Dorsal ancho', z:'polea', t:'c', enf:'dorsal', ev:[],
+   alt:{dorsal:['jalon','remo_mancuerna']}, aka:[]},
+  {id:'pullover_polea', nm:'Pullover en polea alta', ms:'Dorsal ancho', z:'polea', t:'a', enf:'dorsal', ev:[],
+   alt:{dorsal:['pullover_mancuerna','jalon']}, aka:['pullover']},
+  {id:'pullover_mancuerna', nm:'Pullover con mancuerna', ms:'Dorsal · Pecho', z:'mancuernas', t:'a', enf:'dorsal', ev:['hombro'],
+   alt:{dorsal:['pullover_polea','jalon']}, aka:[]},
+  {id:'remo_barra', nm:'Remo con barra', ms:'Dorsal · Romboides', z:'rack', t:'c', enf:'espalda_media', ev:['lumbar'],
+   alt:{espalda_media:['remo_apoyo','remo_polea','remo_mancuerna']}, aka:['remo inclinado con barra']},
+  {id:'remo_mancuerna', nm:'Remo con mancuerna', ms:'Dorsal · Romboides', z:'mancuernas', t:'c', enf:'espalda_media', ev:[],
+   alt:{espalda_media:['remo_polea','remo_apoyo','remo_trx']}, aka:['remo a una mano']},
+  {id:'remo_polea', nm:'Remo en polea baja', ms:'Dorsal · Romboides', z:'polea', t:'c', enf:'espalda_media', ev:[],
+   alt:{espalda_media:['remo_mancuerna','remo_apoyo','remo_trx']}, aka:['remo sentado','seated row','remo en polea']},
+  {id:'remo_apoyo', nm:'Remo en máquina con apoyo de pecho', ms:'Dorsal · Romboides', z:'maquina', t:'c', enf:'espalda_media', ev:[],
+   alt:{espalda_media:['remo_mancuerna','remo_polea']}, aka:['remo en maquina con apoyo','remo en maquina','t-bar']},
+  {id:'remo_trx', nm:'Remo invertido en TRX', ms:'Espalda media · Core', z:'funcional', t:'c', enf:'espalda_media', ev:[],
+   alt:{espalda_media:['remo_polea','remo_mancuerna']}, aka:['remo invertido']},
+  {id:'face_pull', nm:'Face pull', ms:'Deltoides posterior · Manguito', z:'polea', t:'a', enf:'deltoide_post', ev:[],
+   alt:{deltoide_post:['pajaro','reverse_pec','banda_rotacion']}, aka:['face pull en polea']},
+
+  // ── HOMBRO ──
+  {id:'press_militar', nm:'Press militar con barra', ms:'Deltoides anterior', z:'rack', t:'c', enf:'deltoide', ev:['hombro','lumbar','cuello'],
+   alt:{deltoide:['press_hombro_mancuerna','press_hombro_maquina','landmine']}, aka:['press militar']},
+  {id:'press_hombro_mancuerna', nm:'Press de hombro con mancuernas', ms:'Deltoides', z:'mancuernas', t:'c', enf:'deltoide', ev:['hombro'],
+   alt:{deltoide:['press_hombro_maquina','landmine']}, aka:['press militar mancuernas','press arnold']},
+  {id:'press_hombro_maquina', nm:'Press de hombro en máquina', ms:'Deltoides', z:'maquina', t:'c', enf:'deltoide', ev:[],
+   alt:{deltoide:['press_hombro_mancuerna','landmine']}, aka:[]},
+  {id:'landmine', nm:'Press landmine', ms:'Deltoides anterior · Pecho superior', z:'rack', t:'c', enf:'deltoide', ev:[],
+   alt:{deltoide:['press_hombro_maquina','press_hombro_mancuerna']}, aka:[]},
+  {id:'laterales', nm:'Elevaciones laterales', ms:'Deltoides lateral', z:'mancuernas', t:'a', enf:'deltoide_lat', ev:[],
+   alt:{deltoide_lat:['lateral_polea','lateral_maquina']}, aka:['elevaciones laterales con mancuerna','vuelos laterales']},
+  {id:'lateral_polea', nm:'Elevación lateral en polea', ms:'Deltoides lateral', z:'polea', t:'a', enf:'deltoide_lat', ev:[],
+   alt:{deltoide_lat:['laterales','lateral_maquina']}, aka:[]},
+  {id:'lateral_maquina', nm:'Elevación lateral en máquina', ms:'Deltoides lateral', z:'maquina', t:'a', enf:'deltoide_lat', ev:[],
+   alt:{deltoide_lat:['laterales','lateral_polea']}, aka:[]},
+  {id:'frontal_ligera', nm:'Elevación frontal ligera', ms:'Deltoides anterior', z:'mancuernas', t:'a', enf:'deltoide', ev:[],
+   alt:{deltoide:['frontal_polea','landmine']}, aka:['elevacion frontal ligera','elevaciones frontales']},
+  {id:'frontal_polea', nm:'Elevación frontal en polea', ms:'Deltoides anterior', z:'polea', t:'a', enf:'deltoide', ev:[],
+   alt:{deltoide:['frontal_ligera']}, aka:[]},
+  {id:'pajaro', nm:'Pájaros con mancuerna', ms:'Deltoides posterior', z:'mancuernas', t:'a', enf:'deltoide_post', ev:[],
+   alt:{deltoide_post:['reverse_pec','face_pull']}, aka:['pajaros','elevaciones posteriores']},
+  {id:'reverse_pec', nm:'Reverse pec deck', ms:'Deltoides posterior', z:'maquina', t:'a', enf:'deltoide_post', ev:[],
+   alt:{deltoide_post:['pajaro','face_pull']}, aka:['aperturas invertidas']},
+  {id:'banda_rotacion', nm:'Rotación externa con banda', ms:'Manguito rotador', z:'corporal', t:'a', enf:'manguito', ev:[],
+   alt:{manguito:['rotacion_polea','face_pull']}, aka:['manguito rotador con banda','trabajo de manguito rotador']},
+  {id:'rotacion_polea', nm:'Rotación externa en polea', ms:'Manguito rotador', z:'polea', t:'a', enf:'manguito', ev:[],
+   alt:{manguito:['banda_rotacion']}, aka:[]},
+  {id:'encogimientos', nm:'Encogimientos con mancuerna', ms:'Trapecio', z:'mancuernas', t:'a', enf:'trapecio', ev:['cuello'],
+   alt:{trapecio:['encog_maquina','farmer']}, aka:['encogimientos','shrugs']},
+  {id:'encog_maquina', nm:'Encogimientos en máquina', ms:'Trapecio', z:'maquina', t:'a', enf:'trapecio', ev:['cuello'],
+   alt:{trapecio:['encogimientos','farmer']}, aka:[]},
+
+  // ── BRAZOS ──
+  {id:'curl_barra', nm:'Curl con barra Z', ms:'Bíceps', z:'mancuernas', t:'a', enf:'biceps', ev:[],
+   alt:{biceps:['curl_polea','curl_mancuerna','curl_predicador']}, aka:['curl barra z','curl con barra']},
+  {id:'curl_mancuerna', nm:'Curl alterno con mancuernas', ms:'Bíceps', z:'mancuernas', t:'a', enf:'biceps', ev:[],
+   alt:{biceps:['curl_polea','curl_predicador']}, aka:['curl de biceps','curl de bíceps','curl biceps']},
+  {id:'curl_polea', nm:'Curl en polea baja', ms:'Bíceps', z:'polea', t:'a', enf:'biceps', ev:[],
+   alt:{biceps:['curl_mancuerna','curl_predicador']}, aka:[]},
+  {id:'curl_predicador', nm:'Curl predicador en máquina', ms:'Bíceps (porción corta)', z:'maquina', t:'a', enf:'biceps', ev:[],
+   alt:{biceps:['curl_polea','curl_mancuerna']}, aka:['curl scott','curl predicador']},
+  {id:'curl_martillo', nm:'Curl martillo', ms:'Braquial · Braquiorradial', z:'mancuernas', t:'a', enf:'braquial', ev:[],
+   alt:{braquial:['curl_cuerda']}, aka:['curl martillo con mancuernas']},
+  {id:'curl_cuerda', nm:'Curl martillo en polea con cuerda', ms:'Braquial', z:'polea', t:'a', enf:'braquial', ev:[],
+   alt:{braquial:['curl_martillo']}, aka:[]},
+  {id:'ext_triceps', nm:'Extensión de tríceps en polea', ms:'Tríceps', z:'polea', t:'a', enf:'triceps', ev:[],
+   alt:{triceps:['frances','fondos_banco','ext_triceps_mancuerna']}, aka:['extension de triceps polea','extensión tríceps polea','pushdown','jalón de tríceps']},
+  {id:'frances', nm:'Press francés con barra Z', ms:'Tríceps (porción larga)', z:'banco', t:'a', enf:'triceps', ev:['hombro'],
+   alt:{triceps:['ext_triceps_mancuerna','ext_triceps']}, aka:['press frances','skull crusher']},
+  {id:'ext_triceps_mancuerna', nm:'Extensión de tríceps sobre la cabeza', ms:'Tríceps (porción larga)', z:'mancuernas', t:'a', enf:'triceps', ev:['hombro'],
+   alt:{triceps:['ext_triceps','frances']}, aka:['extension overhead']},
+  {id:'fondos_banco', nm:'Fondos en banco', ms:'Tríceps', z:'corporal', t:'a', enf:'triceps', ev:['hombro'],
+   alt:{triceps:['ext_triceps']}, aka:[]},
+  {id:'press_cerrado', nm:'Press banca agarre cerrado', ms:'Tríceps · Pecho', z:'banco', t:'c', enf:'triceps', ev:['hombro'],
+   alt:{triceps:['fondos','ext_triceps']}, aka:[]},
+
+  // ── CORE ──
+  {id:'plancha', nm:'Plancha frontal', ms:'Core', z:'corporal', t:'a', enf:'core', ev:[],
+   alt:{core:['dead_bug','pallof','rueda']}, aka:['plancha','plank']},
+  {id:'plancha_lateral', nm:'Plancha lateral', ms:'Oblicuos', z:'corporal', t:'a', enf:'core', ev:['hombro'],
+   alt:{core:['pallof','farmer_unilateral']}, aka:[]},
+  {id:'dead_bug', nm:'Dead bug', ms:'Core profundo', z:'corporal', t:'a', enf:'core', ev:[],
+   alt:{core:['bird_dog','plancha']}, aka:[]},
+  {id:'bird_dog', nm:'Bird-dog', ms:'Core · Erectores', z:'corporal', t:'a', enf:'core', ev:[],
+   alt:{core:['dead_bug','plancha']}, aka:['bird dog']},
+  {id:'pallof', nm:'Press Pallof', ms:'Core antirrotación', z:'polea', t:'a', enf:'core', ev:[],
+   alt:{core:['plancha_lateral','dead_bug']}, aka:[]},
+  {id:'crunch_polea', nm:'Crunch en polea', ms:'Recto abdominal', z:'polea', t:'a', enf:'abdomen', ev:['cuello'],
+   alt:{abdomen:['elev_piernas','rueda','crunch_maquina']}, aka:['crunch con cable','crunch en polea alta']},
+  {id:'crunch_maquina', nm:'Crunch en máquina', ms:'Recto abdominal', z:'maquina', t:'a', enf:'abdomen', ev:[],
+   alt:{abdomen:['crunch_polea','elev_piernas']}, aka:[]},
+  {id:'elev_piernas', nm:'Elevación de piernas colgado', ms:'Abdomen inferior', z:'funcional', t:'a', enf:'abdomen', ev:['lumbar'],
+   alt:{abdomen:['crunch_polea','dead_bug']}, aka:['elevaciones de piernas']},
+  {id:'rueda', nm:'Rueda abdominal', ms:'Core anterior', z:'corporal', t:'a', enf:'abdomen', ev:['lumbar','hombro'],
+   alt:{abdomen:['plancha','crunch_polea']}, aka:['ab wheel']},
+  {id:'farmer', nm:'Farmer walk', ms:'Core · Agarre · Trapecio', z:'mancuernas', t:'c', enf:'core', ev:[],
+   alt:{core:['farmer_unilateral','plancha']}, aka:['caminata del granjero']},
+  {id:'farmer_unilateral', nm:'Caminata con peso unilateral', ms:'Oblicuos · Core', z:'mancuernas', t:'c', enf:'core', ev:[],
+   alt:{core:['plancha_lateral','pallof']}, aka:['suitcase carry']},
+
+  // ── CARDIO / METABÓLICO ──
+  {id:'caminadora_incl', nm:'Caminata inclinada', ms:'Cardiovascular', z:'cardio', t:'c', enf:'cardio', ev:[],
+   alt:{cardio:['eliptica','bici','remo_erg']}, aka:['caminata inclinada / eliptica','caminadora']},
+  {id:'eliptica', nm:'Elíptica', ms:'Cardiovascular', z:'cardio', t:'c', enf:'cardio', ev:[],
+   alt:{cardio:['bici','caminadora_incl']}, aka:['eliptica']},
+  {id:'bici', nm:'Bicicleta estática', ms:'Cardiovascular', z:'cardio', t:'c', enf:'cardio', ev:[],
+   alt:{cardio:['eliptica','remo_erg']}, aka:['bicicleta','spinning']},
+  {id:'remo_erg', nm:'Remo ergómetro', ms:'Cardiovascular · Espalda', z:'cardio', t:'c', enf:'cardio', ev:['lumbar'],
+   alt:{cardio:['bici','eliptica']}, aka:['remo ergometro','rower']},
+  {id:'kb_swing', nm:'Swing con kettlebell', ms:'Glúteo · Cadena posterior', z:'funcional', t:'c', enf:'gluteo', ev:['lumbar'],
+   alt:{gluteo:['hip_thrust','puente'], cardio:['bici']}, aka:['kettlebell swing']},
+];
+
+/* Utilidades de catálogo (sin dependencias) */
+function kbNorm(t){ return String(t||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\(.*?\)/g,'').replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim(); }
+const KB_IDX = {};
+KB_EJERCICIOS.forEach(e=>{ KB_IDX[e.id]=e; });
+function kbBuscar(nombre){
+  const n=kbNorm(nombre); if(!n) return null;
+  let m=KB_EJERCICIOS.find(e=>kbNorm(e.nm)===n || (e.aka||[]).some(a=>kbNorm(a)===n));
+  if(m) return m;
+  // coincidencia parcial: el nombre contiene el del catálogo (el más largo gana)
+  const cands=KB_EJERCICIOS.flatMap(e=>[e.nm,...(e.aka||[])].map(x=>({e,k:kbNorm(x)})))
+    .filter(o=>o.k.length>4 && (n.includes(o.k)||o.k.includes(n))).sort((a,b)=>b.k.length-a.k.length);
+  return cands.length?cands[0].e:null;
+}
+const KB_ENFOQUES = {cuadriceps:'Cuádriceps',gluteo:'Glúteo',femoral:'Femorales',pantorrilla:'Pantorrilla',pecho:'Pecho',pecho_sup:'Pecho superior',
+  dorsal:'Dorsal',espalda_media:'Espalda media',deltoide:'Hombro (frontal)',deltoide_lat:'Hombro lateral',deltoide_post:'Hombro posterior',
+  manguito:'Manguito rotador',trapecio:'Trapecio',biceps:'Bíceps',braquial:'Braquial',triceps:'Tríceps',core:'Core',abdomen:'Abdomen',cardio:'Cardio'};
+
+</script>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -772,6 +1091,28 @@ body.r-redondo .card,body.r-redondo .kpi,body.r-redondo .macro-c,body.r-redondo 
   .pend-code{ font-size: 56px; letter-spacing: 12px; }
   .pend-title{ font-size: 40px; }
 }
+.ej-extra{display:flex;gap:6px;flex-wrap:wrap;margin-top:5px}
+.ej-met,.ej-alt{font-size:10px;padding:2px 7px;border-radius:5px;line-height:1.4}
+.ej-met{color:var(--p);background:color-mix(in srgb,var(--p) 8%,transparent)}
+.ej-alt{color:var(--mu);border:1px solid var(--b)}
+.ej-opc{display:block;font-size:10px;font-weight:400;color:var(--g)}
+.m-metodo{margin-top:10px;padding:11px 13px;border-radius:10px;background:color-mix(in srgb,var(--p) 6%,transparent);border-left:3px solid var(--p);font-size:12px;line-height:1.55}
+.m-metodo-nm{font-weight:700;color:var(--p);margin-bottom:3px}
+.m-metodo-nm span{font-weight:400;color:var(--mu);font-size:11px}
+.m-metodo-det{margin-top:5px;color:var(--mu);font-size:11px}
+.m-alts{margin-top:10px}
+.m-alts-t{font-size:12px;font-weight:600;margin-bottom:6px}
+.m-alt{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--b);border-radius:9px;margin-bottom:6px;cursor:pointer;background:var(--gl)}
+.m-alt b{display:block;font-size:12.5px}
+.m-alt span{font-size:11px;color:var(--mu)}
+.m-alt em{font-style:normal;font-size:11px;color:var(--v);white-space:nowrap}
+.m-alt.on{border-color:var(--v);background:color-mix(in srgb,var(--v) 7%,transparent)}
+.filo-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.filo-chip{padding:6px 10px;border-radius:16px;border:1px solid var(--b);font-size:11.5px;cursor:pointer;background:var(--gl);user-select:none}
+.filo-chip.fav{border-color:var(--v);color:var(--v);background:color-mix(in srgb,var(--v) 8%,transparent)}
+.filo-chip.fav::before{content:'✓ '}
+.filo-chip.no{border-color:var(--r);color:var(--r);text-decoration:line-through;opacity:.8}
+.m-alt-reset{font-size:11px;color:var(--mu);text-align:center;padding:6px;cursor:pointer}
 </style>
 </head>
 <body>
@@ -1310,6 +1651,8 @@ body.r-redondo .card,body.r-redondo .kpi,body.r-redondo .macro-c,body.r-redondo 
     </div>
     <div class="m-sets" id="m-sets"></div>
     <div class="m-tip" id="m-tip">—</div>
+    <div id="m-metodo" class="m-metodo" style="display:none"></div>
+    <div id="m-alts" class="m-alts" style="display:none"></div>
     <div class="m-pr" id="m-pr" style="display:none"></div>
   </div>
 </div>
@@ -1333,16 +1676,15 @@ body.r-redondo .card,body.r-redondo .kpi,body.r-redondo .macro-c,body.r-redondo 
       </div>
       <div style="margin-bottom:10px;">
         <div style="font-family:'DM Mono';font-size:9px;letter-spacing:2px;color:var(--mu);margin-bottom:5px;">USUARIO</div>
-        <input type="text" class="ti" id="staff-user" value="entrenador1" placeholder="usuario">
+        <input type="text" class="ti" id="staff-user" value="" placeholder="usuario" autocomplete="username">
       </div>
       <div style="margin-bottom:16px;">
         <div style="font-family:'DM Mono';font-size:9px;letter-spacing:2px;color:var(--mu);margin-bottom:5px;">CONTRASEÑA</div>
-        <input type="password" class="ti" id="staff-pass" value="1234" placeholder="••••••">
+        <input type="password" class="ti" id="staff-pass" value="" placeholder="••••••" autocomplete="current-password">
       </div>
       <button class="btn-main" style="background:var(--n);color:#fff" onclick="doStaffLogin()">ENTRAR AL PANEL →</button>
       <div class="login-err" id="staff-err">❌ Credenciales incorrectas.</div>
       <div class="btn-back-link" onclick="go('s-inicio')">← <span>Volver al inicio</span></div>
-      <div style="margin-top:12px;text-align:center;font-size:10px;color:var(--mu);font-family:'DM Mono'">Demo: entrenador1/2/3 · 1234 (Beto, Mariana, Hugo) · coordinador1/1234</div>
     </div>
   </div>
 </div>
@@ -1359,9 +1701,13 @@ body.r-redondo .card,body.r-redondo .kpi,body.r-redondo .macro-c,body.r-redondo 
     </div>
     <div class="staff-tb-actions" style="display:flex;gap:8px;">
       <div class="tb-btn" id="btn-mi-filosofia" onclick="abrirMiFilosofia()" style="display:none;color:var(--p);border-color:rgba(124,58,237,0.25)">🧬 MI FILOSOFÍA</div>
+      <div class="tb-btn" id="btn-ver-ent" onclick="abrirEntrenadores()" style="display:none;color:var(--n);border-color:rgba(0,229,255,0.2)">👥 ENTRENADORES</div>
       <div class="tb-btn" id="btn-nuevo-ent" onclick="abrirNuevoEntrenador()" style="display:none;color:var(--v);border-color:color-mix(in srgb, var(--v) 30%, transparent)">➕ NUEVO ENTRENADOR</div>
-      <div class="tb-btn" onclick="resetDemo()" style="color:var(--g);border-color:rgba(255,214,0,0.2)">⟲ RESET DATOS</div>
-      <div class="tb-btn" onclick="go('s-fbsetup');fbAbrirSetup();" style="color:var(--n);border-color:rgba(0,229,255,0.2)">🔥 FIREBASE</div>
+      <div class="tb-btn" onclick="abrirConocimiento()" style="color:var(--p);border-color:rgba(124,58,237,0.25)">📚 CONOCIMIENTO</div>
+      <div class="tb-btn" id="btn-resumen" onclick="abrirResumen()" style="display:none;color:var(--v);border-color:color-mix(in srgb, var(--v) 30%, transparent)">📊 RESUMEN</div>
+      <div class="tb-btn" id="btn-respaldo" onclick="descargarRespaldo()" style="display:none;color:var(--n);border-color:rgba(0,229,255,0.2)">💾 RESPALDO</div>
+      <div class="tb-btn" id="btn-reset" onclick="resetDemo()" style="display:none;color:var(--g);border-color:rgba(255,214,0,0.2)">⟲ RESET DATOS</div>
+      <div class="tb-btn" id="btn-firebase" onclick="go('s-fbsetup');fbAbrirSetup();" style="display:none;color:var(--n);border-color:rgba(0,229,255,0.2)">🔥 FIREBASE</div>
       <div class="tb-btn" onclick="staffLogout()" style="color:var(--r);border-color:rgba(255,69,96,0.2)">CERRAR SESIÓN</div>
     </div>
   </div>
@@ -1412,7 +1758,7 @@ let fbDB   = null;
 let fbListo = false;
 
 // ── Caché en memoria (siempre disponible, siempre sync) ──
-let DB = { socios: {}, entrenadores: {}, version: 1 };
+let DB = { socios: {}, entrenadores: {}, config: {}, version: 1 };
 
 function guardarFbConfig(cfg){ try{ localStorage.setItem(LS_FB_CFG,JSON.stringify(cfg)); }catch(e){} }
 function leerFbConfig(){ try{ return JSON.parse(localStorage.getItem(LS_FB_CFG)); }catch(e){ return null; } }
@@ -1440,15 +1786,17 @@ function fbEscuchar(){
   fbDB.ref('/socios').on('value', snap=>{
     const data=snap.val();
     if(data){
-      DB.socios=data;
+      aplicarSnapshotSocios(data);
       try{ localStorage.setItem(LS_KEY,JSON.stringify({socios:DB.socios,entrenadores:DB.entrenadores,version:1})); }catch(e){}
       if(document.getElementById('s-panel')?.classList.contains('on')) staffRenderList();
     } else {
-      // Primera vez — base vacía: sembrar demo
-      const seeded=seedDB();
-      fbDB.ref('/socios').set(seeded.socios).catch(()=>{});
+      // Base vacía: ya NO se siembran socios demo en producción
+      DB.socios={};
+      if(document.getElementById('s-panel')?.classList.contains('on')) staffRenderList();
     }
   }, ()=>{ const l=lsLoad(); if(l) DB=l; });
+
+  fbDB.ref('/config').on('value', snap=>{ DB.config=snap.val()||{}; }, ()=>{});
 
   fbDB.ref('/entrenadores').on('value', snap=>{
     const data=snap.val();
@@ -1456,12 +1804,30 @@ function fbEscuchar(){
       DB.entrenadores=data;
       try{ localStorage.setItem(LS_KEY,JSON.stringify({socios:DB.socios,entrenadores:DB.entrenadores,version:1})); }catch(e){}
     } else {
-      const seeded=seedEntrenadores();
-      fbDB.ref('/entrenadores').set(seeded).catch(()=>{});
+      seedEntrenadores(); // solo escribe si la rama está vacía (ver seedEntrenadores)
     }
     if(document.getElementById('s-quiz')?.classList.contains('on')) renderTrainerPicker();
   }, ()=>{});
 }
+
+// ── Sincronización segura ──
+// Firebase entrega objetos NUEVOS en cada snapshot. Antes, activeSocio seguía apuntando
+// al objeto viejo y el siguiente guardado escribía la copia fresca SIN el cambio
+// (se perdían pesos, medidas, sesiones). Aquí se re-apunta y se protegen ediciones del staff.
+let staffDirty = new Set(); // socios con cambios del staff aún sin guardar
+function aplicarSnapshotSocios(data){
+  staffDirty.forEach(c=>{
+    const local=DB.socios[c];
+    if(local && data[c]){ data[c].rutina=local.rutina; data[c].status=local.status; data[c].asignado=local.asignado; }
+  });
+  DB.socios=data;
+  if(activeSocio){
+    const n=data[activeSocio.code];
+    if(n){ n._asistHoy=activeSocio._asistHoy; n._yaRegistrado=activeSocio._yaRegistrado; activeSocio=n; }
+  }
+}
+function sinTemporales(k,v){ return (typeof k==='string' && k.charAt(0)==='_') ? undefined : v; }
+function limpio(o){ return o==null ? o : JSON.parse(JSON.stringify(o,sinTemporales)); }
 
 function fbErrorMsg(e){
   const code = (e && (e.code||e.message||'')).toString().toLowerCase();
@@ -1475,27 +1841,49 @@ function dbSave(socioCode){
   // Backup local inmediato
   try{ localStorage.setItem(LS_KEY,JSON.stringify({socios:DB.socios,entrenadores:DB.entrenadores,version:1})); }catch(e){}
   if(!fbListo) return;
-  const ref=socioCode ? fbDB.ref('/socios/'+socioCode) : fbDB.ref('/socios');
-  const val=socioCode ? DB.socios[socioCode] : DB.socios;
-  ref.set(val).catch(e=>{ console.warn('Firebase write error (socios):',e); showToast(fbErrorMsg(e)); });
+  if(!socioCode){ console.warn('dbSave sin código bloqueado: no se reescribe toda la base'); return; }
+  fbDB.ref('/socios/'+socioCode).set(limpio(DB.socios[socioCode]))
+    .catch(e=>{ console.warn('Firebase write error (socios):',e); showToast(fbErrorMsg(e)); });
+}
+// Guardado del staff: solo los campos que edita el staff (no pisa sesiones/pesos que el socio registró mientras tanto)
+function dbSaveStaff(code){
+  try{ localStorage.setItem(LS_KEY,JSON.stringify({socios:DB.socios,entrenadores:DB.entrenadores,version:1})); }catch(e){}
+  staffDirty.delete(code);
+  if(!fbListo) return;
+  const s=DB.socios[code]; if(!s) return;
+  fbDB.ref('/socios/'+code).update(limpio({rutina:s.rutina,status:s.status,asignado:s.asignado,entrenadorId:s.entrenadorId||''}))
+    .catch(e=>{ console.warn('Firebase write error (staff):',e); showToast(fbErrorMsg(e)); });
 }
 
 function dbSaveEntrenador(entId){
   try{ localStorage.setItem(LS_KEY,JSON.stringify({socios:DB.socios,entrenadores:DB.entrenadores,version:1})); }catch(e){}
   if(!fbListo) return;
-  const ref=entId ? fbDB.ref('/entrenadores/'+entId) : fbDB.ref('/entrenadores');
-  const val=entId ? DB.entrenadores[entId] : DB.entrenadores;
-  ref.set(val).catch(e=>{ console.warn('Firebase write error (entrenadores):',e); showToast(fbErrorMsg(e)); });
+  if(!entId){ console.warn('dbSaveEntrenador sin id bloqueado'); return; }
+  fbDB.ref('/entrenadores/'+entId).set(limpio(DB.entrenadores[entId])).catch(e=>{ console.warn('Firebase write error (entrenadores):',e); showToast(fbErrorMsg(e)); });
 }
 
 function getEntrenador(id){ return DB.entrenadores[id]||null; }
 function listaEntrenadoresConFilosofia(){
   return Object.values(DB.entrenadores||{}).filter(e=>e && e.filosofia && e.filosofia.tagline);
 }
+// Todos los entrenadores elegibles (rol entrenador), tengan o no filosofía definida.
+// Los que ya definieron su filosofía van primero.
+function listaEntrenadoresParaElegir(){
+  return Object.values(DB.entrenadores||{}).filter(e=>e && e.rol!=='coordinador')
+    .sort((a,b)=>{
+      const fa=a.filosofia&&a.filosofia.tagline?1:0, fb=b.filosofia&&b.filosofia.tagline?1:0;
+      return fb-fa || (a.nombre||'').localeCompare(b.nombre||'');
+    });
+}
 
 function getSocio(code){ return DB.socios[code]||null; }
 function lsLoad(){ try{ const r=localStorage.getItem(LS_KEY); return r?JSON.parse(r):null; }catch(e){return null;} }
-function fechaISO(d){ return d.toISOString().split('T')[0]; }
+function fechaISO(d){ // fecha LOCAL (no UTC): en Aguascalientes UTC-6, toISOString() cambiaba de día a las 18:00
+  const x=new Date(d); return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0');
+}
+// Escapar texto de usuario antes de meterlo en innerHTML
+function esc(v){ return String(v==null?'':v).replace(/[&<>"'`]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;','`':'&#96;'}[c])); }
+function limpiarTexto(v){ return String(v||'').replace(/[<>"'`]/g,'').trim(); }
 function fmtFecha(iso){
   const [y,m,d]=iso.split('-');
   return d+'/'+m+'/'+y.substring(2);
@@ -1772,6 +2160,7 @@ function seedDB(){
   };
 
   const db = { socios: { '1234': carlos, '5678': ana }, version: 1 };
+  try{ Object.values(db.socios).forEach(enriquecerSocio); }catch(e){}
   try{ localStorage.setItem(LS_KEY, JSON.stringify(db)); }catch(e){}
   return db;
 }
@@ -1828,14 +2217,16 @@ function seedEntrenadores(){
       filosofia:null
     }
   };
-  try{ fbListo && fbDB.ref('/entrenadores').set(ents).catch(()=>{}); }catch(e){}
+  try{ if(fbListo) Object.keys(ents).forEach(id=>fbDB.ref('/entrenadores/'+id).set(ents[id]).catch(()=>{})); }catch(e){}
   DB.entrenadores = ents;
   try{ localStorage.setItem(LS_KEY,JSON.stringify({socios:DB.socios,entrenadores:DB.entrenadores,version:1})); }catch(e){}
   return ents;
 }
 
 function resetDemo(){
-  if(!confirm('¿Reiniciar todos los datos del kiosco? Se borrarán socios nuevos, sesiones y registros.')) return;
+  if(staffRol!=='coordinador'){ showToast('Solo el coordinador puede reiniciar datos'); return; }
+  if(fbListo){ showToast('⛔ Desactivado con Firebase conectado: son datos reales. Usa 💾 RESPALDO.'); return; }
+  if(prompt('Modo local: se borrarán socios, sesiones y registros de ESTE dispositivo. Escribe BORRAR para confirmar')!=='BORRAR') return;
   localStorage.removeItem(LS_KEY);
   const ses=leerSesion(); if(ses&&ses.tipo==='socio') borrarSesion();
   const seeded=seedDB();
@@ -2231,6 +2622,34 @@ function qNone(el){
 // ── Traduce la filosofía del entrenador elegido en instrucciones concretas para la IA ──
 // Si el socio no eligió entrenador o ese entrenador aún no llenó su filosofía,
 // se usa la base clínica del club (comportamiento histórico, sin cambios).
+function detalleFilosofiaAvanzada(ph){
+  const L=[];
+  const per={lineal:'lineal (subir carga bloque a bloque)',ondulante:'ondulante (días pesados, medios y ligeros en la misma semana)',bloques:'por bloques (acumulación → intensificación → descarga)',conjugada:'conjugada (fuerza máxima y velocidad en la misma semana)'}[ph.structure&&ph.structure.periodization];
+  if(per) L.push('Periodización: '+per+'.');
+  const d=ph.dosis||{};
+  if(d.fuerza||d.hipertrofia||d.resistencia) L.push(`Rangos de reps del entrenador: fuerza ${d.fuerza||'3-6'}, hipertrofia ${d.hipertrofia||'8-12'}, resistencia ${d.resistencia||'15-20'}.`);
+  const m=ph.metodos||{};
+  if((m.favoritos||[]).length) L.push('Métodos FAVORITOS (úsalos con prioridad cuando el nivel lo permita): '+m.favoritos.map(id=>KB_METODOS[id]?KB_METODOS[id].nm:id).join(', ')+'.');
+  if((m.evita||[]).length) L.push('Métodos que este entrenador NO usa: '+m.evita.map(id=>KB_METODOS[id]?KB_METODOS[id].nm:id).join(', ')+'.');
+  if(m.frecuencia) L.push('Densidad de métodos: '+['','casi rutinas limpias','pocos métodos','moderada','muchos métodos','método en casi cada ejercicio'][m.frecuencia]+'.');
+  if(m.principiantes) L.push('Con principiantes: '+{no:'sin métodos, técnica primero',basicos:'solo tempo, pausas y superserie antagonista',si:'también métodos intermedios si hay buena técnica'}[m.principiantes]+'.');
+  const se=ph.seleccion||{};
+  if(se.libreVsMaquina) L.push('Equipo preferido: '+(se.libreVsMaquina>=4?'peso libre':se.libreVsMaquina<=2?'máquinas y poleas':'mezcla de peso libre y máquinas')+'. Trabajo unilateral: '+(se.unilateral>=4?'mucho':se.unilateral<=2?'poco':'moderado')+'.');
+  if(se.firma) L.push('Ejercicios firma (inclúyelos cuando encajen): '+se.firma);
+  if(se.nunca) L.push('NUNCA programar: '+se.nunca);
+  const ss=ph.sesion||{};
+  const txt={calentamiento:{movilidad:'movilidad general + activación',aproximacion:'series de aproximación del primer ejercicio',especifico:'activación específica del músculo del día'},
+    orden:{compuesto:'compuesto pesado primero y aislamiento al final',preagot:'a veces pre-agotamiento antes del compuesto',prioridad:'primero lo que el socio más necesita'},
+    tempo:{controlado:'bajada lenta y controlada siempre',explosivo:'bajada controlada y subida explosiva',fase:'según la fase'},
+    core:{diario:'algo de core en cada sesión',semanal:'2-3 bloques de core por semana',integrado:'core integrado en los compuestos'},
+    cardio:{dias:'días propios de cardio',final:'bloque corto de zona 2 al final',intervalos:'intervalos y circuitos metabólicos',objetivo:'según el objetivo del socio'}};
+  const ses=Object.keys(txt).filter(k=>ss[k]&&txt[k][ss[k]]).map(k=>k+': '+txt[k][ss[k]]);
+  if(ses.length) L.push('Estructura de sesión — '+ses.join('; ')+'.');
+  const hp=ph.horaPico||{};
+  if(hp.sustitucion) L.push('Opciones por área ocupada: prefiere '+{maquina:'máquina o polea con el mismo enfoque',mancuernas:'mancuernas o zona funcional',corporal:'peso corporal y bandas',metodo:'cambiar el método con el equipo disponible'}[hp.sustitucion]+'.'+(hp.nota?' Mensaje al socio: '+hp.nota:''));
+  if(ph.sampleRoutineNote) L.push('SESIÓN TÍPICA DE ESTE ENTRENADOR (imita su estilo): '+ph.sampleRoutineNote);
+  return L.map(x=>'   - '+x).join('\n');
+}
 function construirFilosofiaEntrenador(){
   const ent = qAnswers.entrenadorId ? getEntrenador(qAnswers.entrenadorId) : null;
   const ph = ent && ent.filosofia;
@@ -2283,6 +2702,9 @@ function construirFilosofiaEntrenador(){
    ${variedadTxt}
    ${descansoTxt}
 
+2b. DETALLE DEL ESTILO DE ESTE ENTRENADOR
+${detalleFilosofiaAvanzada(ph)||'   (sin detalle adicional)'}
+
 3. PROPIOCEPCIÓN NEUROSENSITIVA (se mantiene siempre, sin importar el entrenador)
    Cada ejercicio DEBE incluir una nota de dónde sentir el estímulo: qué músculo, en qué ángulo, hacia dónde dirigir la sensación. El campo "tip" DEBE ser instrucción propioceptiva específica, no técnica genérica.
 
@@ -2297,6 +2719,9 @@ function construirFilosofiaEntrenador(){
 6. CRITERIO DE ESTE ENTRENADOR ANTE UN ESTANCAMIENTO
    ${ph.adjustmentPhilosophy || 'Reevaluar técnica y estímulo antes de aumentar cargas.'}`;
 }
+
+// ── Endpoint del proxy de IA (Cloudflare Worker). Vacío = usar plantillas. ──
+const AI_ENDPOINT = ''; // p.ej. 'https://rutinas-ia.TU-CUENTA.workers.dev'
 
 async function generarRutina(){
   qAnswers.dias = parseInt(document.getElementById('qr-dias').value);
@@ -2352,6 +2777,7 @@ async function generarRutina(){
       : '';
 
     const filosofiaEntBlock = construirFilosofiaEntrenador();
+    const conocimientoBlock = bloqueConocimientoIA(ctxQuiz());
 
     const prompt = `Eres el sistema de generación de rutinas del Coordinador de Fitness del Club Campestre Aguascalientes. Tu trabajo es generar rutinas que reflejen EXACTAMENTE la filosofía y metodología del entrenador a cargo — NO una plantilla genérica.
 
@@ -2368,6 +2794,11 @@ ${filosofiaEntBlock}
    ${faseInicial}
 
 ${cambioMetodologia ? '9. '+cambioMetodologia : ''}
+
+═══════════════════════════════════════════
+BASE DE CONOCIMIENTO DEL CLUB (CONSULTAR SIEMPRE)
+═══════════════════════════════════════════
+${conocimientoBlock}
 
 ═══════════════════════════════════════════
 PERFIL DEL SOCIO
@@ -2412,7 +2843,14 @@ El campo "reps" debe incluir el rango y el propósito: "6 reps — fuerza", "15 
           "reps": "",
           "peso": "",
           "musculo": "",
-          "tip": ""
+          "enfoque": "cuadriceps|gluteo|femoral|pecho|dorsal|... (clave del catálogo)",
+          "tip": "",
+          "metodo": {"id": "id del método o vacío", "detalle": "cómo aplicarlo en ESTE ejercicio"},
+          "grupo": "A1 si va encadenado con el siguiente (A2); vacío si no",
+          "descanso": "90 s",
+          "alternativas": [
+            {"nombre": "", "musculo": "", "nota": "por qué sirve si el área está ocupada"}
+          ]
         }
       ]
     }
@@ -2421,23 +2859,39 @@ El campo "reps" debe incluir el rango y el propósito: "6 reps — fuerza", "15 
 
 Genera exactamente ${dias} días de entrenamiento + días de descanso para completar 7 días.
 Los 7 días deben venir en orden LUNES a DOMINGO.
-Respeta la filosofía del entrenador en cada ejercicio, no solo en la estructura general.`;
+Respeta la filosofía del entrenador en cada ejercicio, no solo en la estructura general.
+La rutina NO debe verse genérica: varía los métodos entre días, usa los favoritos del entrenador y da 5-7 ejercicios por sesión de fuerza.`;
 
-    const res = await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:3000,messages:[{role:'user',content:prompt}]})
+    // La API de Anthropic NO se puede llamar directo desde el navegador en GitHub Pages
+    // (requiere API key secreta). Se usa un proxy propio (ver worker-ia.js).
+    if(!AI_ENDPOINT) throw new Error('sin-endpoint');
+    const ctrl = new AbortController(); const to=setTimeout(()=>ctrl.abort(), 45000);
+    const res = await fetch(AI_ENDPOINT,{
+      method:'POST',headers:{'Content-Type':'application/json'}, signal:ctrl.signal,
+      body:JSON.stringify({prompt})
     });
+    clearTimeout(to);
+    if(!res.ok) throw new Error('http '+res.status);
     const data = await res.json();
     const raw = (data.content||[]).map(b=>b.text||'').join('');
     const parsed = JSON.parse(raw.replace(/```json|```/g,'').trim());
     if(!parsed.semana || !parsed.perfil) throw new Error('formato');
+    parsed.origen='ia';
     mostrarPreview(parsed);
   }catch(e){
-    mostrarPreview(buildFallback());
+    console.warn('Rutina con plantilla (IA no disponible):', e && e.message);
+    const fb=buildFallback(); fb.origen='plantilla';
+    mostrarPreview(fb);
   }
 }
 
+function ctxQuiz(){
+  const ent=qAnswers.entrenadorId?getEntrenador(qAnswers.entrenadorId):null;
+  return ctxDesdePerfil({nivel:qAnswers.nivel,objetivo:qAnswers.objetivo,limitaciones:qAnswers.limitaciones}, ent&&ent.filosofia);
+}
 function mostrarPreview(data){
+  try{ normalizarRutinaIA(data); enriquecerSemana(data.semana, ctxQuiz(), (qAnswers.nombre||'')+Date.now()); }
+  catch(e){ console.warn('No se pudo enriquecer la rutina',e); }
   window._rutinaTemp = data;
   renderPreview(data);
   go('s-preview');
@@ -2499,9 +2953,11 @@ function renderPreview(rutina){
           <div style="display:grid;grid-template-columns:28px 1fr;gap:8px;align-items:start;padding:8px 10px;background:var(--in-bg2);border-radius:7px;margin-bottom:5px;">
             <div style="font-family:var(--fd);font-size:15px;color:var(--v)">${String(ei+1).padStart(2,'0')}</div>
             <div>
-              <div style="font-size:12px;font-weight:600">${e.nombre}</div>
+              <div style="font-size:12px;font-weight:600">${esc(e.nm||e.nombre)}</div>
               <div style="font-size:10px;color:var(--mu);font-family:'DM Mono'">${e.series} × ${e.reps} · ${e.peso}</div>
-              <div style="font-size:10px;color:var(--v);margin-top:2px">${e.musculo}</div>
+              <div style="font-size:10px;color:var(--v);margin-top:2px">${e.ms||e.musculo||''}${e.descanso?' · descanso '+esc(e.descanso):''}</div>
+              ${e.metodo?`<div style="font-size:10px;margin-top:3px;color:var(--p)">${e.grupo?'<b>'+esc(e.grupo)+'</b> · ':''}⚡ ${esc(e.metodo.nm)}${e.metodo.detalle?' — '+esc(e.metodo.detalle):''}</div>`:''}
+              ${(e.alternativas||[]).length?`<div style="font-size:10px;margin-top:3px;color:var(--mu)">⇄ Si está ocupado: ${e.alternativas.map(a=>esc(a.nm)).join(' · ')}</div>`:''}
               ${e.tip?`<div style="font-size:10px;color:var(--n);margin-top:4px;font-family:'DM Mono';line-height:1.5;padding:6px 8px;background:rgba(0,229,255,0.04);border-radius:5px;border-left:2px solid rgba(0,229,255,0.3)">💡 ${e.tip}</div>`:''}
             </div>
           </div>`).join('');
@@ -2537,8 +2993,10 @@ function confirmarRutina(){
     rutinaConvertida[k]={
       label:DIAS_NAMES[k], tipo:d.tipo, color:d.color||'verde',
       ejercicios:(d.ejercicios||[]).map(e=>({
-        nm:e.nombre, series:e.series, reps:e.reps, peso:e.peso,
-        ms:e.musculo, tip:e.tip||'Siente este músculo durante el movimiento.'
+        nm:e.nm||e.nombre, series:e.series, reps:e.reps, peso:e.peso,
+        ms:e.ms||e.musculo, tip:e.tip||'Siente este músculo durante el movimiento.',
+        enf:e.enf||e.enfoque||'', metodo:e.metodo||null, grupo:e.grupo||'', descanso:e.descanso||'',
+        alternativas:e.alternativas||[]
       }))
     };
   });
@@ -2547,7 +3005,7 @@ function confirmarRutina(){
   });
 
   const nuevo={
-    code, nombre:qAnswers.nombre.toUpperCase(), id:'#CC-'+code,
+    code, nombre:limpiarTexto(qAnswers.nombre).toUpperCase(), id:'#CC-'+code,
     objetivo:qAnswers.objetivo, nivel:qAnswers.nivel,
     edad:qAnswers.edad, genero:qAnswers.genero,
     peso:qAnswers.peso, estatura:qAnswers.estatura, dias:qAnswers.dias,
@@ -2555,6 +3013,7 @@ function confirmarRutina(){
     limitaciones:qAnswers.limitaciones.filter(l=>l!=='Sin limitaciones'),
     cardio:qAnswers.cardio,
     disciplina:qAnswers.disciplina||'', lesionRehab:qAnswers.lesionRehab||'', entorno:qAnswers.entorno||'',
+    origenRutina:(rutina.origen||'plantilla'),
     status:'pendiente', asignado:qAnswers.entrenadorNombre||'—', entrenadorId:qAnswers.entrenadorId||'', fechaRegistro:fechaISO(new Date()),
     rutina:rutinaConvertida,
     logs:{ sesiones:[], pesoCorporal:[{fecha:fechaISO(new Date()),kg:qAnswers.peso}], prs:{}, asistencia:[], medidas:[], lesiones:[] }
@@ -2759,19 +3218,47 @@ function buildFallbackDeporte(discId, dias, nivel){
     6:['S','S','S','D','S','S','S'],
   }[dias]||['S','S','D','S','S','D','D'];
   const diasNom=['LUNES','MARTES','MIÉRCOLES','JUEVES','VIERNES','SÁBADO','DOMINGO'];
+  // Enfoque muscular por tema del día, para completar cada sesión con el catálogo general
+  // y así no repetir casi los mismos 6 ejercicios del banco de la disciplina toda la semana.
+  const TEMA_ENFOQUES={
+    'Fuerza específica':['cuadriceps','gluteo','dorsal','pecho','femoral'],
+    'Acondicionamiento A':['cuadriceps','gluteo','dorsal','core'],
+    'Potencia y agilidad':['gluteo','femoral','cuadriceps','pantorrilla'],
+    'Acondicionamiento B':['pecho','espalda_media','core','cardio'],
+    'Resistencia':['cardio','core','pantorrilla','abdomen'],
+    'Core y prevención':['core','abdomen','manguito','deltoide_post'],
+    'Movilidad y técnica':['manguito','deltoide_post','core','gluteo'],
+    'Movilidad':['manguito','deltoide_post','core'],
+    'Circuito integral':['cuadriceps','core','dorsal','cardio'],
+  };
+  const usadosSemana=new Set(); // nombres de ejercicios del catálogo general ya usados esta semana (evita repetir)
   let si=0;
   const semana=patron.map((tipo,i)=>{
     if(tipo==='D') return {dia:diasNom[i], tipo:'Descanso / recuperación', color:'descanso', ejercicios:[]};
     const nombreSesion=nombres[si % nombres.length];
-    const start=(si*3)%banco.length;
+    const reps = nivel==='PRINCIPIANTE' ? '10-12 reps · control' : nivel==='AVANZADO' ? '8 reps · potencia' : '10 reps';
+    const peso = entorno==='gimnasio' ? 'Carga progresiva' : 'Peso corporal / banda';
     const ejerc=[];
-    for(let k=0;k<Math.min(5,banco.length);k++){
-      const b=banco[(start+k)%banco.length];
-      const reps = nivel==='PRINCIPIANTE' ? '10-12 reps · control' : nivel==='AVANZADO' ? '8 reps · potencia' : '10 reps';
-      ejerc.push({nombre:b.nm, series:3, reps, peso: entorno==='gimnasio'?'Carga progresiva':'Peso corporal / banda', musculo:b.ms, tip:b.tip});
+    // 2 movimientos firma de la disciplina, rotando cada día para usar los 6-7 del banco a lo largo de la semana
+    const startFirma=(si*2)%banco.length;
+    for(let k=0;k<Math.min(2,banco.length);k++){
+      const b=banco[(startFirma+k)%banco.length];
+      ejerc.push({nombre:b.nm, series:3, reps, peso, musculo:b.ms, tip:b.tip});
     }
+    // 3 ejercicios del catálogo general según el enfoque del día, sin repetir los ya usados esta semana
+    const enfoques=TEMA_ENFOQUES[nombreSesion]||['core','cuadriceps','gluteo'];
+    const rnd=prng('deporte|'+dep.id+'|'+i+'|'+nombreSesion);
+    enfoques.forEach(enf=>{
+      if(ejerc.length>=5) return;
+      const cands=KB_EJERCICIOS.filter(e=>e.enf===enf && !usadosSemana.has(e.nm) && !ejerc.some(x=>x.nombre===e.nm));
+      if(!cands.length) return;
+      const pick=cands[Math.floor(rnd()*cands.length)];
+      usadosSemana.add(pick.nm);
+      const repsG = nivel==='PRINCIPIANTE' ? '12 reps — control' : nivel==='AVANZADO' ? '8 reps — potencia' : '10 reps — hipertrofia';
+      ejerc.push({nombre:pick.nm, series:3, reps:repsG, peso: entorno==='gimnasio'?'Moderado — 55% 1RM':'Peso corporal / banda', musculo:pick.ms, tip:'Siente el músculo objetivo ('+pick.ms+') durante todo el recorrido.'});
+    });
     si++;
-    return {dia:diasNom[i], tipo:nombreSesion, color:colores[i%colores.length], ejercicios:ejerc};
+    return {dia:diasNom[i], tipo:nombreSesion, color:colores[i%colores.length], ejercicios:ejerc.slice(0,5)};
   });
   const entTxt = entorno==='gimnasio' ? '🏋️ Adaptado a GIMNASIO (aparatos y carga progresiva).' : '🤸 Adaptado a entrenamiento FUNCIONAL (peso corporal y bandas, sin equipo).';
   return {
@@ -3308,9 +3795,14 @@ async function generarPDFRutina(){
         const srLines=doc.splitTextToSize(`${ej.series}×${ej.reps}`, SR_W-1.5);
         const pesoLines=doc.splitTextToSize(String(ej.peso||'—'), PESO_W-1.5);
         let tipLines=[];
-        if(ej.tip && !isDup){
+        if(!isDup && (ej.tip || ej.metodo || (ej.alternativas||[]).length)){
           doc.setFont('helvetica','italic'); doc.setFontSize(7);
-          tipLines=doc.splitTextToSize('Tip: '+ej.tip, contentW-2);
+          const partes=[];
+          if(ej.metodo) partes.push('Método: '+(ej.grupo?ej.grupo+' · ':'')+ej.metodo.nm+(ej.metodo.detalle?' ('+ej.metodo.detalle+')':'')+'.');
+          if(ej.descanso) partes.push('Descanso: '+String(ej.descanso).replace('→','->')+'.');
+          if(ej.tip) partes.push('Tip: '+ej.tip);
+          if((ej.alternativas||[]).length) partes.push('Si está ocupado: '+ej.alternativas.map(a=>a.nm).join(' / ')+'.');
+          tipLines=doc.splitTextToSize(partes.join('  '), contentW-2);
         }
         const headLines=Math.max(nameLines.length, srLines.length, pesoLines.length);
         const rowH = Math.max(headLines*3.3, 4.2) + (tipLines.length? tipLines.length*2.85+1.3 : 0) + 1.9;
@@ -5053,6 +5545,238 @@ function drawSerieEnCanvas(cv, serie, sufijo){
 }
 
 // ═════════════════════════════════════════
+// MOTOR DE RUTINAS ELABORADAS — métodos de intensidad + opciones por área ocupada
+// Consulta la base de conocimiento (conocimiento.js) y la filosofía del entrenador.
+// Funciona igual para rutinas de IA y de plantilla: solo rellena lo que falte.
+// ═════════════════════════════════════════
+function nivelNum(n){ return /AVAN/i.test(n||'')?3:/INTER/i.test(n||'')?2:1; }
+function lesionKeys(lims){
+  const t=(lims||[]).join(' ').toLowerCase(), k=[];
+  if(/rodilla|menisco/.test(t)) k.push('rodilla');
+  if(/lumbar|espalda/.test(t)) k.push('lumbar');
+  if(/hombro|manguito/.test(t)) k.push('hombro');
+  if(/cadera/.test(t)) k.push('cadera');
+  if(/cuello|cervical/.test(t)) k.push('cuello');
+  if(/card[ií]a/.test(t)) k.push('cardiaca');
+  return k;
+}
+function objLetra(o){ return o==='FUERZA PURA'||o==='RENDIMIENTO DEPORTIVO'?'F': (o==='PERDER PESO'||o==='RESISTENCIA')?'R':'H'; }
+const ZONA_LESION_ENF={rodilla:['cuadriceps'],lumbar:['femoral','espalda_media','gluteo'],hombro:['pecho','pecho_sup','deltoide','deltoide_lat','triceps'],cadera:['gluteo','femoral'],cuello:['trapecio']};
+const EMPUJE=['pecho','pecho_sup','deltoide','deltoide_lat','triceps','cuadriceps'];
+const JALON=['dorsal','espalda_media','deltoide_post','biceps','braquial','femoral','gluteo'];
+const ANTAG={pecho:'dorsal',pecho_sup:'espalda_media',deltoide:'dorsal',deltoide_lat:'deltoide_post',triceps:'biceps',biceps:'triceps',braquial:'triceps',dorsal:'pecho',espalda_media:'pecho',deltoide_post:'deltoide_lat',cuadriceps:'femoral',femoral:'cuadriceps'};
+
+function prng(seedStr){ let h=2166136261; for(const c of String(seedStr)) h=Math.imul(h^c.charCodeAt(0),16777619); return ()=>{ h=Math.imul(h^(h>>>15),2246822507); h=Math.imul(h^(h>>>13),3266489909); return ((h^=h>>>16)>>>0)/4294967296; }; }
+
+function ctxDesdePerfil(p, filo){
+  const f=filo||{};
+  const m=f.metodos||{};
+  return {
+    nivel:nivelNum(p.nivel), obj:objLetra(p.objetivo), objetivo:p.objetivo||'',
+    les:lesionKeys(p.limitaciones), fav:m.favoritos||[], evita:m.evita||[],
+    frec:m.frecuencia||3, principiantes:m.principiantes||'basicos',
+    equipo:(f.seleccion&&f.seleccion.libreVsMaquina)||3, sustit:(f.horaPico&&f.horaPico.sustitucion)||'maquina',
+    restStyle:(f.exerciseStyle&&f.exerciseStyle.restStyle)||'fijo',
+    sinMetodos: p.objetivo==='FLEXIBILIDAD',
+    soloSuaves: p.objetivo==='REHABILITACIÓN GIMNASIA',
+  };
+}
+function metodosPermitidos(ctx){
+  if(ctx.sinMetodos) return [];
+  let tope=ctx.nivel;
+  if(ctx.nivel===1){ if(ctx.principiantes==='no') return []; tope = ctx.principiantes==='si'?2:1; }
+  return Object.keys(KB_METODOS).filter(id=>{
+    const M=KB_METODOS[id];
+    if(M.nivel>tope) return false;
+    if(ctx.evita.includes(id)) return false;
+    if(ctx.les.includes('cardiaca') && KB_METODO_EVITAR.cardiaca.includes(id)) return false;
+    if(ctx.soloSuaves && !['tempo','pausa'].includes(id)) return false;
+    return true;
+  });
+}
+function cuantosMetodos(ctx,nEj){
+  if(ctx.sinMetodos||nEj<2) return 0;
+  const base={1:1,2:2,3:3}[ctx.nivel];
+  return Math.max(ctx.nivel===1?0:1, Math.min(Math.ceil(nEj/2), base+Math.round((ctx.frec-3)/2)));
+}
+function datosEj(e){
+  const kb=kbBuscar(e.nm||e.nombre);
+  const enf=e.enf || (kb&&kb.enf) || '';
+  const tipo=(kb&&kb.t) || (/press|sentadilla|remo|jal[oó]n|peso muerto|dominad|prensa|desplante|zancad|hip thrust/i.test(e.nm||e.nombre||'')?'c':'a');
+  return {kb,enf,tipo};
+}
+function cargaLesion(ctx,d){
+  return ctx.les.some(l=>(d.kb&&(d.kb.ev||[]).includes(l)) || (ZONA_LESION_ENF[l]||[]).includes(d.enf));
+}
+function elegirPonderado(rnd, ids, ctx){
+  if(!ids.length) return null;
+  const w=ids.map(id=>{ const M=KB_METODOS[id]; let x=1; if(M.obj.includes(ctx.obj)) x+=2; if(ctx.fav.includes(id)) x+=4; return x; });
+  let r=rnd()*w.reduce((a,b)=>a+b,0);
+  for(let i=0;i<ids.length;i++){ r-=w[i]; if(r<=0) return ids[i]; }
+  return ids[ids.length-1];
+}
+function aplicarMetodo(e,id,extra){
+  const M=KB_METODOS[id];
+  const repsOrig=e.reps||'';
+  e.metodo={id, nm:M.nm, detalle:extra||''};
+  if(M.series) e.series=M.series;
+  if(M.reps){
+    if(id==='drop_set'||id==='rest_pause') e.metodo.detalle=(extra||'Solo en la última serie');
+    else { const prop=(repsOrig.split('—')[1]||'').trim(); e.reps=M.reps+(prop?' — '+prop:''); }
+  }
+}
+function descansoPara(e,ctx,d){
+  if(e.descanso) return e.descanso;
+  let t = ctx.obj==='F' ? (d.tipo==='c'?'2-3 min':'90 s') : ctx.obj==='R' ? '30-45 s' : (d.tipo==='c'?'90 s':'60 s');
+  if(/cardio/i.test(d.enf)) t='—';
+  return ctx.restStyle==='autorregulado' && t!=='—' ? 'Autorregulado (~'+t+')' : t;
+}
+function alternativasPara(e,ctx,d){
+  if(!d.kb) return [];
+  const mapa=d.kb.alt||{};
+  let ids=mapa[d.enf] || mapa[Object.keys(mapa)[0]] || [];
+  let alts=ids.map(id=>KB_IDX[id]).filter(a=>a && !ctx.les.some(l=>(a.ev||[]).includes(l)));
+  // Preferencia del entrenador para hora pico
+  const pref={maquina:['maquina','polea'], mancuernas:['mancuernas','funcional'], corporal:['corporal','funcional'], metodo:['polea','mancuernas']}[ctx.sustit]||[];
+  const libre=ctx.equipo>=4, maquina=ctx.equipo<=2;
+  alts.sort((a,b)=>{
+    const s=x=>(x.z!==d.kb.z?4:0)+(pref.includes(x.z)?2:0)+(libre&&['mancuernas','rack','banco','funcional'].includes(x.z)?1:0)+(maquina&&['maquina','polea'].includes(x.z)?1:0);
+    return s(b)-s(a);
+  });
+  const etq=KB_ENFOQUES[d.enf]||d.kb.ms;
+  return alts.slice(0,3).map(a=>({nm:a.nm, ms:a.ms, z:a.z, nota:`Mismo enfoque (${etq}) en ${KB_ZONAS[a.z]||a.z}`}));
+}
+
+// Enriquecer la lista de ejercicios de UN día (formato interno: nm, ms, series, reps...)
+function enriquecerDia(ejs, ctx, seed){
+  if(!ejs||!ejs.length) return ejs;
+  const rnd=prng(seed);
+  const ds=ejs.map(datosEj);
+  // 1) Opciones por área ocupada + enfoque + descanso
+  ejs.forEach((e,i)=>{
+    if(!e.enf && ds[i].enf) e.enf=ds[i].enf;
+    if(!Array.isArray(e.alternativas) || !e.alternativas.length) e.alternativas=alternativasPara(e,ctx,ds[i]);
+  });
+  // 2) Métodos de intensidad
+  const perm=metodosPermitidos(ctx);
+  const valido=id=>perm.includes(id);
+  ejs.forEach(e=>{ if(e.metodo && !KB_METODOS[e.metodo.id]) delete e.metodo; });
+  let faltan=cuantosMetodos(ctx,ejs.length)-ejs.filter(e=>e.metodo).length;
+  const libre=i=>ejs[i] && !ejs[i].metodo && !/cardio/.test(ds[i].enf);
+  // Sobre la zona lesionada solo métodos de baja carga (la fase manda: isométrico → resistencia → hipertrofia)
+  const SEGUROS_LESION=['tempo','pausa','superserie_ant','biserie','circuito'];
+  const esIsom=i=>/seg|isom|min/i.test(String(ejs[i].reps||'')+' '+(ejs[i].nm||''));
+  const puede=(i,id)=>!(cargaLesion(ctx,ds[i]) && !SEGUROS_LESION.includes(id)) && !(esIsom(i) && !KB_METODOS[id].pareja);
+  const intentos=[];
+  // a) Compuesto principal
+  intentos.push(()=>{
+    const iComp=ds.findIndex((d,i)=>d.tipo==='c' && libre(i));
+    if(iComp<0) return false;
+    const ops=['piramide_asc','piramide_desc','escalera','cluster','pausa','tempo'].filter(id=>valido(id)&&puede(iComp,id));
+    const id=elegirPonderado(rnd,ops,ctx); if(!id) return false;
+    aplicarMetodo(ejs[iComp],id); return true;
+  });
+  // b) Pareja (superserie / biserie / pre-agotamiento / contraste)
+  intentos.push(()=>{
+    for(let i=0;i<ejs.length-1;i++){
+      if(!libre(i)||!libre(i+1)) continue;
+      const a=ds[i].enf, b=ds[i+1].enf; let ops=[];
+      if(ANTAG[a]===b) ops.push('superserie_ant');
+      if(a && a===b) ops.push('biserie','post_agot');
+      if(ctx.obj==='R') ops.push('superserie_ant','circuito');
+      ops=[...new Set(ops)].filter(id=>valido(id)&&puede(i,id)&&puede(i+1,id));
+      if(ds[i].tipo==='c' && ds[i+1].tipo==='c') ops=ops.filter(id=>id!=='post_agot');
+      const id=elegirPonderado(rnd,ops,ctx); if(!id) continue;
+      const g=String.fromCharCode(65+Object.keys(gruposUsados).length);
+      gruposUsados[g]=1;
+      ejs[i].grupo=g+'1'; ejs[i+1].grupo=g+'2';
+      aplicarMetodo(ejs[i],id,'Con '+(ejs[i+1].nm||ejs[i+1].nombre)); aplicarMetodo(ejs[i+1],id,'Con '+(ejs[i].nm||ejs[i].nombre));
+      return true;
+    }
+    return false;
+  });
+  // c) Cierre en aislamiento (drop set, rest-pause, 21s...)
+  intentos.push(()=>{
+    for(let i=ejs.length-1;i>=0;i--){
+      if(!libre(i) || ds[i].tipo!=='a' || /core|abdomen|manguito/.test(ds[i].enf)) continue;
+      const ops=['drop_set','rest_pause','metodo21','una_y_media','drop_mec','tempo'].filter(id=>valido(id)&&puede(i,id));
+      const id=elegirPonderado(rnd,ops,ctx); if(!id) continue;
+      aplicarMetodo(ejs[i],id); return true;
+    }
+    return false;
+  });
+  // d) Relleno: tempo / pausa / 1½ en cualquier ejercicio libre
+  intentos.push(()=>{
+    for(let i=0;i<ejs.length;i++){
+      if(!libre(i)) continue;
+      const ops=['tempo','pausa','una_y_media','emom'].filter(id=>valido(id)&&puede(i,id)&&(KB_METODOS[id].aplica==='ambos'||(KB_METODOS[id].aplica==='compuesto')===(ds[i].tipo==='c')));
+      const id=elegirPonderado(rnd,ops,ctx); if(!id) continue;
+      aplicarMetodo(ejs[i],id); return true;
+    }
+    return false;
+  });
+  const gruposUsados={}; ejs.forEach(e=>{ if(e.grupo) gruposUsados[e.grupo.charAt(0)]=1; });
+  // orden: aleatorizado ligeramente por día para que no todas las sesiones se vean iguales
+  const orden=[0,1,2,3].sort(()=>rnd()-0.5);
+  if(ctx.obj==='R') orden.sort((x,y)=>(x===1?-1:y===1?1:0));
+  for(let pass=0; pass<2 && faltan>0; pass++) for(const k of orden){ if(faltan<=0) break; if(intentos[k] && intentos[k]()) faltan--; }
+  // 3) Descansos (en parejas, el primero va sin descanso)
+  ejs.forEach((e,i)=>{
+    if(e.grupo && /1$/.test(e.grupo) && ejs[i+1] && ejs[i+1].grupo && ejs[i+1].grupo.charAt(0)===e.grupo.charAt(0)) e.descanso=e.descanso||'Sin descanso → sigue con '+ejs[i+1].grupo;
+    else e.descanso=descansoPara(e,ctx,ds[i]);
+  });
+  return ejs;
+}
+function enriquecerSemana(semana, ctx, semilla){
+  (semana||[]).forEach((d,i)=>{
+    if(!d || !Array.isArray(d.ejercicios) || !d.ejercicios.length) return;
+    d.ejercicios.forEach(e=>{ if(!e.nm && e.nombre) e.nm=e.nombre; if(!e.ms && e.musculo) e.ms=e.musculo; });
+    enriquecerDia(d.ejercicios, ctx, (semilla||'')+'|'+i+'|'+(d.tipo||''));
+  });
+  return semana;
+}
+// Para socios que ya existen (botón del panel staff). Solo agrega lo que falta.
+function enriquecerSocio(s){
+  const ent=s.entrenadorId?getEntrenador(s.entrenadorId):null;
+  const ctx=ctxDesdePerfil({nivel:s.nivel,objetivo:s.objetivo,limitaciones:s.limitaciones}, ent&&ent.filosofia);
+  const dias=DIAS_ORDER.map(k=>s.rutina&&s.rutina[k]).filter(Boolean);
+  enriquecerSemana(dias, ctx, s.code);
+  return s;
+}
+// Normaliza lo que devuelve la IA (alternativas con "nombre", método como texto, etc.)
+function normalizarRutinaIA(r){
+  (r.semana||[]).forEach(d=>(d.ejercicios||[]).forEach(e=>{
+    e.nm=e.nm||e.nombre; e.ms=e.ms||e.musculo;
+    if(typeof e.metodo==='string') e.metodo={id:e.metodo};
+    if(e.metodo && KB_METODOS[e.metodo.id]) e.metodo.nm=KB_METODOS[e.metodo.id].nm; else delete e.metodo;
+    if(Array.isArray(e.alternativas)) e.alternativas=e.alternativas.map(a=>{
+      const nm=(a&&(a.nombre||a.nm))||String(a||''); const kb=kbBuscar(nm);
+      return nm?{nm, ms:(a&&(a.musculo||a.ms))||(kb&&kb.ms)||'', z:kb?kb.z:'', nota:(a&&a.nota)||''}:null;
+    }).filter(Boolean);
+  }));
+  return r;
+}
+// Texto de la base de conocimiento para el prompt de IA (filtrado para este socio)
+function bloqueConocimientoIA(ctx){
+  const perm=metodosPermitidos(ctx);
+  const metodos=perm.map(id=>`   - ${id}: ${KB_METODOS[id].nm}${ctx.fav.includes(id)?' (FAVORITO DEL ENTRENADOR)':''} — ${KB_METODOS[id].como}`).join('\n');
+  const porEnf={};
+  KB_EJERCICIOS.forEach(e=>{ if(ctx.les.some(l=>(e.ev||[]).includes(l))) return; (porEnf[e.enf]=porEnf[e.enf]||[]).push(e.nm+' ['+e.z+']'); });
+  const cat=Object.entries(porEnf).map(([k,v])=>`   ${KB_ENFOQUES[k]||k}: ${v.join(', ')}`).join('\n');
+  const lin=(DB.config&&DB.config.lineamientos)?`\nLINEAMIENTOS DEL COORDINADOR (obligatorios):\n${DB.config.lineamientos}\n`:'';
+  return `PRINCIPIOS DEL CLUB:\n${KB_PRINCIPIOS.map((p,i)=>'   '+(i+1)+'. '+p).join('\n')}
+${lin}
+MÉTODOS DE INTENSIDAD PERMITIDOS PARA ESTE SOCIO (usa el id exacto en "metodo.id"):
+${metodos||'   (ninguno: rutina con ejecución estándar y tempo controlado)'}
+Usa ${cuantosMetodos(ctx,6)} métodos por sesión aproximadamente. Métodos de pareja (superserie, biserie, circuito, pre/post-agotamiento, contraste, triserie) se marcan con "grupo" (A1/A2, B1/B2...). Drop set y rest-pause solo en aislamiento y en la última serie. Nunca métodos de alta fatiga sobre la zona lesionada.
+
+CATÁLOGO DE EJERCICIOS DEL GIMNASIO (usa estos nombres; entre corchetes la zona):
+${cat}
+
+OPCIONES POR ÁREA OCUPADA: cada ejercicio lleva 2 "alternativas" del MISMO enfoque muscular pero en OTRA zona del gimnasio (p. ej. Desplante con enfoque cuádriceps → Extensión de cuádriceps [maquina] o Prensa con pies bajos [maquina]).`;
+}
+
+// ═════════════════════════════════════════
 // DETALLE DÍA + REGISTRO DE SESIÓN
 // ═════════════════════════════════════════
 let sesionTemp = null; // {diaKey, ej:{idx:{done, sets:[{kg,ok}]}}}
@@ -5075,11 +5799,12 @@ function openDay(key){
     d.ejercicios.forEach((ej,idx)=>{
       list.innerHTML+=`
         <div class="ej-card" id="ejc-${idx}" onclick="openModal(${idx})">
-          <div class="ej-n">${String(idx+1).padStart(2,'0')}</div>
+          <div class="ej-n">${ej.grupo?esc(ej.grupo):String(idx+1).padStart(2,'0')}</div>
           <div class="ej-i">
-            <div class="ej-nm">${ej.nm}</div>
-            <div class="ej-dt">${ej.series} × ${ej.reps} · ${ej.peso}</div>
-            <div class="ej-ms">${ej.ms}</div>
+            <div class="ej-nm" id="ejnm-${idx}">${esc(ej.nm)}</div>
+            <div class="ej-dt">${ej.series} × ${esc(ej.reps)} · ${esc(ej.peso)}${ej.descanso?' · ⏱ '+esc(ej.descanso):''}</div>
+            <div class="ej-ms">${esc(ej.ms)}</div>
+            ${(ej.metodo||(ej.alternativas||[]).length)?`<div class="ej-extra">${ej.metodo?`<span class="ej-met">⚡ ${esc(ej.metodo.nm)}</span>`:''}${(ej.alternativas||[]).length?`<span class="ej-alt">⇄ ${ej.alternativas.length} ${ej.alternativas.length>1?'opciones':'opción'}</span>`:''}</div>`:''}
           </div>
           <div class="ej-r">
             <div class="ck" id="ejk-${idx}" onclick="event.stopPropagation();toggleEjDone(${idx})">✓</div>
@@ -5100,18 +5825,58 @@ function toggleEjDone(idx){
   sesionTemp.ej[idx].done=on;
 }
 
+// Ejercicio que se ejecuta HOY (original u opción elegida por área ocupada)
+function ejEjecutado(ej,idx){
+  const a=sesionTemp&&sesionTemp.ej[idx]&&sesionTemp.ej[idx].alt;
+  return (a!=null && ej.alternativas && ej.alternativas[a]) ? ej.alternativas[a] : null;
+}
+function repsDeSerie(ej,i){
+  const m=String(ej.reps||'').match(/^\s*(\d+(?:\s*-\s*\d+){2,})/);
+  if(!m) return ej.reps;
+  const arr=m[1].split('-').map(x=>x.trim());
+  return (arr[i]||arr[arr.length-1])+' reps';
+}
+function elegirAlternativa(idx,ai){
+  if(!sesionTemp.ej[idx]) sesionTemp.ej[idx]={done:false,sets:[]};
+  sesionTemp.ej[idx].alt = (ai===null || sesionTemp.ej[idx].alt===ai) ? null : ai;
+  const ej=activeSocio.rutina[activeRutinaKey].ejercicios[idx];
+  const alt=ejEjecutado(ej,idx);
+  const nmEl=document.getElementById('ejnm-'+idx);
+  if(nmEl) nmEl.innerHTML = alt ? `${esc(alt.nm)} <span class="ej-opc">opción · en lugar de ${esc(ej.nm)}</span>` : esc(ej.nm);
+  openModal(idx);
+  showToast(alt ? '⇄ Hoy harás: '+alt.nm : '↺ Regresaste al ejercicio original');
+}
 function openModal(idx){
   const s=activeSocio; if(!s) return;
   const d=s.rutina[activeRutinaKey];
   const ej=d.ejercicios[idx]; if(!ej) return;
   window._modalIdx=idx;
-  document.getElementById('m-tag').textContent=(ej.ms||'EJERCICIO').toUpperCase();
-  document.getElementById('m-title').textContent=ej.nm;
-  document.getElementById('m-sub').textContent=`${ej.series} series · ${ej.reps} · ${ej.peso}`;
-  document.getElementById('m-tip').textContent='💡 '+(ej.tip||'Siente este músculo durante el movimiento.');
+  const alt=ejEjecutado(ej,idx);
+  const nmHoy=alt?alt.nm:ej.nm;
+  document.getElementById('m-tag').textContent=((alt?alt.ms:ej.ms)||'EJERCICIO').toUpperCase()+(ej.grupo?' · '+ej.grupo:'');
+  document.getElementById('m-title').textContent=nmHoy;
+  document.getElementById('m-sub').textContent=`${ej.series} series · ${ej.reps} · ${ej.peso}${ej.descanso?' · descanso '+ej.descanso:''}`;
+  document.getElementById('m-tip').textContent=(alt?'⇄ Opción en lugar de '+ej.nm+'. Busca la misma sensación: ':'💡 ')+(ej.tip||'Siente este músculo durante el movimiento.');
+
+  const mm=document.getElementById('m-metodo');
+  if(ej.metodo && KB_METODOS[ej.metodo.id]){
+    const M=KB_METODOS[ej.metodo.id];
+    mm.style.display='block';
+    mm.innerHTML=`<div class="m-metodo-nm">⚡ ${esc(M.nm)}${ej.grupo?` <span>grupo ${esc(ej.grupo)}</span>`:''}</div><div>${esc(M.como)}</div>${ej.metodo.detalle?`<div class="m-metodo-det">${esc(ej.metodo.detalle)}</div>`:''}`;
+  } else mm.style.display='none';
+
+  const ma=document.getElementById('m-alts');
+  const alts=ej.alternativas||[];
+  if(alts.length){
+    const sel=sesionTemp.ej[idx]&&sesionTemp.ej[idx].alt;
+    ma.style.display='block';
+    ma.innerHTML=`<div class="m-alts-t">¿Área ocupada? Cámbialo solo por hoy</div>`+
+      alts.map((a,ai)=>`<div class="m-alt ${sel===ai?'on':''}" onclick="elegirAlternativa(${idx},${ai})"><div><b>${esc(a.nm)}</b><span>${esc(a.nota||a.ms||'')}</span></div><em>${sel===ai?'✓ Hoy':'Usar'}</em></div>`).join('')+
+      (sel!=null?`<div class="m-alt-reset" onclick="elegirAlternativa(${idx},null)">↺ Volver a ${esc(ej.nm)}</div>`:'');
+  } else ma.style.display='none';
 
   // PR actual
-  const pr=s.logs?.prs?.[ej.nm];
+  const pr=s.logs?.prs?.[nmHoy];
   const prEl=document.getElementById('m-pr');
   if(pr){ prEl.style.display='block'; prEl.textContent=`🏆 Tu récord en este ejercicio: ${pr.kg} kg (${fmtFecha(pr.fecha)})`; }
   else prEl.style.display='none';
@@ -5122,7 +5887,7 @@ function openModal(idx){
   document.getElementById('m-sets').innerHTML=Array.from({length:n},(_,i)=>`
     <div class="set-r">
       <div class="set-n">${i+1}</div>
-      <div class="set-i">${ej.reps}</div>
+      <div class="set-i">${esc(repsDeSerie(ej,i))}</div>
       <input class="set-kg" type="number" inputmode="decimal" step="0.5" placeholder="kg"
         value="${saved[i]?.kg??''}" onchange="setKg(${idx},${i},this.value)" onclick="event.stopPropagation()">
       <div class="set-d ${saved[i]?.ok?'ok':''}" onclick="setOk(${idx},${i},this)">${saved[i]?.ok?'✓':''}</div>
@@ -5161,22 +5926,26 @@ function finalizarSesion(){
   }
 
   // Volumen y PRs
-  let volumen=0;
+  let volumen=0; const cambios=[];
+  if(!s.logs.prs) s.logs.prs={};
   idxs.forEach(i=>{
     const ej=d.ejercicios[i]; if(!ej) return;
-    const repsNum=parseInt(ej.reps)||10;
-    (sesionTemp.ej[i].sets||[]).forEach(set=>{
+    const alt=ejEjecutado(ej,i);
+    const nmHecho=alt?alt.nm:ej.nm;
+    if(alt) cambios.push({orig:ej.nm, alt:alt.nm});
+    (sesionTemp.ej[i].sets||[]).forEach((set,si)=>{
       if(set&&set.kg>0){
-        volumen += set.kg*repsNum;
-        const pr=s.logs.prs[ej.nm];
-        if(!pr || set.kg>pr.kg) s.logs.prs[ej.nm]={kg:set.kg,fecha:hoy};
+        volumen += set.kg*(parseInt(repsDeSerie(ej,si))||10);
+        const pr=s.logs.prs[nmHecho];
+        if(!pr || set.kg>pr.kg) s.logs.prs[nmHecho]={kg:set.kg,fecha:hoy};
       }
     });
   });
 
   s.logs.sesiones.push({
     fecha:hoy, ts:Date.now(), diaKey:sesionTemp.diaKey,
-    tipo:d.tipo, ejercicios:hechos||d.ejercicios.length, volumen:Math.round(volumen)
+    tipo:d.tipo, ejercicios:hechos||d.ejercicios.length, volumen:Math.round(volumen),
+    hora:new Date().toTimeString().substring(0,5), cambios
   });
   dbSave(s.code);
   sesionTemp=null;
@@ -5196,7 +5965,7 @@ let staffActivoEntId=null; // id del entrenador logueado (para su propia filosof
 function staffSelRol(el,rol){
   document.querySelectorAll('#staff-roles .opt').forEach(o=>o.classList.remove('sel'));
   el.classList.add('sel'); staffRol=rol;
-  document.getElementById('staff-user').value = rol==='entrenador'?'entrenador1':'coordinador1';
+  // ya no se autocompletan usuarios demo
 }
 function doStaffLogin(){
   limpiarPrefs();
@@ -5233,7 +6002,9 @@ function fbAbrirSetup(){
     if(cfg) ta.value=JSON.stringify(cfg,null,2);
   }
 }
+function fbAccesoPermitido(){ return staffRol==='coordinador'; }
 function fbConectar(){
+  if(!fbAccesoPermitido()){ showToast('Solo coordinación puede configurar Firebase'); return; }
   const raw=document.getElementById('fb-config-input').value.trim();
   let cfg;
   try{ cfg=JSON.parse(raw); }catch(e){ cfg=null; }
@@ -5256,7 +6027,9 @@ function fbDesconectar(){
   showToast('Firebase desconectado — recarga la app'); borrarSesion(); location.reload();
 }
 function staffGetSocios(){
-  return Object.values(DB.socios);
+  const todos=Object.values(DB.socios||{}).filter(Boolean);
+  if(staffRol==='coordinador' || !staffActivoEntId) return todos;
+  return todos.filter(s=>!s.entrenadorId || s.entrenadorId===staffActivoEntId);
 }
 function staffRenderList(){
   const cont=document.getElementById('staff-socio-list');
@@ -5270,13 +6043,13 @@ function staffRenderList(){
   list.forEach(s=>{
     const sel=staffActivoId===s.code;
     cont.innerHTML+=`
-      <div onclick="staffOpenSocio('${s.code}')" style="padding:11px 14px;border-bottom:1px solid rgba(255,255,255,0.04);cursor:pointer;background:${sel?'color-mix(in srgb, var(--v) 5%, transparent)':'transparent'};border-left:2px solid ${sel?'var(--v)':'transparent'};transition:background .15s"
+      <div onclick="staffOpenSocio('${esc(s.code)}')" style="padding:11px 14px;border-bottom:1px solid rgba(255,255,255,0.04);cursor:pointer;background:${sel?'color-mix(in srgb, var(--v) 5%, transparent)':'transparent'};border-left:2px solid ${sel?'var(--v)':'transparent'};transition:background .15s"
         onmouseover="this.style.background='color-mix(in srgb, var(--v) 3%, transparent)'" onmouseout="this.style.background='${sel?'color-mix(in srgb, var(--v) 5%, transparent)':'transparent'}'">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px;">
-          <div style="font-size:12px;font-weight:600">${s.nombre}</div>
+          <div style="font-size:12px;font-weight:600">${esc(s.nombre)}</div>
           <div style="width:6px;height:6px;border-radius:50%;background:${statusColor[s.status]}"></div>
         </div>
-        <div style="font-size:9px;color:var(--mu);font-family:'DM Mono'">${s.id} · ${s.objetivo}</div>
+        <div style="font-size:9px;color:var(--mu);font-family:'DM Mono'">${esc(s.id)} · ${esc(s.objetivo)}</div>
         <div style="display:inline-block;margin-top:4px;padding:2px 7px;border-radius:4px;font-size:8px;font-family:'DM Mono';color:${statusColor[s.status]};border:1px solid ${statusColor[s.status]}40;background:${statusColor[s.status]}10">${statusTxt[s.status]}</div>
       </div>`;
   });
@@ -5325,6 +6098,16 @@ function staffRenderContent(s){
           <div onclick="staffDelEj('${s.code}','${k}',${ei})" style="cursor:pointer;color:var(--mu);font-size:12px;text-align:center" onmouseover="this.style.color='var(--r)'" onmouseout="this.style.color='var(--mu)'">✕</div>
         </div>
         <input value="${(e.tip||'').replace(/"/g,'&quot;')}" placeholder="💡 Nota propioceptiva: dónde y cómo sentir el estímulo..." onchange="staffUpd('${s.code}','${k}',${ei},'tip',this.value)" class="sf-in" style="margin-top:5px;font-size:10px;color:var(--n);width:100%">
+        <div class="sf-met">
+          <select onchange="staffUpdMetodo('${s.code}','${k}',${ei},this.value)" class="sf-in">
+            <option value="">Sin método</option>
+            ${Object.entries(KB_METODOS).map(([id,M])=>`<option value="${id}" ${e.metodo&&e.metodo.id===id?'selected':''}>⚡ ${M.nm}</option>`).join('')}
+          </select>
+          <input value="${esc(e.grupo||'')}" placeholder="Grupo (A1)" onchange="staffUpd('${s.code}','${k}',${ei},'grupo',this.value.toUpperCase())" class="sf-in">
+          <input value="${esc(e.descanso||'')}" placeholder="Descanso" onchange="staffUpd('${s.code}','${k}',${ei},'descanso',this.value)" class="sf-in">
+        </div>
+        <input value="${esc(e.metodo&&e.metodo.detalle||'')}" placeholder="Detalle del método (ej. drop de 25% en la última serie)" onchange="staffUpdMetodoDet('${s.code}','${k}',${ei},this.value)" class="sf-in" style="margin-top:4px;font-size:10px;color:var(--p);width:100%">
+        <input value="${esc((e.alternativas||[]).map(a=>a.nm).join(', '))}" placeholder="⇄ Opciones si el área está ocupada (separadas por coma)" onchange="staffUpdAlts('${s.code}','${k}',${ei},this.value)" class="sf-in" style="margin-top:4px;font-size:10px;width:100%">
       </div>`).join('');
     return `
       <div style="background:var(--gl);border:1px solid var(--b);border-radius:10px;overflow:hidden;margin-bottom:7px;">
@@ -5344,7 +6127,7 @@ function staffRenderContent(s){
   }).join('');
 
   ca.innerHTML=`
-    <style>.sf-in{background:none;border:none;outline:none;font-family:'DM Mono';font-size:10px;color:var(--mu);border-bottom:1px solid transparent;width:100%}.sf-in:focus{border-bottom-color:color-mix(in srgb, var(--v) 30%, transparent)}</style>
+    <style>.sf-in{background:none;border:none;outline:none;font-family:'DM Mono';font-size:10px;color:var(--mu);border-bottom:1px solid transparent;width:100%}.sf-in:focus{border-bottom-color:color-mix(in srgb, var(--v) 30%, transparent)}.sf-met{display:grid;grid-template-columns:1fr 70px 90px;gap:6px;margin-top:5px}.sf-met select{color:var(--p);font-size:10px}</style>
     <div style="padding:18px 22px;border-bottom:1px solid var(--b);display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;">
       <div>
         <div style="font-family:'DM Mono';font-size:9px;letter-spacing:3px;color:var(--n);margin-bottom:3px">SOCIO · ${s.id} · CÓDIGO ${s.code}</div>
@@ -5354,10 +6137,11 @@ function staffRenderContent(s){
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-start">
         ${isPend?`<button onclick="staffAprobar('${s.code}')" style="padding:8px 16px;background:color-mix(in srgb, var(--v) 10%, transparent);border:1px solid color-mix(in srgb, var(--v) 30%, transparent);border-radius:8px;font-family:var(--fd);font-size:15px;letter-spacing:1px;color:var(--v);cursor:pointer">✓ APROBAR</button>`:''}
+        <button onclick="staffEnriquecer('${s.code}')" style="padding:8px 14px;background:none;border:1px solid color-mix(in srgb, var(--p) 35%, transparent);border-radius:8px;font-family:var(--fd);font-size:15px;letter-spacing:1px;color:var(--p);cursor:pointer" title="Agrega métodos de intensidad y opciones por área ocupada donde falten, según tu filosofía">✨ MÉTODOS Y OPCIONES</button>
         <button onclick="staffGuardar('${s.code}')" style="padding:8px 16px;background:var(--v);border:none;border-radius:8px;font-family:var(--fd);font-size:15px;letter-spacing:1px;color:var(--btn-tx);cursor:pointer">GUARDAR ✓</button>
       </div>
     </div>
-    ${isPend?`<div style="margin:12px 22px 0;padding:10px 14px;background:rgba(255,214,0,0.05);border:1px solid rgba(255,214,0,0.2);border-radius:9px;font-size:10px;color:var(--g);font-family:'DM Mono'">⏳ Plan generado por cuestionario — pendiente de tu revisión y aprobación.</div>`:''}
+    ${isPend?`<div style="margin:12px 22px 0;padding:10px 14px;background:rgba(255,214,0,0.05);border:1px solid rgba(255,214,0,0.2);border-radius:9px;font-size:10px;color:var(--g);font-family:'DM Mono'">⏳ Plan generado por cuestionario — pendiente de tu revisión y aprobación.${s.origenRutina==='plantilla'?' <b>Ojo: se generó con PLANTILLA base (la IA no estaba disponible) — revísalo con más detalle.</b>':s.origenRutina==='ia'?' Generado con IA.':''}</div>`:''}
     ${bloqueRecordatorioFilosofia()}
 
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:16px 22px 0;">
@@ -5397,22 +6181,44 @@ function bloqueRecordatorioFilosofia(){
 }
 
 function staffUpd(code,k,ei,field,val){
-  const s=getSocio(code); if(!s||!s.rutina[k]||!s.rutina[k].ejercicios[ei]) return;
+  const s=getSocio(code); if(!s||!s.rutina[k]||!s.rutina[k].ejercicios[ei]) return; staffDirty.add(code);
   s.rutina[k].ejercicios[ei][field]=val;
 }
 function staffUpdTipo(code,k,val){
-  const s=getSocio(code); if(!s||!s.rutina[k]) return;
+  const s=getSocio(code); if(!s||!s.rutina[k]) return; staffDirty.add(code);
   s.rutina[k].tipo=val;
   s.rutina[k].color = /descanso/i.test(val) ? 'descanso' : (s.rutina[k].color==='descanso'?'verde':s.rutina[k].color);
 }
-function staffDelEj(code,k,ei){
+function staffUpdMetodo(code,k,ei,id){
+  const s=getSocio(code); const e=s&&s.rutina[k]&&s.rutina[k].ejercicios[ei]; if(!e) return; staffDirty.add(code);
+  if(!id){ delete e.metodo; return; }
+  e.metodo={id, nm:KB_METODOS[id].nm, detalle:(e.metodo&&e.metodo.detalle)||''};
+}
+function staffUpdMetodoDet(code,k,ei,v){
+  const s=getSocio(code); const e=s&&s.rutina[k]&&s.rutina[k].ejercicios[ei]; if(!e||!e.metodo) { showToast('Elige primero un método'); return; }
+  staffDirty.add(code); e.metodo.detalle=v;
+}
+function staffUpdAlts(code,k,ei,txt){
+  const s=getSocio(code); const e=s&&s.rutina[k]&&s.rutina[k].ejercicios[ei]; if(!e) return; staffDirty.add(code);
+  e.alternativas=txt.split(',').map(x=>x.trim()).filter(Boolean).slice(0,4).map(nm=>{
+    const kb=kbBuscar(nm); return {nm:kb?kb.nm:nm, ms:kb?kb.ms:'', z:kb?kb.z:'', nota:kb?('En '+(KB_ZONAS[kb.z]||kb.z)):''};
+  });
+}
+function staffEnriquecer(code){
   const s=getSocio(code); if(!s) return;
+  staffDirty.add(code);
+  enriquecerSocio(s);
+  staffRenderContent(s);
+  showToast('✨ Métodos y opciones agregados donde faltaban — revisa y presiona GUARDAR');
+}
+function staffDelEj(code,k,ei){
+  const s=getSocio(code); if(!s) return; staffDirty.add(code);
   s.rutina[k].ejercicios.splice(ei,1);
   staffRenderContent(s);
   setTimeout(()=>{const b=document.getElementById('stb-'+code+'-'+k); if(b) b.style.display='block';},30);
 }
 function staffAddEj(code,k){
-  const s=getSocio(code); if(!s) return;
+  const s=getSocio(code); if(!s) return; staffDirty.add(code);
   s.rutina[k].ejercicios.push({nm:'',series:3,reps:'12 reps',peso:'Moderado',ms:'',tip:''});
   if(/descanso/i.test(s.rutina[k].tipo)) { s.rutina[k].tipo=''; s.rutina[k].color='verde'; }
   staffRenderContent(s);
@@ -5422,13 +6228,169 @@ function staffAprobar(code){
   const s=getSocio(code); if(!s) return;
   s.status='activo';
   if(s.asignado==='—') s.asignado=document.getElementById('staff-nombre').textContent||'Staff';
-  dbSave(s.code); staffRenderList(); staffRenderContent(s);
+  dbSaveStaff(s.code); staffRenderList(); staffRenderContent(s);
   showToast('✓ Plan aprobado y activado — el socio ya puede entrenar');
 }
 function staffGuardar(code){
   const s=getSocio(code); if(!s) return;
-  dbSave(s.code); staffRenderList();
+  dbSaveStaff(s.code); staffRenderList();
   showToast('✓ Cambios guardados — visibles para el socio al instante');
+}
+
+
+// ═════════════════════════════════════════
+// RESUMEN DE COORDINACIÓN — KPIs, riesgo de abandono, carga por entrenador, exportación
+// ═════════════════════════════════════════
+function diasDesde(iso){ if(!iso) return null; const [y,m,d]=iso.split('-').map(Number); return Math.floor((new Date().setHours(0,0,0,0)-new Date(y,m-1,d).getTime())/86400000); }
+function ultimaActividad(s){
+  const f=[...(s.logs?.sesiones||[]).map(x=>x.fecha),...(s.logs?.asistencia||[]).map(x=>x.fecha)].filter(Boolean).sort();
+  return f.length?f[f.length-1]:null;
+}
+function calcResumen(){
+  const socios=staffGetSocios();
+  const iniSem=inicioSemana(new Date()).getTime();
+  const activos=socios.filter(s=>s.status==='activo');
+  const pend=socios.filter(s=>s.status==='pendiente').map(s=>({s,espera:diasDesde(s.fechaRegistro)||0})).sort((a,b)=>b.espera-a.espera);
+  let checkGym=0, checkFuera=0, checkSinUbic=0, sesSem=0;
+  socios.forEach(s=>{
+    (s.logs?.asistencia||[]).forEach(a=>{ if((a.ts||0)>=iniSem){ if(a.ubicacion==='gym') checkGym++; else if(a.ubicacion==='outside') checkFuera++; else checkSinUbic++; }});
+    sesSem+=(s.logs?.sesiones||[]).filter(x=>(x.ts||0)>=iniSem).length;
+  });
+  const adh=activos.map(s=>calcEvolucion(s).adherencia);
+  const adhProm=adh.length?Math.round(adh.reduce((a,b)=>a+b,0)/adh.length):0;
+  const riesgo=activos.map(s=>({s,ult:ultimaActividad(s)})).map(o=>({...o,dias:o.ult?diasDesde(o.ult):diasDesde(o.s.fechaRegistro)}))
+    .filter(o=>o.dias!=null && o.dias>=14).sort((a,b)=>b.dias-a.dias);
+  const porEnt={};
+  socios.forEach(s=>{
+    const k=s.entrenadorId||'_sin';
+    if(!porEnt[k]) porEnt[k]={nombre:k==='_sin'?'Sin asignar':(getEntrenador(k)?.nombre||s.asignado||k),total:0,activos:0,pend:0,adh:[]};
+    const e=porEnt[k]; e.total++;
+    if(s.status==='activo'){ e.activos++; e.adh.push(calcEvolucion(s).adherencia); } else e.pend++;
+  });
+  const plantilla=socios.filter(s=>s.origenRutina==='plantilla').length;
+  const hace30=Date.now()-30*86400000, cambios={}, horas={};
+  socios.forEach(s=>(s.logs?.sesiones||[]).filter(x=>(x.ts||0)>=hace30).forEach(x=>(x.cambios||[]).forEach(c=>{
+    cambios[c.orig]=(cambios[c.orig]||0)+1;
+    const h=(x.hora||'').substring(0,2); if(h) horas[h]=(horas[h]||0)+1;
+  })));
+  const topCambios=Object.entries(cambios).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  const topHoras=Object.entries(horas).sort((a,b)=>b[1]-a[1]).slice(0,3);
+  return {socios,activos,pend,checkGym,checkFuera,checkSinUbic,sesSem,adhProm,riesgo,porEnt,plantilla,topCambios,topHoras};
+}
+function abrirResumen(){
+  if(staffRol!=='coordinador'){ showToast('Esta sección es solo para coordinación'); return; }
+  staffActivoId=null; staffRenderList();
+  const r=calcResumen();
+  const kpi=(n,l,c)=>`<div style="padding:14px;border:1px solid var(--b);border-radius:10px;background:var(--gl)"><div style="font-family:var(--fd);font-size:30px;line-height:1;color:${c||'var(--tx)'}">${n}</div><div style="font-size:11px;color:var(--mu);margin-top:6px;line-height:1.35">${l}</div></div>`;
+  const fila=(a,b,c)=>`<div style="display:grid;grid-template-columns:1fr auto;gap:10px;padding:9px 0;border-bottom:1px solid var(--b);font-size:12px;cursor:${c?'pointer':'default'}" ${c?`onclick="staffOpenSocio('${esc(c)}')"`:''}><span>${a}</span><span style="color:var(--mu);font-family:'DM Mono';font-size:11px">${b}</span></div>`;
+  const ents=Object.values(r.porEnt).sort((a,b)=>b.total-a.total);
+  const titulo=(t,sub)=>`<h3 style="font-family:var(--fd);font-size:20px;margin:26px 0 4px">${t}</h3>${sub?`<p style="font-size:11px;color:var(--mu);margin:0 0 8px;line-height:1.5">${sub}</p>`:''}`;
+  document.getElementById('staff-content').innerHTML=`
+  <div style="padding:22px;max-width:900px">
+    <h2 style="font-family:var(--fd);font-size:30px;margin:0">Resumen del gimnasio</h2>
+    <p style="font-size:12px;color:var(--mu);margin:4px 0 16px">Semana en curso (desde el lunes). ${staffRol==='coordinador'?'Todos los socios.':'Solo tus socios.'}</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px">
+      ${kpi(r.activos.length,'socios con plan activo')}
+      ${kpi(r.pend.length,'planes esperando aprobación',r.pend.length?'var(--g)':'')}
+      ${kpi(r.checkGym,'check-ins dentro del gimnasio esta semana','var(--v)')}
+      ${kpi(r.sesSem,'sesiones registradas esta semana')}
+      ${kpi(r.adhProm+'%','adherencia promedio (últimas 4 semanas)')}
+      ${kpi(r.riesgo.length,'socios activos sin actividad en 14+ días',r.riesgo.length?'var(--r)':'')}
+    </div>
+    ${(r.checkFuera||r.checkSinUbic)?`<p style="font-size:11px;color:var(--mu);margin:10px 0 0;line-height:1.5">Además hubo ${r.checkFuera} accesos desde fuera del club y ${r.checkSinUbic} sin ubicación; no cuentan como asistencia en el gimnasio.</p>`:''}
+
+    ${titulo('Planes por aprobar','Ordenados por días de espera. Un socio que espera más de 2 días suele perder el impulso inicial.')}
+    ${r.pend.length? r.pend.map(o=>fila(esc(o.s.nombre)+(o.s.origenRutina==='plantilla'?' <span style="color:var(--g);font-size:10px">(plantilla)</span>':''), o.espera+' d · '+esc(o.s.asignado||'—'), o.s.code)).join('') : '<p style="font-size:12px;color:var(--mu)">Nada pendiente.</p>'}
+
+    ${titulo('Riesgo de abandono','Socios activos sin sesión ni check-in en 14 días o más. Buen momento para que su entrenador los contacte.')}
+    ${r.riesgo.length? r.riesgo.slice(0,30).map(o=>fila(esc(o.s.nombre), o.dias+' d sin actividad · '+esc(o.s.asignado||'—'), o.s.code)).join('') : '<p style="font-size:12px;color:var(--mu)">Nadie en riesgo.</p>'}
+
+    ${titulo('Equipo saturado','Ejercicios que los socios cambiaron por su opción en los últimos 30 días. Te dice qué área o máquina se satura.')}
+    ${r.topCambios.length? r.topCambios.map(([nm,n])=>fila(esc(nm), n+' cambio'+(n>1?'s':''))).join('') + (r.topHoras.length?`<p style="font-size:11px;color:var(--mu);margin:8px 0 0">Horas con más cambios: ${r.topHoras.map(([h,n])=>h+':00 ('+n+')').join(', ')}.</p>`:'') : '<p style="font-size:12px;color:var(--mu)">Aún no hay cambios registrados.</p>'}
+
+    ${titulo('Carga por entrenador','')}
+    <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:12px;min-width:420px">
+      <tr style="color:var(--mu);text-align:left;font-size:11px"><th style="padding:6px 0">Entrenador</th><th>Socios</th><th>Activos</th><th>Pendientes</th><th>Adherencia</th></tr>
+      ${ents.map(e=>`<tr style="border-top:1px solid var(--b)"><td style="padding:8px 0">${esc(e.nombre)}</td><td>${e.total}</td><td>${e.activos}</td><td style="color:${e.pend?'var(--g)':'inherit'}">${e.pend}</td><td>${e.adh.length?Math.round(e.adh.reduce((a,b)=>a+b,0)/e.adh.length)+'%':'—'}</td></tr>`).join('')}
+    </table></div>
+    ${r.plantilla?`<p style="font-size:11px;color:var(--mu);margin-top:10px">${r.plantilla} socio(s) tienen rutina generada con plantilla base, no con IA.</p>`:''}
+
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:24px">
+      <button class="tb-btn" onclick="exportarCSV()" style="padding:9px 14px">⬇ Exportar socios (CSV)</button>
+      ${staffRol==='coordinador'?'<button class="tb-btn" onclick="descargarRespaldo()" style="padding:9px 14px">💾 Respaldo completo (JSON)</button>':''}
+    </div>
+  </div>`;
+}
+function descargarArchivo(nombre, contenido, tipo){
+  const blob=new Blob([contenido],{type:tipo}); const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob); a.download=nombre; document.body.appendChild(a); a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },500);
+}
+function exportarCSV(){
+  const cols=['codigo','nombre','estado','objetivo','nivel','dias_semana','entrenador','fecha_registro','origen_rutina','sesiones_totales','sesiones_4_sem','adherencia_%','checkins_gym_30d','ultima_actividad','dias_sin_actividad','peso_inicial','peso_actual'];
+  const q=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';
+  const hace30=Date.now()-30*86400000;
+  const rows=staffGetSocios().map(s=>{
+    const ev=calcEvolucion(s), ult=ultimaActividad(s);
+    return [s.code,s.nombre,s.status,s.objetivo,s.nivel,s.dias,s.asignado,s.fechaRegistro,s.origenRutina||'',ev.total,ev.ult4,ev.adherencia,
+      (s.logs?.asistencia||[]).filter(a=>a.ubicacion==='gym'&&(a.ts||0)>=hace30).length, ult||'', ult?diasDesde(ult):'', s.peso, pesoActual(s)].map(q).join(',');
+  });
+  descargarArchivo('socios_'+fechaISO(new Date())+'.csv','\ufeff'+cols.join(',')+'\n'+rows.join('\n'),'text/csv;charset=utf-8');
+  showToast('⬇ CSV descargado ('+rows.length+' socios)');
+}
+function descargarRespaldo(){
+  if(staffRol!=='coordinador'){ showToast('Solo coordinación'); return; }
+  const datos={exportado:new Date().toISOString(),socios:limpio(DB.socios),entrenadores:limpio(DB.entrenadores)};
+  descargarArchivo('respaldo_gym_'+fechaISO(new Date())+'.json',JSON.stringify(datos,null,1),'application/json');
+  showToast('💾 Respaldo descargado — guárdalo en un lugar seguro (contiene datos de salud)');
+}
+
+
+// ═════════════════════════════════════════
+// BASE DE CONOCIMIENTO — consulta para staff; lineamientos editables por coordinación
+// ═════════════════════════════════════════
+function abrirConocimiento(){
+  staffActivoId=null; staffRenderList();
+  const esCoord=staffRol==='coordinador';
+  const nivelTxt=['','Principiante+','Intermedio+','Avanzado'];
+  const fatTxt=['','Baja','Media','Alta'];
+  const cuentaZona={}; KB_EJERCICIOS.forEach(e=>cuentaZona[e.z]=(cuentaZona[e.z]||0)+1);
+  document.getElementById('staff-content').innerHTML=`
+  <div style="padding:22px;max-width:900px">
+    <h2 style="font-family:var(--fd);font-size:30px;margin:0">Base de conocimiento</h2>
+    <p style="font-size:12px;color:var(--mu);margin:4px 0 16px;line-height:1.5">Lo que consulta el sistema al crear cada rutina, junto con la filosofía del entrenador elegido. ${KB_EJERCICIOS.length} ejercicios con opciones por área ocupada y ${Object.keys(KB_METODOS).length} métodos de intensidad.</p>
+
+    <h3 style="font-family:var(--fd);font-size:20px;margin:18px 0 6px">Lineamientos del coordinador</h3>
+    <p style="font-size:11px;color:var(--mu);margin:0 0 8px;line-height:1.5">Reglas del club que la IA debe cumplir en todas las rutinas, por encima de la filosofía de cada entrenador.</p>
+    ${esCoord
+      ? `<textarea id="kb-lineamientos" rows="5" style="width:100%;padding:11px;background:var(--in-bg);border:1px solid var(--b);border-radius:10px;font-family:'Outfit';font-size:13px;color:var(--tx);outline:none;resize:vertical" placeholder="Ej. Toda rutina de pierna lleva trabajo de glúteo medio. Nada de press tras nuca. Socios +50 años: RIR 2 mínimo.">${esc(DB.config&&DB.config.lineamientos||'')}</textarea>
+         <button class="tb-btn" style="padding:9px 14px;margin-top:8px" onclick="guardarLineamientos()">Guardar lineamientos</button>`
+      : `<div style="font-size:12.5px;line-height:1.6;white-space:pre-wrap;padding:12px;border:1px solid var(--b);border-radius:10px">${esc(DB.config&&DB.config.lineamientos||'Sin lineamientos todavía.')}</div>`}
+
+    <h3 style="font-family:var(--fd);font-size:20px;margin:26px 0 6px">Principios del club</h3>
+    <ol style="font-size:12.5px;line-height:1.6;padding-left:18px;margin:0">${KB_PRINCIPIOS.map(p=>`<li>${esc(p)}</li>`).join('')}</ol>
+
+    <h3 style="font-family:var(--fd);font-size:20px;margin:26px 0 6px">Métodos de intensidad</h3>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:8px">
+      ${Object.values(KB_METODOS).map(M=>`<div style="padding:11px 13px;border:1px solid var(--b);border-radius:10px;background:var(--gl)">
+        <div style="font-weight:700;font-size:13px">${esc(M.nm)}</div>
+        <div style="font-size:10.5px;color:var(--mu);margin:2px 0 6px">${nivelTxt[M.nivel]} · fatiga ${fatTxt[M.fatiga].toLowerCase()}${M.pareja?' · encadenado':''}</div>
+        <div style="font-size:12px;line-height:1.5">${esc(M.como)}</div></div>`).join('')}
+    </div>
+
+    <h3 style="font-family:var(--fd);font-size:20px;margin:26px 0 6px">Catálogo por zona del gimnasio</h3>
+    <p style="font-size:11px;color:var(--mu);margin:0 0 8px">Las opciones por área ocupada se eligen de preferencia en otra zona.</p>
+    ${Object.entries(KB_ZONAS).map(([z,nm])=>`<details style="border-bottom:1px solid var(--b);padding:8px 0"><summary style="cursor:pointer;font-size:13px">${esc(nm)} <span style="color:var(--mu);font-size:11px">(${cuentaZona[z]||0})</span></summary>
+      <div style="font-size:12px;line-height:1.7;padding:6px 0 4px">${KB_EJERCICIOS.filter(e=>e.z===z).map(e=>`<div><b>${esc(e.nm)}</b> <span style="color:var(--mu)">— ${esc(e.ms)}${(Object.values(e.alt||{})[0]||[]).length?' · opciones: '+Object.values(e.alt).flat().slice(0,3).map(id=>KB_IDX[id]?KB_IDX[id].nm:id).join(', '):''}</span></div>`).join('')}</div></details>`).join('')}
+  </div>`;
+}
+function guardarLineamientos(){
+  if(staffRol!=='coordinador') return;
+  const v=document.getElementById('kb-lineamientos').value.trim();
+  DB.config=DB.config||{}; DB.config.lineamientos=v;
+  try{ localStorage.setItem(LS_KEY,JSON.stringify({socios:DB.socios,entrenadores:DB.entrenadores,config:DB.config,version:1})); }catch(e){}
+  if(fbListo) fbDB.ref('/config/lineamientos').set(v||' ').then(()=>showToast('📚 Lineamientos guardados — se aplican a las próximas rutinas')).catch(e=>showToast(fbErrorMsg(e)));
+  else showToast('📚 Lineamientos guardados en este dispositivo');
 }
 
 // ═════════════════════════════════════════
@@ -5458,7 +6420,7 @@ function svgRadarFilosofia(ph, size){
 }
 
 // ═════════════════════════════════════════
-// MI FILOSOFÍA — quiz del entrenador (4 pasos)
+// MI FILOSOFÍA — quiz del entrenador (9 pasos)
 // Se guarda en DB.entrenadores[id].filosofia y de ahí
 // alimenta el prompt de IA y el selector de coach del socio.
 // ═════════════════════════════════════════
@@ -5469,31 +6431,68 @@ function actualizarBotonMiFilosofia(){
   const bN=document.getElementById('btn-nuevo-ent');
   if(bF) bF.style.display = staffActivoEntId ? 'inline-block' : 'none';
   if(bN) bN.style.display = staffRol==='coordinador' ? 'inline-block' : 'none';
+  const bV=document.getElementById('btn-ver-ent'); if(bV) bV.style.display = staffRol==='coordinador' ? 'inline-block' : 'none';
+  const bRes=document.getElementById('btn-resumen'); if(bRes) bRes.style.display = staffRol==='coordinador' ? 'inline-block' : 'none';
+  const bFb=document.getElementById('btn-firebase'); if(bFb) bFb.style.display = staffRol==='coordinador' ? 'inline-block' : 'none';
+  const bR=document.getElementById('btn-respaldo'); if(bR) bR.style.display = staffRol==='coordinador' ? 'inline-block' : 'none';
+  const bX=document.getElementById('btn-reset'); if(bX) bX.style.display = (staffRol==='coordinador' && !fbListo) ? 'inline-block' : 'none';
 }
-function abrirMiFilosofia(){
-  if(!staffActivoEntId){ showToast('Esta sección es solo para entrenadores con perfil propio'); return; }
-  const ent=getEntrenador(staffActivoEntId);
-  const base={tagline:'',priorities:{fuerza:3,hipertrofia:3,movilidad:3,rendimiento:3,funcional:3},progressStyle:'',structure:{split:'',periodization:'',warmupRatio:2,method:''},exerciseStyle:{variety:3,restStyle:''},sampleRoutineNote:'',adjustmentPhilosophy:''};
-  filoDraft = JSON.parse(JSON.stringify((ent&&ent.filosofia)||base));
+function filoBase(){
+  return {tagline:'',priorities:{fuerza:3,hipertrofia:3,movilidad:3,rendimiento:3,funcional:3},progressStyle:'',
+    structure:{split:'',periodization:'',warmupRatio:2,method:''},exerciseStyle:{variety:3,restStyle:''},
+    dosis:{fuerza:'',hipertrofia:'',resistencia:''},
+    metodos:{favoritos:[],evita:[],frecuencia:3,principiantes:'basicos'},
+    seleccion:{libreVsMaquina:3,unilateral:3,firma:'',nunca:''},
+    sesion:{calentamiento:'',orden:'',tempo:'',core:'',cardio:''},
+    horaPico:{sustitucion:'maquina',nota:''},
+    sampleRoutineNote:'',adjustmentPhilosophy:''};
+}
+function filoMezclar(base,obj){
+  const out=JSON.parse(JSON.stringify(base));
+  Object.keys(obj||{}).forEach(k=>{
+    if(obj[k] && typeof obj[k]==='object' && !Array.isArray(obj[k]) && out[k] && typeof out[k]==='object') out[k]=Object.assign(out[k],obj[k]);
+    else if(obj[k]!==undefined && obj[k]!==null) out[k]=obj[k];
+  });
+  return out;
+}
+const FILO_TOTAL=9;
+let filoEditId=null; // a quién se le está editando la filosofía (coordinador puede editar la de otros)
+function abrirMiFilosofia(idAjeno){
+  const id = idAjeno || staffActivoEntId;
+  if(!id){ showToast('Esta sección es solo para entrenadores con perfil propio'); return; }
+  if(idAjeno && staffRol!=='coordinador'){ showToast('Solo coordinación puede editar la filosofía de otro entrenador'); return; }
+  filoEditId=id;
+  const ent=getEntrenador(id);
+  filoDraft = filoMezclar(filoBase(), ent&&ent.filosofia);
   filoStep=1;
   renderFiloStep();
+  const t=document.getElementById('filo-modal-tag'); if(t) t.textContent = idAjeno ? ('FILOSOFÍA DE '+(ent?ent.nombre:idAjeno).toUpperCase()) : 'TU FILOSOFÍA DE ENTRENAMIENTO';
   document.getElementById('modal-filosofia').classList.add('open');
+}
+// Guarda automáticamente el avance en cada paso, para no perderlo si se cierra el cuestionario a medias
+function filoGuardarProgreso(){
+  if(!filoEditId) return;
+  if(!DB.entrenadores[filoEditId]) DB.entrenadores[filoEditId]={id:filoEditId,nombre:document.getElementById('staff-nombre')?.textContent||filoEditId,rol:'entrenador',pass:'1234',especialidades:[]};
+  DB.entrenadores[filoEditId].filosofia = JSON.parse(JSON.stringify(filoDraft));
+  dbSaveEntrenador(filoEditId);
 }
 function cerrarModalFilosofia(){ document.getElementById('modal-filosofia').classList.remove('open'); }
 
-function filoSliderRow(label, val, onInputAttr){
+function filoSliderRow(label, val, path, extremos){
+  const id='fs-'+path.replace('.','-');
   return `<div style="margin-bottom:14px">
     <div style="display:flex;justify-content:space-between;margin-bottom:5px">
       <span style="font-size:12.5px;font-weight:600">${label}</span>
-      <span style="font-size:12px;color:var(--p);font-weight:700" id="${onInputAttr}-v">${val}</span>
+      <span style="font-size:12px;color:var(--p);font-weight:700" id="${id}">${val}</span>
     </div>
     <input type="range" min="1" max="5" value="${val}" style="width:100%;accent-color:var(--p)"
-      oninput="document.getElementById('${onInputAttr}-v').textContent=this.value; filoDraft.${onInputAttr}=parseInt(this.value)">
+      oninput="document.getElementById('${id}').textContent=this.value; filoDraft.${path}=parseInt(this.value)">
+    ${extremos?`<div style="display:flex;justify-content:space-between;font-size:10.5px;color:var(--mu);margin-top:2px"><span>${extremos[0]}</span><span>${extremos[1]}</span></div>`:''}
   </div>`;
 }
 function filoChoiceGroup(name, options, current){
-  return `<div class="opts" style="grid-template-columns:1fr;max-height:none;gap:6px">` +
-    options.map(o=>`<div class="opt" style="padding:9px 12px;text-align:left;${current===o.value?'border-color:var(--p);background:color-mix(in srgb, var(--p) 6%, transparent)':''}" onclick="filoSetChoice(this,'${name}','${o.value}')"><div class="ol" style="font-size:12.5px">${o.label}</div></div>`).join('') +
+  return `<div class="opts" style="grid-template-columns:1fr;max-height:none;gap:6px;margin-bottom:12px">` +
+    options.map(o=>`<div class="opt" style="padding:9px 12px;text-align:left;${current===o.value?'border-color:var(--p);background:color-mix(in srgb, var(--p) 6%, transparent)':''}" onclick="filoSetChoice(this,'${name}','${o.value}')"><div class="ol" style="font-size:12.5px">${o.label}</div>${o.sub?`<div class="os" style="text-transform:none;letter-spacing:0">${o.sub}</div>`:''}</div>`).join('') +
     `</div>`;
 }
 function filoSetChoice(el,name,val){
@@ -5502,58 +6501,123 @@ function filoSetChoice(el,name,val){
   const path=name.split('.');
   if(path.length===1) filoDraft[path[0]]=val; else filoDraft[path[0]][path[1]]=val;
 }
+function filoText(path, ph, rows){
+  const val=path.split('.').reduce((o,k)=>o&&o[k],filoDraft)||'';
+  return `<textarea rows="${rows||2}" style="width:100%;padding:11px;background:var(--in-bg);border:1px solid var(--b);border-radius:10px;font-family:'Outfit';font-size:13px;color:var(--tx);outline:none;resize:vertical;margin-bottom:12px" placeholder="${ph}" oninput="filoDraft.${path}=this.value">${esc(val)}</textarea>`;
+}
+function filoSub(t){ return `<div class="q-sub" style="margin:4px 0 7px">${t}</div>`; }
+function filoCycleMetodo(id,el){
+  const m=filoDraft.metodos;
+  if(m.favoritos.includes(id)){ m.favoritos=m.favoritos.filter(x=>x!==id); m.evita.push(id); }
+  else if(m.evita.includes(id)){ m.evita=m.evita.filter(x=>x!==id); }
+  else m.favoritos.push(id);
+  el.className='filo-chip '+(m.favoritos.includes(id)?'fav':m.evita.includes(id)?'no':'');
+}
 function renderFiloStep(){
-  document.getElementById('filo-prog').style.width=(filoStep/4*100)+'%';
+  document.getElementById('filo-prog').style.width=(filoStep/FILO_TOTAL*100)+'%';
   const c=document.getElementById('filo-body');
-  let html='';
+  const F=filoDraft;
+  const paso=`<div style="font-size:11px;color:var(--mu);margin-bottom:6px">Paso ${filoStep} de ${FILO_TOTAL}</div>`;
+  let html=paso;
   if(filoStep===1){
-    html+=`<div class="q-title" style="font-size:20px">EN UNA FRASE,<br>¿CUÁL ES TU MÉTODO?</div>
-      <div class="q-sub" style="margin-bottom:12px">Esto es lo primero que va a leer el socio cuando te elija.</div>
-      <textarea rows="2" style="width:100%;padding:11px;background:var(--in-bg);border:1px solid var(--b);border-radius:10px;font-family:'Outfit';font-size:13px;color:var(--tx);outline:none;resize:vertical;margin-bottom:16px" placeholder="Ej. Construyo fuerza real antes que estética." oninput="filoDraft.tagline=this.value">${filoDraft.tagline||''}</textarea>
-      <div class="q-sub" style="margin-bottom:6px">¿Qué prioriza tu método? (1 = casi nada · 5 = tu sello)</div>
-      ${filoSliderRow('Fuerza', filoDraft.priorities.fuerza, 'priorities.fuerza')}
-      ${filoSliderRow('Hipertrofia / estética', filoDraft.priorities.hipertrofia, 'priorities.hipertrofia')}
-      ${filoSliderRow('Movilidad y prevención', filoDraft.priorities.movilidad, 'priorities.movilidad')}
-      ${filoSliderRow('Rendimiento deportivo', filoDraft.priorities.rendimiento, 'priorities.rendimiento')}`;
+    html+=`<div class="q-title" style="font-size:20px">En una frase, ¿cuál es tu método?</div>
+      ${filoSub('Es lo primero que lee el socio cuando te elige.')}
+      ${filoText('tagline','Ej. Construyo fuerza real antes que estética.')}
+      ${filoSub('¿Qué prioriza tu método? (1 casi nada · 5 tu sello)')}
+      ${filoSliderRow('Fuerza', F.priorities.fuerza, 'priorities.fuerza')}
+      ${filoSliderRow('Hipertrofia / estética', F.priorities.hipertrofia, 'priorities.hipertrofia')}
+      ${filoSliderRow('Movilidad y prevención', F.priorities.movilidad, 'priorities.movilidad')}
+      ${filoSliderRow('Rendimiento deportivo', F.priorities.rendimiento, 'priorities.rendimiento')}
+      ${filoSliderRow('Entrenamiento funcional', F.priorities.funcional, 'priorities.funcional')}`;
   } else if(filoStep===2){
-    html+=`<div class="q-title" style="font-size:20px">¿CÓMO DEFINES<br>EL PROGRESO?</div>
-      ${filoChoiceGroup('progressStyle',[{value:'numeros',label:'Por números (peso, reps, cargas)'},{value:'calidad',label:'Por calidad de movimiento'},{value:'mixto',label:'Ambos, según la persona'}], filoDraft.progressStyle)}
-      <div class="q-sub" style="margin:14px 0 6px">¿Cómo estructuras la semana?</div>
-      <textarea rows="2" style="width:100%;padding:11px;background:var(--in-bg);border:1px solid var(--b);border-radius:10px;font-family:'Outfit';font-size:13px;color:var(--tx);outline:none;resize:vertical" placeholder="Ej. Full body 3x semana, progresión lineal por bloques." oninput="filoDraft.structure.split=this.value">${filoDraft.structure.split||''}</textarea>`;
+    html+=`<div class="q-title" style="font-size:20px">Progreso y estructura</div>
+      ${filoSub('¿Cómo defines el progreso?')}
+      ${filoChoiceGroup('progressStyle',[{value:'numeros',label:'Por números (peso, reps, cargas)'},{value:'calidad',label:'Por calidad de movimiento'},{value:'mixto',label:'Ambos, según la persona'}], F.progressStyle)}
+      ${filoSub('¿Cómo periodizas?')}
+      ${filoChoiceGroup('structure.periodization',[
+        {value:'lineal',label:'Lineal',sub:'Subo carga poco a poco, bloque tras bloque'},
+        {value:'ondulante',label:'Ondulante',sub:'Alterno días pesados, medios y ligeros en la semana'},
+        {value:'bloques',label:'Por bloques',sub:'Acumulación → intensificación → descarga'},
+        {value:'conjugada',label:'Conjugada',sub:'Fuerza máxima y velocidad en la misma semana'}], F.structure.periodization)}
+      ${filoSub('¿Cómo estructuras la semana?')}
+      ${filoText('structure.split','Ej. Torso/pierna 4 días; full body para principiantes.')}`;
   } else if(filoStep===3){
-    html+=`<div class="q-title" style="font-size:20px">TU MÉTODO<br>DE INTENSIDAD</div>
-      ${filoChoiceGroup('structure.method',[{value:'rpe',label:'RPE'},{value:'rir',label:'RIR'},{value:'porcentajes',label:'% de 1RM'},{value:'fallo',label:'Series al fallo'}], filoDraft.structure.method)}
-      <div class="q-sub" style="margin:14px 0 6px">Variedad de ejercicios</div>
-      ${filoSliderRow('1 = pocos movimientos dominados · 5 = alta variedad', filoDraft.exerciseStyle.variety, 'exerciseStyle.variety')}
-      <div class="q-sub" style="margin:8px 0 6px">Descanso entre series</div>
-      ${filoChoiceGroup('exerciseStyle.restStyle',[{value:'fijo',label:'Tiempo fijo'},{value:'autorregulado',label:'Autorregulado'}], filoDraft.exerciseStyle.restStyle)}`;
+    html+=`<div class="q-title" style="font-size:20px">Intensidad y dosis</div>
+      ${filoSub('¿Con qué dosificas la intensidad?')}
+      ${filoChoiceGroup('structure.method',[{value:'rpe',label:'RPE (esfuerzo percibido)'},{value:'rir',label:'RIR (repeticiones en reserva)'},{value:'porcentajes',label:'% de 1RM'},{value:'fallo',label:'Series al fallo'}], F.structure.method)}
+      ${filoSub('Tus rangos de repeticiones por objetivo')}
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px">
+        ${[['fuerza','Fuerza','3-6'],['hipertrofia','Hipertrofia','8-12'],['resistencia','Resistencia','15-20']].map(([k,l,ph])=>`<label style="font-size:11px;color:var(--mu)">${l}<input class="ti" style="margin-top:4px" placeholder="${ph}" value="${esc(F.dosis[k]||'')}" oninput="filoDraft.dosis.${k}=this.value"></label>`).join('')}
+      </div>
+      ${filoSub('Descanso entre series')}
+      ${filoChoiceGroup('exerciseStyle.restStyle',[{value:'fijo',label:'Tiempo fijo'},{value:'autorregulado',label:'Autorregulado'}], F.exerciseStyle.restStyle)}
+      ${filoSliderRow('Variedad de ejercicios', F.exerciseStyle.variety, 'exerciseStyle.variety',['Pocos y dominados','Mucha variedad'])}`;
   } else if(filoStep===4){
-    html+=`<div class="q-title" style="font-size:20px">SI UN SOCIO<br>SE ESTANCA...</div>
-      <div class="q-sub" style="margin-bottom:10px">Esto es lo que usarás cada vez que ajustes una rutina.</div>
-      <textarea rows="3" style="width:100%;padding:11px;background:var(--in-bg);border:1px solid var(--b);border-radius:10px;font-family:'Outfit';font-size:13px;color:var(--tx);outline:none;resize:vertical;margin-bottom:16px" placeholder="Ej. Reviso técnica antes que cargas..." oninput="filoDraft.adjustmentPhilosophy=this.value">${filoDraft.adjustmentPhilosophy||''}</textarea>
+    html+=`<div class="q-title" style="font-size:20px">Tus métodos de intensidad</div>
+      ${filoSub('Toca una vez = lo uso seguido (verde). Dos veces = no lo uso (rojo). Tres = neutral.')}
+      <div class="filo-chips">${Object.entries(KB_METODOS).map(([id,M])=>`<div class="filo-chip ${F.metodos.favoritos.includes(id)?'fav':F.metodos.evita.includes(id)?'no':''}" title="${esc(M.como)}" onclick="filoCycleMetodo('${id}',this)">${M.nm}</div>`).join('')}</div>
+      ${filoSliderRow('¿Qué tanto los usas?', F.metodos.frecuencia, 'metodos.frecuencia',['Rutinas limpias','Casi cada ejercicio'])}
+      ${filoSub('Con principiantes...')}
+      ${filoChoiceGroup('metodos.principiantes',[{value:'no',label:'Nada de métodos: técnica primero'},{value:'basicos',label:'Solo básicos (tempo, pausas, superserie antagonista)'},{value:'si',label:'También intermedios si la técnica lo permite'}], F.metodos.principiantes)}`;
+  } else if(filoStep===5){
+    html+=`<div class="q-title" style="font-size:20px">Cómo eliges ejercicios</div>
+      ${filoSliderRow('Equipo que prefieres', F.seleccion.libreVsMaquina, 'seleccion.libreVsMaquina',['Máquinas y poleas','Peso libre'])}
+      ${filoSliderRow('Trabajo unilateral', F.seleccion.unilateral, 'seleccion.unilateral',['Casi nunca','Mucho'])}
+      ${filoSub('Tus ejercicios firma (los que siempre usas)')}
+      ${filoText('seleccion.firma','Ej. Hip thrust con pausa, jalón unilateral, sentadilla búlgara.')}
+      ${filoSub('Ejercicios que nunca programas y por qué')}
+      ${filoText('seleccion.nunca','Ej. Press tras nuca (riesgo de hombro), peso muerto en principiantes.')}`;
+  } else if(filoStep===6){
+    html+=`<div class="q-title" style="font-size:20px">Anatomía de tu sesión</div>
+      ${filoSub('Calentamiento')}
+      ${filoChoiceGroup('sesion.calentamiento',[{value:'movilidad',label:'Movilidad general + activación'},{value:'aproximacion',label:'Series de aproximación del primer ejercicio'},{value:'especifico',label:'Activación específica del músculo del día'}], F.sesion.calentamiento)}
+      ${filoSub('Orden de los ejercicios')}
+      ${filoChoiceGroup('sesion.orden',[{value:'compuesto',label:'Compuesto pesado primero, aislamiento al final'},{value:'preagot',label:'A veces pre-agoto antes del compuesto'},{value:'prioridad',label:'Primero lo que el socio más necesita'}], F.sesion.orden)}
+      ${filoSub('Tempo')}
+      ${filoChoiceGroup('sesion.tempo',[{value:'controlado',label:'Controlado siempre (bajada lenta)'},{value:'explosivo',label:'Bajada controlada, subida explosiva'},{value:'fase',label:'Depende de la fase'}], F.sesion.tempo)}`;
+  } else if(filoStep===7){
+    html+=`<div class="q-title" style="font-size:20px">Core y cardio</div>
+      ${filoSub('Core')}
+      ${filoChoiceGroup('sesion.core',[{value:'diario',label:'Algo de core en cada sesión'},{value:'semanal',label:'2-3 bloques a la semana'},{value:'integrado',label:'Integrado en los compuestos, casi sin aislado'}], F.sesion.core)}
+      ${filoSub('Cardio')}
+      ${filoChoiceGroup('sesion.cardio',[{value:'dias',label:'Días propios de cardio'},{value:'final',label:'Bloque corto al final (zona 2)'},{value:'intervalos',label:'Intervalos / circuitos metabólicos'},{value:'objetivo',label:'Según el objetivo del socio'}], F.sesion.cardio)}`;
+  } else if(filoStep===8){
+    html+=`<div class="q-title" style="font-size:20px">Hora pico</div>
+      ${filoSub('Si el área está ocupada, ¿qué opción prefieres darle al socio?')}
+      ${filoChoiceGroup('horaPico.sustitucion',[{value:'maquina',label:'Máquina o polea con el mismo enfoque'},{value:'mancuernas',label:'Mancuernas o zona funcional'},{value:'corporal',label:'Peso corporal / bandas'},{value:'metodo',label:'Cambiar el método (p. ej. superserie con lo disponible)'}], F.horaPico.sustitucion)}
+      ${filoSub('Mensaje para tus socios en hora pico')}
+      ${filoText('horaPico.nota','Ej. No esperes más de 3 minutos: usa la opción y mantén el tempo.')}`;
+  } else if(filoStep===9){
+    html+=`<div class="q-title" style="font-size:20px">Tu sello final</div>
+      ${filoSub('Describe una sesión típica tuya, como se la explicarías a otro coach. Es lo que más ayuda a que la IA escriba como tú.')}
+      ${filoText('sampleRoutineNote','Ej. Pierna: calentamiento de cadera, sentadilla en pirámide 12-10-8-6, búlgara + extensión en biserie, curl femoral con drop set, cierro con pantorrilla en tempo 3-1-1.',4)}
+      ${filoSub('Si un socio se estanca...')}
+      ${filoText('adjustmentPhilosophy','Ej. Reviso técnica antes que cargas...',3)}
       <div style="display:flex;align-items:center;gap:14px;padding:14px;background:var(--in-bg2);border-radius:12px">
-        ${svgRadarFilosofia(filoDraft,110)}
-        <div style="font-size:11.5px;color:var(--mu);line-height:1.7">Así se ve tu huella —<br>esto verá el socio al elegirte.</div>
+        ${svgRadarFilosofia(F,110)}
+        <div style="font-size:11.5px;color:var(--mu);line-height:1.7">Así se ve tu huella; esto verá el socio al elegirte.</div>
       </div>`;
   }
   c.innerHTML=html;
   const nb=document.getElementById('filo-next-btn');
-  if(nb) nb.textContent = filoStep===4 ? 'GUARDAR MI FILOSOFÍA ✓' : 'CONTINUAR →';
+  if(nb) nb.textContent = filoStep===FILO_TOTAL ? 'GUARDAR MI FILOSOFÍA ✓' : 'CONTINUAR →';
   const pb=document.querySelector('#filo-nav .btn-prev');
   if(pb) pb.style.visibility = filoStep===1 ? 'hidden' : 'visible';
+  c.scrollTop=0;
 }
 function filoNext(){
-  if(filoStep<4){ filoStep++; renderFiloStep(); }
+  filoGuardarProgreso();
+  if(filoStep<FILO_TOTAL){ filoStep++; renderFiloStep(); }
   else guardarFilosofia();
 }
 function filoPrev(){ if(filoStep>1){ filoStep--; renderFiloStep(); } }
 function guardarFilosofia(){
-  if(!staffActivoEntId) return;
-  if(!DB.entrenadores[staffActivoEntId]) DB.entrenadores[staffActivoEntId]={id:staffActivoEntId,nombre:document.getElementById('staff-nombre').textContent,rol:'entrenador',pass:'1234',especialidades:[]};
-  DB.entrenadores[staffActivoEntId].filosofia = filoDraft;
-  dbSaveEntrenador(staffActivoEntId);
+  if(!filoEditId) return;
+  filoGuardarProgreso();
+  const esPropia = filoEditId===staffActivoEntId;
   cerrarModalFilosofia();
-  showToast('🧬 Tu filosofía quedó guardada — tus rutinas nacerán con tu estilo');
+  showToast(esPropia?'🧬 Tu filosofía quedó guardada — tus rutinas nacerán con tu estilo':'🧬 Filosofía guardada para '+(getEntrenador(filoEditId)?.nombre||filoEditId));
+  if(staffRol==='coordinador' && document.getElementById('staff-content')?.innerHTML.includes('Entrenadores')) abrirEntrenadores();
 }
 
 // ═════════════════════════════════════════
@@ -5572,17 +6636,120 @@ function abrirNuevoEntrenador(){
 }
 function cerrarModalNuevoEnt(){ document.getElementById('modal-nuevo-ent').classList.remove('open'); }
 function crearNuevoEntrenador(){
-  const nombre=document.getElementById('ne-nombre').value.trim();
-  const usuario=document.getElementById('ne-usuario').value.trim();
+  const nombre=limpiarTexto(document.getElementById('ne-nombre').value);
+  const usuario=document.getElementById('ne-usuario').value.trim().toLowerCase().replace(/[^a-z0-9_]/g,'');
   const pass=document.getElementById('ne-pass').value;
   if(!nombre||!usuario||!pass||STAFF_USERS[usuario]||(DB.entrenadores&&DB.entrenadores[usuario])){
     document.getElementById('ne-err').style.display='block'; return;
   }
+  // Evitar duplicados accidentales: si ya existe alguien con ese nombre, confirmar antes de crear otro
+  const yaExiste=Object.values(DB.entrenadores||{}).some(e=>e && e.nombre && e.nombre.trim().toLowerCase()===nombre.toLowerCase());
+  if(yaExiste && !confirm('Ya existe un entrenador llamado "'+nombre+'". ¿Seguro que quieres crear OTRA cuenta con el mismo nombre? (si el usuario anterior fue un error, ciérralo con 🗑 Eliminar en vez de crear uno nuevo)')) return;
   const especialidades=[...document.querySelectorAll('#ne-especialidades .chk.ck')].map(e=>e.textContent.trim());
   DB.entrenadores[usuario]={ id:usuario, pass, rol:'entrenador', nombre, especialidades, filosofia:null };
   dbSaveEntrenador(usuario);
   cerrarModalNuevoEnt();
-  showToast('✓ Entrenador creado — al iniciar sesión le pedirá su filosofía');
+  showToast('✓ Entrenador creado: usuario "'+usuario+'" — al iniciar sesión le pedirá su filosofía');
+  // Refrescar la vista si estamos parados en la lista de Entrenadores, para ver la tarjeta nueva de inmediato
+  if(staffRol==='coordinador' && document.getElementById('staff-content')?.innerHTML.includes('Entrenadores')) abrirEntrenadores();
+}
+
+
+// ═════════════════════════════════════════
+// VER / EDITAR / ELIMINAR ENTRENADORES (coordinador)
+// ═════════════════════════════════════════
+function sociosDeEntrenador(id){ return Object.values(DB.socios||{}).filter(s=>s.entrenadorId===id); }
+function abrirEntrenadores(){
+  if(staffRol!=='coordinador'){ showToast('Solo el coordinador puede ver esta sección'); return; }
+  staffActivoId=null; staffRenderList();
+  const lista=Object.values(DB.entrenadores||{}).filter(e=>e && e.rol!=='coordinador')
+    .sort((a,b)=>(a.nombre||'').localeCompare(b.nombre||''));
+  const coords=Object.values(DB.entrenadores||{}).filter(e=>e && e.rol==='coordinador');
+  const tarjeta=(t,esCoord)=>{
+    const socios=esCoord?[]:sociosDeEntrenador(t.id);
+    const activos=socios.filter(s=>s.status==='activo').length, pend=socios.filter(s=>s.status==='pendiente').length;
+    const tieneFilo=t.filosofia && t.filosofia.tagline;
+    return `<div style="border:1px solid var(--b);border-radius:12px;padding:16px;background:var(--gl);display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap;margin-bottom:10px">
+      <div style="flex:0 0 auto;${tieneFilo?'':'opacity:.25'}">${svgRadarFilosofia(t.filosofia,54)}</div>
+      <div style="flex:1;min-width:220px">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <div style="font-family:var(--fd);font-size:18px">${esc(t.nombre)}</div>
+          <span style="font-size:8.5px;letter-spacing:1px;color:var(--mu);font-family:'DM Mono';border:1px solid var(--b);border-radius:10px;padding:2px 7px">${esc(t.rol||'entrenador').toUpperCase()}</span>
+          <span style="font-size:8.5px;letter-spacing:1px;color:var(--mu);font-family:'DM Mono'">usuario: ${esc(t.id)}</span>
+        </div>
+        <div style="font-size:11.5px;margin:5px 0;${tieneFilo?'color:var(--v);font-style:italic':'color:var(--mu)'}">${tieneFilo?'"'+esc(t.filosofia.tagline)+'"':'Sin filosofía definida todavía'}</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px">${(t.especialidades||[]).map(s=>`<span style="font-size:8.5px;text-transform:uppercase;letter-spacing:.03em;background:var(--in-bg2);border:1px solid var(--b);color:var(--mu);padding:2px 7px;border-radius:20px">${esc(s)}</span>`).join('')||'<span style="font-size:11px;color:var(--mu)">Sin especialidades registradas</span>'}</div>
+        ${esCoord?'':`<div style="font-size:11px;color:var(--mu);font-family:'DM Mono'">${socios.length} socio${socios.length===1?'':'s'} asignado${socios.length===1?'':'s'} · ${activos} activos · ${pend} pendientes</div>`}
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <button onclick="abrirEditarEntrenador('${esc(t.id)}')" style="padding:7px 12px;border:1px solid var(--b);border-radius:7px;background:none;color:var(--tx);font-size:11px;cursor:pointer">✎ Editar</button>
+        ${esCoord?'':`<button onclick="abrirMiFilosofia('${esc(t.id)}')" style="padding:7px 12px;border:1px solid rgba(124,58,237,0.35);border-radius:7px;background:none;color:var(--p);font-size:11px;cursor:pointer">🧬 ${tieneFilo?'Editar':'Llenar'} filosofía</button>`}
+        ${esCoord?'':`<button onclick="confirmarEliminarEntrenador('${esc(t.id)}')" style="padding:7px 12px;border:1px solid rgba(255,69,96,0.3);border-radius:7px;background:none;color:var(--r);font-size:11px;cursor:pointer">🗑 Eliminar</button>`}
+      </div>
+    </div>`;
+  };
+  document.getElementById('staff-content').innerHTML=`
+    <div style="padding:22px;max-width:820px">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+        <h2 style="font-family:var(--fd);font-size:30px;margin:0">Entrenadores</h2>
+        <button class="tb-btn" onclick="abrirNuevoEntrenador()" style="padding:9px 14px;color:var(--v);border-color:color-mix(in srgb, var(--v) 30%, transparent)">➕ NUEVO ENTRENADOR</button>
+      </div>
+      <p style="font-size:12px;color:var(--mu);margin:4px 0 18px">${lista.length} entrenador${lista.length===1?'':'es'}${coords.length?' · '+coords.length+' coordinador'+(coords.length===1?'':'es'):''}</p>
+      ${lista.length?lista.map(t=>tarjeta(t,false)).join(''):'<p style="font-size:12px;color:var(--mu)">Aún no hay entrenadores dados de alta.</p>'}
+      ${coords.length?`<h3 style="font-family:var(--fd);font-size:16px;margin:22px 0 8px;color:var(--mu)">Coordinación</h3>${coords.map(t=>tarjeta(t,true)).join('')}`:''}
+    </div>`;
+}
+// Compara especialidades ignorando emoji, mayúsculas y espacios — así "Tenis" y "🎾 TENIS" son la misma
+function normEsp(s){ return String(s||'').toLowerCase().replace(/[^\p{L}\p{N} ]/gu,'').trim(); }
+function abrirEditarEntrenador(id){
+  const t=DB.entrenadores[id]; if(!t) return;
+  document.getElementById('ee-titulo').textContent=t.nombre;
+  document.getElementById('ee-id').value=id;
+  document.getElementById('ee-nombre').value=t.nombre||'';
+  document.getElementById('ee-pass').value='';
+  const cont=document.getElementById('ee-especialidades');
+  const todas=[...DEPORTES.map(d=>d.emoji+' '+d.nm),'🏋️ Fuerza','🤸 Funcional','🏥 Rehabilitación'];
+  const clavesLista=todas.map(normEsp);
+  const actuales=(t.especialidades||[]);
+  const actualesKeys=new Set(actuales.map(normEsp));
+  const otras=actuales.filter(e=>!clavesLista.includes(normEsp(e))); // especialidades propias que no están en la lista fija (no se pierden)
+  cont.innerHTML=todas.map(nm=>`<div class="chk ${actualesKeys.has(normEsp(nm))?'ck':''}" onclick="this.classList.toggle('ck')">${esc(nm)}</div>`).join('');
+  document.getElementById('ee-otras').value=otras.join(', ');
+  document.getElementById('modal-editar-ent').classList.add('open');
+}
+function cerrarModalEditarEnt(){ document.getElementById('modal-editar-ent').classList.remove('open'); }
+function guardarEdicionEntrenador(){
+  const id=document.getElementById('ee-id').value;
+  const t=DB.entrenadores[id]; if(!t) return;
+  const nombre=limpiarTexto(document.getElementById('ee-nombre').value);
+  if(!nombre){ showToast('El nombre no puede quedar vacío'); return; }
+  t.nombre=nombre;
+  const pass=document.getElementById('ee-pass').value;
+  if(pass.trim()) t.pass=pass.trim();
+  const marcadas=[...document.querySelectorAll('#ee-especialidades .chk.ck')].map(e=>e.textContent.trim());
+  const otras=limpiarTexto(document.getElementById('ee-otras').value).split(',').map(x=>x.trim()).filter(Boolean);
+  t.especialidades=[...marcadas,...otras];
+  // Reflejar el nombre en los socios que ya lo tenían asignado
+  sociosDeEntrenador(id).forEach(s=>{ s.asignado=nombre; dbSaveStaff(s.code); });
+  dbSaveEntrenador(id);
+  cerrarModalEditarEnt();
+  abrirEntrenadores();
+  showToast('✓ Entrenador actualizado');
+}
+function confirmarEliminarEntrenador(id){
+  const t=DB.entrenadores[id]; if(!t) return;
+  const socios=sociosDeEntrenador(id);
+  const aviso=socios.length
+    ? `Tiene ${socios.length} socio(s) asignado(s) — quedarán SIN entrenador asignado (sus rutinas no se borran). `
+    : '';
+  if(!confirm(`¿Eliminar a ${t.nombre}? ${aviso}Escribe OK en el siguiente cuadro para confirmar.`)) return;
+  if(prompt('Para confirmar, escribe ELIMINAR')!=='ELIMINAR') return;
+  socios.forEach(s=>{ s.entrenadorId=''; s.asignado='Sin asignar'; dbSaveStaff(s.code); });
+  delete DB.entrenadores[id];
+  try{ localStorage.setItem(LS_KEY,JSON.stringify({socios:DB.socios,entrenadores:DB.entrenadores,config:DB.config,version:1})); }catch(e){}
+  if(fbListo) fbDB.ref('/entrenadores/'+id).remove().catch(e=>showToast(fbErrorMsg(e)));
+  abrirEntrenadores();
+  showToast('🗑 Entrenador eliminado'+(socios.length?' — reasigna a sus socios cuando puedas':''));
 }
 
 // ═════════════════════════════════════════
@@ -5599,7 +6766,7 @@ function qNextToTrainer(returnFn, prevScreenId){
 function qTrainerBack(){ mostrarSub(window._trainerPrevScreen); }
 function renderTrainerPicker(){
   const cont=document.getElementById('trainer-picker-list'); if(!cont) return;
-  let list = listaEntrenadoresConFilosofia();
+  let list = listaEntrenadoresParaElegir();
   cont.innerHTML='';
   if(!list.length){
     cont.innerHTML='<div style="padding:20px;text-align:center;color:var(--mu);font-size:12px;font-family:\'DM Mono\'">Por ahora el sistema asignará tu entrenador automáticamente.</div>';
@@ -5608,15 +6775,16 @@ function renderTrainerPicker(){
   }
   list.forEach(t=>{
     const sel = qAnswers.entrenadorId===t.id;
+    const tieneFilo = t.filosofia && t.filosofia.tagline;
     const div=document.createElement('div');
     div.style.cssText='display:flex;gap:12px;align-items:center;padding:14px;border:1px solid '+(sel?'var(--v)':'var(--b)')+';border-radius:12px;margin-bottom:10px;cursor:pointer;background:'+(sel?'var(--gl2)':'var(--gl)');
     div.innerHTML=`
       <div style="flex:1;min-width:0">
-        <div style="font-family:var(--fd);font-size:17px">${t.nombre}</div>
-        <div style="font-size:11.5px;color:var(--v);font-style:italic;margin:2px 0 6px;line-height:1.35">"${t.filosofia.tagline}"</div>
-        <div style="display:flex;flex-wrap:wrap;gap:4px">${(t.especialidades||[]).map(s=>`<span style="font-size:8.5px;text-transform:uppercase;letter-spacing:.03em;background:var(--in-bg2);border:1px solid var(--b);color:var(--mu);padding:2px 7px;border-radius:20px">${s}</span>`).join('')}</div>
+        <div style="font-family:var(--fd);font-size:17px">${esc(t.nombre)}</div>
+        <div style="font-size:11.5px;${tieneFilo?'color:var(--v);font-style:italic':'color:var(--mu)'};margin:2px 0 6px;line-height:1.35">${tieneFilo?'"'+esc(t.filosofia.tagline)+'"':'Aún sin filosofía propia — seguirá el enfoque general del club'}</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px">${(t.especialidades||[]).map(s=>`<span style="font-size:8.5px;text-transform:uppercase;letter-spacing:.03em;background:var(--in-bg2);border:1px solid var(--b);color:var(--mu);padding:2px 7px;border-radius:20px">${esc(s)}</span>`).join('')}</div>
       </div>
-      <div style="flex:0 0 auto">${svgRadarFilosofia(t.filosofia,58)}</div>`;
+      <div style="flex:0 0 auto;${tieneFilo?'':'opacity:.3'}">${svgRadarFilosofia(t.filosofia,58)}</div>`;
     div.onclick=()=>{ qAnswers.entrenadorId=t.id; qAnswers.entrenadorNombre=t.nombre; renderTrainerPicker(); document.getElementById('qbT').disabled=false; };
     cont.appendChild(div);
   });
@@ -5656,12 +6824,32 @@ if('serviceWorker' in navigator){
 <div class="modal" id="modal-filosofia" onclick="if(event.target===this)cerrarModalFilosofia()">
   <div class="mbox" style="max-width:480px">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-      <div style="font-family:'DM Mono';font-size:9px;letter-spacing:3px;color:var(--p)">TU FILOSOFÍA DE ENTRENAMIENTO</div>
+      <div id="filo-modal-tag" style="font-family:'DM Mono';font-size:9px;letter-spacing:3px;color:var(--p)">TU FILOSOFÍA DE ENTRENAMIENTO</div>
       <div class="av3d-cerrar" style="border-color:var(--b);color:var(--mu)" onclick="cerrarModalFilosofia()">✕</div>
     </div>
     <div class="prog-track" style="margin-bottom:16px"><div class="prog-fill" id="filo-prog" style="width:25%;background:var(--p)"></div></div>
     <div id="filo-body"></div>
     <div class="nav-row" id="filo-nav" style="margin-top:14px"><div class="btn-prev" onclick="filoPrev()">←</div><button class="btn-next" onclick="filoNext()" id="filo-next-btn">CONTINUAR →</button></div>
+  </div>
+</div>
+
+<!-- ═══ MODAL EDITAR ENTRENADOR (coordinador) ═══ -->
+<div class="modal" id="modal-editar-ent" onclick="if(event.target===this)cerrarModalEditarEnt()">
+  <div class="mbox" style="max-width:420px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div style="font-family:'DM Mono';font-size:9px;letter-spacing:3px;color:var(--n)" id="ee-titulo">EDITAR ENTRENADOR</div>
+      <div class="av3d-cerrar" style="border-color:var(--b);color:var(--mu)" onclick="cerrarModalEditarEnt()">✕</div>
+    </div>
+    <input type="hidden" id="ee-id">
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <input type="text" class="ti" id="ee-nombre" placeholder="Nombre completo">
+      <input type="text" class="ti" id="ee-pass" placeholder="Nueva contraseña (déjalo vacío para no cambiarla)">
+      <div class="q-sub" style="margin:2px 0 4px">Especialidades</div>
+      <div class="chk-grid" id="ee-especialidades" style="max-height:160px;overflow-y:auto"></div>
+      <input type="text" class="ti" id="ee-otras" placeholder="Otras especialidades, separadas por coma">
+    </div>
+    <div style="font-size:10px;color:var(--mu);margin-top:10px;line-height:1.5">El usuario (para iniciar sesión) no se puede cambiar aquí. Su filosofía se edita desde su propia sesión, en 🧬 MI FILOSOFÍA.</div>
+    <button class="btn-main" style="margin-top:14px" onclick="guardarEdicionEntrenador()">GUARDAR ✓</button>
   </div>
 </div>
 

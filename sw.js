@@ -6,7 +6,7 @@
    → Al desplegar cambios, sube CACHE_VERSION (v2, v3...)
      para forzar limpieza de cachés viejos.
    ════════════════════════════════════════════════════════ */
-const CACHE_VERSION = 'fitnesspro-v1';
+const CACHE_VERSION = 'fitnesspro-v8';
 const PRECACHE = [
   './',
   './index.html',
