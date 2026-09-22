@@ -298,6 +298,48 @@ const KB_EJERCICIOS = [
    alt:{gluteo:['hip_thrust','puente'], cardio:['bici']}, aka:['kettlebell swing']},
 ];
 
+/* ── CLASES GRUPALES DEL CLUB ──
+   Para socios que además del gym toman clases grupales. El sistema usa esto para
+   que el plan de gym NO repita el mismo grupo muscular que la clase el día de antes,
+   el mismo día (si el socio entrena aparte) ni el día de después.
+   tipo: fuerza | cardio | fuerza-resistencia | flexibilidad | bajo_impacto | mixto
+   enfoque: enfoques musculares principales (mismas claves que KB_ENFOQUES cuando aplica)
+   impacto: bajo | medio | alto (articular)                                          */
+const KB_CLASES_GRUPALES = [
+  {id:'funcional', nm:'Entrenamiento funcional', tipo:'mixto', impacto:'medio',
+   enfoque:['core','gluteo','cuadriceps','pecho','dorsal'],
+   desc:'Circuitos con peso corporal, mancuernas, bandas y kettlebells. Trabaja cuerpo completo con movimientos multiarticulares (sentadilla, empuje, jalón, core); intensidad media-alta y fatiga acumulada en pierna y core.'},
+  {id:'body_pump', nm:'Body Pump', tipo:'fuerza-resistencia', impacto:'medio',
+   enfoque:['cuadriceps','gluteo','femoral','pecho','dorsal','deltoide'],
+   desc:'Clase grupal con barra y discos, formato de muchas repeticiones (15-20) y peso ligero-moderado. Recorre TODO el cuerpo en una sola sesión, con énfasis fuerte en pierna/glúteo (sentadilla, peso muerto, estocada) y también pecho, espalda y hombro. Deja fatiga muscular notable, sobre todo en pierna.'},
+  {id:'body_combat', nm:'Body Combat', tipo:'cardio', impacto:'medio-alto',
+   enfoque:['core','pierna'],
+   desc:'Cardio de alta intensidad basado en artes marciales (golpes, patadas, rodillazos). Exige core y tren inferior de forma explosiva; alto gasto calórico y fatiga cardiovascular, impacto medio-alto en rodilla/cadera por los giros y patadas.'},
+  {id:'body_balance', nm:'Body Balance', tipo:'flexibilidad', impacto:'bajo',
+   enfoque:['core'],
+   desc:'Mezcla de yoga, tai chi y pilates. Bajo impacto, trabaja equilibrio, movilidad y core de forma controlada. No genera fatiga muscular relevante — es un buen complemento en días cercanos a sesiones intensas.'},
+  {id:'yoga', nm:'Yoga', tipo:'flexibilidad', impacto:'bajo',
+   enfoque:['core'],
+   desc:'Posturas y control de respiración, enfoque en movilidad, flexibilidad y core profundo. Bajo impacto y baja fatiga muscular; se puede combinar casi cualquier día sin restar rendimiento al gym.'},
+  {id:'spinning', nm:'Spinning', tipo:'cardio', impacto:'bajo',
+   enfoque:['cuadriceps','gluteo'],
+   desc:'Ciclismo indoor de alta intensidad. Bajo impacto articular pero alta demanda de cuádriceps y glúteo, además de trabajo cardiovascular fuerte. Deja fatiga localizada en pierna.'},
+  {id:'rpm', nm:'RPM', tipo:'cardio', impacto:'bajo',
+   enfoque:['cuadriceps','gluteo'],
+   desc:'Formato de ciclismo indoor por pista/coreografía. Igual que spinning: bajo impacto articular, alta demanda de cuádriceps y glúteo, y carga cardiovascular importante.'},
+  {id:'trx', nm:'TRX', tipo:'fuerza', impacto:'bajo',
+   enfoque:['core','pecho','dorsal','deltoide'],
+   desc:'Entrenamiento en suspensión con el propio peso corporal. Exige mucho core y estabilidad en cada ejercicio; trabaja pecho, espalda y hombro con ángulos variables. Impacto articular bajo, fatiga alta en core.'},
+  {id:'bootcamp', nm:'Bootcamp', tipo:'mixto', impacto:'alto',
+   enfoque:['core','gluteo','cuadriceps','pecho','dorsal'],
+   desc:'Circuitos de alta intensidad que mezclan cardio y fuerza (sprints, saltos, peso corporal, cargas). Es de las clases más demandantes: cuerpo completo, alto gasto calórico y fatiga muscular general, impacto articular alto por los saltos.'},
+  {id:'acond_am', nm:'Acondicionamiento físico (adulto mayor)', tipo:'bajo_impacto', impacto:'bajo',
+   enfoque:['core'],
+   desc:'Movilidad articular, fuerza ligera con bandas/peso corporal y trabajo de equilibrio, ritmo controlado. Impacto y fatiga bajos — pensada para no interferir con otras sesiones de la semana.'},
+];
+const KB_CLASES_IDX = {};
+KB_CLASES_GRUPALES.forEach(c=>{ KB_CLASES_IDX[c.nm]=c; KB_CLASES_IDX[c.id]=c; });
+
 /* Utilidades de catálogo (sin dependencias) */
 function kbNorm(t){ return String(t||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\(.*?\)/g,'').replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim(); }
 const KB_IDX = {};
