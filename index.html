@@ -378,6 +378,53 @@ const KB_ENFOQUES = {cuadriceps:'Cuádriceps',gluteo:'Glúteo',femoral:'Femorale
   dorsal:'Dorsal',espalda_media:'Espalda media',deltoide:'Hombro (frontal)',deltoide_lat:'Hombro lateral',deltoide_post:'Hombro posterior',
   manguito:'Manguito rotador',trapecio:'Trapecio',biceps:'Bíceps',braquial:'Braquial',triceps:'Tríceps',core:'Core',abdomen:'Abdomen',cardio:'Cardio'};
 
+// ── Mapa de qué vista (frente/espalda) y dónde cae cada enfoque, sobre un mismo silueta genérica ──
+// Coordenadas sobre un lienzo 0 0 120 175 (mismo sistema que avatarSVG) — lado izquierdo (x<60) se refleja para el derecho.
+const MUSCLE_MAP = {
+  pecho:        {vista:'frente',  zonas:[{cx:44,cy:48,rx:11,ry:9}]},
+  pecho_sup:    {vista:'frente',  zonas:[{cx:44,cy:42,rx:10,ry:6}]},
+  deltoide:     {vista:'frente',  zonas:[{cx:38,cy:38,rx:7,ry:8}]},
+  deltoide_lat: {vista:'frente',  zonas:[{cx:36,cy:39,rx:6,ry:7}]},
+  deltoide_post:{vista:'espalda', zonas:[{cx:38,cy:39,rx:7,ry:8}]},
+  manguito:     {vista:'espalda', zonas:[{cx:40,cy:42,rx:5,ry:5}]},
+  trapecio:     {vista:'espalda', zonas:[{cx:60,cy:30,rx:13,ry:7}]},
+  dorsal:       {vista:'espalda', zonas:[{cx:60,cy:54,rx:16,ry:13}]},
+  espalda_media:{vista:'espalda', zonas:[{cx:60,cy:52,rx:13,ry:10}]},
+  biceps:       {vista:'frente',  zonas:[{cx:33,cy:62,rx:5,ry:11}]},
+  braquial:     {vista:'frente',  zonas:[{cx:32,cy:64,rx:4,ry:10}]},
+  triceps:      {vista:'espalda', zonas:[{cx:33,cy:62,rx:5,ry:11}]},
+  core:         {vista:'frente',  zonas:[{cx:60,cy:72,rx:11,ry:14}]},
+  abdomen:      {vista:'frente',  zonas:[{cx:60,cy:72,rx:10,ry:13}]},
+  cuadriceps:   {vista:'frente',  zonas:[{cx:52,cy:102,rx:8,ry:18},{cx:68,cy:102,rx:8,ry:18}]},
+  femoral:      {vista:'espalda', zonas:[{cx:52,cy:102,rx:8,ry:18},{cx:68,cy:102,rx:8,ry:18}]},
+  gluteo:       {vista:'espalda', zonas:[{cx:60,cy:86,rx:14,ry:9}]},
+  pantorrilla:  {vista:'espalda', zonas:[{cx:52,cy:140,rx:5,ry:13},{cx:68,cy:140,rx:5,ry:13}]},
+};
+// ── Silueta genérica (contorno neutro) + zona resaltada, para mostrar en qué músculo trabaja cada ejercicio ──
+function muscleMapSVG(enfKey){
+  const info = MUSCLE_MAP[enfKey];
+  if(!info) return '';
+  const zonasHTML = info.zonas.map(z=>`<ellipse cx="${z.cx}" cy="${z.cy}" rx="${z.rx}" ry="${z.ry}" fill="var(--r)" opacity=".55"/>`).join('');
+  return `
+  <div style="display:flex;align-items:center;gap:12px;padding:10px 4px 2px">
+    <svg viewBox="0 0 120 175" width="64" height="94" style="flex-shrink:0">
+      <g fill="none" stroke="var(--mu)" stroke-width="2.2" stroke-linecap="round" opacity=".55">
+        <circle cx="60" cy="14" r="9"/>
+        <path d="M41 34 C 25 46, 26.5 54, 49.5 74 C 48.5 80, 34 84, 34 88 L 86 88 C 86 84, 71.5 80, 70.5 74 C 93.5 54, 95 46, 79 34 Q 60 27 41 34 Z"/>
+        <line x1="38" y1="38" x2="31" y2="60" stroke-width="7"/><line x1="31" y1="60" x2="29" y2="84" stroke-width="5"/>
+        <line x1="82" y1="38" x2="89" y2="60" stroke-width="7"/><line x1="89" y1="60" x2="91" y2="84" stroke-width="5"/>
+        <line x1="53" y1="90" x2="52" y2="124" stroke-width="9.5"/><line x1="52" y1="124" x2="52" y2="158" stroke-width="6"/>
+        <line x1="67" y1="90" x2="68" y2="124" stroke-width="9.5"/><line x1="68" y1="124" x2="68" y2="158" stroke-width="6"/>
+      </g>
+      ${zonasHTML}
+    </svg>
+    <div style="font-size:11px;color:var(--mu);font-family:var(--fb);line-height:1.5">
+      <div style="font-weight:700;color:var(--tx);font-size:12px;margin-bottom:2px">${esc(KB_ENFOQUES[enfKey]||enfKey)}</div>
+      Vista ${info.vista==='frente'?'frontal':'posterior'} · así se ve el músculo que trabaja este ejercicio.
+    </div>
+  </div>`;
+}
+
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,600;0,700;0,800;1,700;1,800&family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -1987,6 +2034,7 @@ input[type=range]::-webkit-slider-thumb{background:var(--lime);border-color:var(
     </div>
     <div class="m-sets" id="m-sets"></div>
     <div class="m-tip" id="m-tip">—</div>
+    <div id="m-musculo"></div>
     <div id="m-metodo" class="m-metodo" style="display:none"></div>
     <div id="m-alts" class="m-alts" style="display:none"></div>
     <div class="m-pr" id="m-pr" style="display:none"></div>
@@ -2384,6 +2432,99 @@ function calcEvolucion(s){
   const volSemana = ses.filter(x=>x.ts>=iniSem).reduce((a,x)=>a+(x.volumen||0),0);
 
   return { total, estaSemana, adherencia, racha, deltaPeso, volSemana, ult4 };
+}
+
+// ── Mapa de rendimiento: fuerza, resistencia, constancia, volumen y nivel del socio ──
+// No depende de medidas corporales — usa datos reales que ya se registran en la app (PRs, sesiones, cardio, nivel).
+function calcularRendimiento(s){
+  const ev=calcEvolucion(s);
+  const prs=Object.values(s.logs?.prs||{});
+  let fuerza=0;
+  if(prs.length && s.peso){
+    const ratios=prs.map(p=>p.kg/s.peso);
+    const avgRatio=ratios.reduce((a,b)=>a+b,0)/ratios.length;
+    fuerza=Math.max(0,Math.min(100,Math.round(avgRatio*55)));
+  }
+  const cardioMap={'NUNCA O CASI NUNCA':20,'1 – 2 VECES POR SEMANA':55,'3 O MÁS VECES':90};
+  const resistencia = cardioMap[(s.cardio||'').toUpperCase()] ?? 40;
+  const constancia = ev.adherencia;
+  const volObjetivo=(s.dias||3)*1800;
+  const volumen = volObjetivo>0 ? Math.max(0,Math.min(100,Math.round((ev.volSemana/volObjetivo)*100))) : 0;
+  const nivelMap={'PRINCIPIANTE':30,'INTERMEDIO':62,'AVANZADO':92};
+  const nivel = nivelMap[s.nivel] ?? 40;
+  return {'Fuerza':fuerza,'Resistencia':resistencia,'Constancia':constancia,'Volumen':volumen,'Nivel':nivel};
+}
+
+// ── Mapa de equilibrio corporal: qué tan pareja es la progresión entre pecho, cintura, cadera, brazo, muslo y peso.
+// 50 = sin cambio todavía; sube hacia 100 conforme esa zona progresa en la dirección deseada, baja si retrocede.
+// Así, si una zona se queda atrás mientras las demás avanzan, el polígono se nota "hundido" justo ahí — el desequilibrio.
+function calcularEquilibrioCorporal(s){
+  const {primera,ultima}=getMedidas(s);
+  const crece=['pecho','brazo','muslo']; // estas suman si crecen; cintura/cadera suman si bajan
+  const stats={};
+  const sinDatos = !primera || !ultima || primera===ultima;
+  MED_CAMPOS.forEach(c=>{
+    if(sinDatos){ stats[c.nm]=50; return; }
+    const a=primera[c.id], b=ultima[c.id];
+    if(a==null||b==null||!a){ stats[c.nm]=50; return; }
+    const pct=((b-a)/a)*100;
+    const bueno = crece.includes(c.id) ? pct : -pct;
+    stats[c.nm]=Math.max(0,Math.min(100,Math.round(50+bueno*(50/8)))); // ±8% de cambio = rango completo
+  });
+  // Peso: dirección deseada según objetivo
+  const pesos=s.logs?.pesoCorporal||[];
+  if(pesos.length>=2){
+    const a=pesos[0].kg, b=pesos[pesos.length-1].kg;
+    const pct=a?((b-a)/a)*100:0;
+    const bajarEsBueno = s.objetivo==='PERDER PESO';
+    const subirEsBueno = s.objetivo==='GANAR MÚSCULO';
+    const bueno = bajarEsBueno ? -pct : subirEsBueno ? pct : -Math.abs(pct)*0.5;
+    stats['PESO']=Math.max(0,Math.min(100,Math.round(50+bueno*(50/6))));
+  } else stats['PESO']=50;
+  return stats;
+}
+
+// ── Gráfica de radar (malla de rendimiento) genérica: recibe {etiqueta: valor 0-100} ──
+let _radarIdSeq=0;
+function radarChartSVG(stats, opts){
+  const o=Object.assign({size:200,color:'var(--v)',color2:null,glow:false},opts||{});
+  const labels=Object.keys(stats);
+  const n=labels.length||1;
+  const cx=110,cy=100,R=74;
+  const uid='rad'+(_radarIdSeq++);
+  const ang=i=>-Math.PI/2 + i*(2*Math.PI/n);
+  const pt=(i,r)=>[cx+r*Math.cos(ang(i)), cy+r*Math.sin(ang(i))];
+  const rings=[0.25,0.5,0.75,1].map(f=>{
+    const pts=labels.map((_,i)=>pt(i,R*f).join(',')).join(' ');
+    return `<polygon points="${pts}" fill="none" stroke="var(--b)" stroke-width="1"/>`;
+  }).join('');
+  const fillRef = o.color2 ? `url(#${uid}-g)` : o.color;
+  const axes=labels.map((lb,i)=>{
+    const [x,y]=pt(i,R);
+    const [lx,ly]=pt(i,R+18);
+    const val=Math.max(0,Math.min(100,Math.round(stats[lb]||0)));
+    return `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="var(--b)" stroke-width="1"/>
+      <text x="${lx}" y="${ly}" font-size="9" fill="var(--mu)" font-family="var(--fb)" text-anchor="middle" dominant-baseline="middle">${esc(lb)}</text>
+      <text x="${lx}" y="${ly+11}" font-size="9" font-weight="700" fill="${o.color}" font-family="var(--fb)" text-anchor="middle" dominant-baseline="middle">${val}</text>`;
+  }).join('');
+  const dataPts=labels.map((lb,i)=>{ const v=Math.max(0,Math.min(100,stats[lb]||0)); return pt(i,R*(v/100)).join(','); }).join(' ');
+  const dots=labels.map((lb,i)=>{ const v=Math.max(0,Math.min(100,stats[lb]||0)); const [x,y]=pt(i,R*(v/100));
+    return `<circle cx="${x}" cy="${y}" r="3.4" fill="${fillRef}" ${o.glow?`filter="url(#${uid}-glow)"`:''}/>`; }).join('');
+  const defs=`<defs>
+      ${o.color2?`<radialGradient id="${uid}-g" cx="50%" cy="45%" r="65%">
+        <stop offset="0%" stop-color="${o.color2}"/><stop offset="100%" stop-color="${o.color}"/>
+      </radialGradient>`:''}
+      ${o.glow?`<filter id="${uid}-glow" x="-60%" y="-60%" width="220%" height="220%">
+        <feGaussianBlur stdDeviation="3.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>`:''}
+    </defs>`;
+  return `<svg viewBox="0 0 220 225" width="${o.size}" height="${Math.round(o.size*1.02)}">
+    ${defs}
+    ${rings}
+    ${axes}
+    <polygon points="${dataPts}" fill="${fillRef}" fill-opacity="${o.glow?.4:.28}" stroke="${fillRef}" stroke-width="${o.glow?2.6:2}" ${o.glow?`filter="url(#${uid}-glow)"`:''}/>
+    ${dots}
+  </svg>`;
 }
 
 // Sesiones por día de la semana actual → barras
@@ -4756,7 +4897,7 @@ function renderProgresoTab(){
     </div>
 
     <div class="card" id="card-cuerpo">
-      <div class="card-t">${it('user','sm')}Tu cuerpo — evolución visual</div>
+      <div class="card-t">${it('user','sm')}Tu rendimiento y equilibrio corporal</div>
       <div id="cuerpo-contenido"></div>
     </div>
 
@@ -4786,25 +4927,44 @@ function renderCuerpo(){
     </div>
     <div class="btn-mini" style="width:100%;text-align:center" onclick="guardarMedidas()">📏 Guardar medidas</div>`;
 
-  if(!ultima){
-    cont.innerHTML=`
-      <div style="display:flex;gap:16px;align-items:center;">
-        <div class="avatar-wrap">${avatarSVG(null,{h:140,opacidad:0.35})}</div>
-        <div style="flex:1;font-size:11px;color:var(--mu);font-family:var(--fb);line-height:1.7">
-          Registra tus medidas y este avatar tomará la forma de TU cuerpo.<br>
-          Cada vez que las actualices, verás cómo cambia tu silueta con el entrenamiento.
-        </div>
+  const rend = calcularRendimiento(s);
+  const equilibrio = calcularEquilibrioCorporal(s);
+  const hayProgresion = primera && ultima && primera!==ultima;
+  const dosGraficasHTML = `
+    <div class="esp-lbl" style="margin:14px 0 8px">TUS MAPAS</div>
+    <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center">
+      <div style="flex:1;min-width:150px;max-width:220px;display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px 6px 12px;background:radial-gradient(circle at 50% 30%,color-mix(in srgb,var(--v) 10%,transparent),transparent 70%);border-radius:16px">
+        <div style="font-family:var(--fb);font-weight:700;font-size:11px;color:var(--v)">RENDIMIENTO</div>
+        ${radarChartSVG(rend,{size:170,color:'var(--v)',color2:'var(--v2)',glow:true})}
+        <div style="font-size:10px;color:var(--mu);font-family:var(--fb);text-align:center;line-height:1.5">PRs, asistencia, cardio y nivel. No depende de tu foto.</div>
       </div>
-      <div class="btn-mini" style="width:100%;text-align:center;margin:10px 0 4px" onclick="abrirAvatar3D()">🧬 VER AVATAR 3D (cuerpo base)</div>
-      <div class="av3d-wrap" id="av3d-wrap">
-        <div class="av3d-cargando"><div class="lr" style="width:40px;height:40px"></div>CARGANDO VISOR 3D...</div>
-        <div id="av3d-canvas-zone"></div>
-        <div class="av3d-controles">
-          <div class="av3d-morph"></div>
-          <div class="av3d-cerrar" onclick="cerrarAvatar3D()">✕</div>
-        </div>
-        <div class="av3d-hint">Arrastra para rotar · registra medidas para ver TU cuerpo</div>
-      </div>${inputsHTML}`;
+      <div style="flex:1;min-width:150px;max-width:220px;display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px 6px 12px;background:radial-gradient(circle at 50% 30%,color-mix(in srgb,var(--p) 10%,transparent),transparent 70%);border-radius:16px">
+        <div style="font-family:var(--fb);font-weight:700;font-size:11px;color:var(--n)">EQUILIBRIO CORPORAL</div>
+        ${radarChartSVG(equilibrio,{size:170,color:'var(--n)',color2:'var(--p)',glow:true})}
+        <div style="font-size:10px;color:var(--mu);font-family:var(--fb);text-align:center;line-height:1.5">${hayProgresion
+          ? '50 = sin cambio. Sube donde más avanzas hacia tu objetivo, baja donde te quedas atrás.'
+          : 'Registra 2 mediciones en fechas distintas para activarlo.'}</div>
+      </div>
+    </div>`;
+
+  function av3dHTML(conMedidas){
+    return `
+    <div class="btn-mini" style="width:100%;text-align:center;margin:4px 0 4px" onclick="abrirAvatar3D()">🧬 ${conMedidas?'Ver mi avatar en 3D — inicio ⇄ hoy':'VER AVATAR 3D (cuerpo base)'}</div>
+    <div class="av3d-wrap" id="av3d-wrap">
+      <div class="av3d-cargando"><div class="lr" style="width:40px;height:40px"></div>CARGANDO VISOR 3D...</div>
+      <div id="av3d-canvas-zone"></div>
+      <div class="av3d-controles">
+        <div class="av3d-morph">${conMedidas?`
+          <div class="av3d-btn" id="av3d-btn-inicio" onclick="av3dMorph('inicio')">INICIO</div>
+          <div class="av3d-btn ac" id="av3d-btn-hoy" onclick="av3dMorph('hoy')">HOY</div>`:''}</div>
+        <div class="av3d-cerrar" onclick="cerrarAvatar3D()">✕</div>
+      </div>
+      <div class="av3d-hint">Arrastra para rotar · ${conMedidas?'el cuerpo cambia con tus medidas':'registra medidas para ver TU cuerpo'}</div>
+    </div>`;
+  }
+
+  if(!ultima){
+    cont.innerHTML=`${dosGraficasHTML}${av3dHTML(false)}${inputsHTML}`;
     return;
   }
 
@@ -4821,32 +4981,9 @@ function renderCuerpo(){
     </div>` : '';
 
   cont.innerHTML=`
-    <div class="compara-grid">
-      <div class="compara-col">
-        <div class="avatar-wrap">${avatarSVG(primera,{h:150,opacidad:0.4})}</div>
-        <div class="compara-lbl">INICIO</div>
-        <div class="compara-fecha">${primera?fmtFecha(primera.fecha):''}</div>
-      </div>
-      <div class="compara-col">
-        <div class="avatar-wrap">${avatarSVG(ultima,{h:160})}</div>
-        <div class="compara-lbl" style="color:var(--v)">HOY</div>
-        <div class="compara-fecha">${fmtFecha(ultima.fecha)}</div>
-      </div>
-    </div>
+    ${dosGraficasHTML}
     ${deltasHTML}
-    <div class="btn-mini" style="width:100%;text-align:center;margin-bottom:4px" onclick="abrirAvatar3D()">🧬 Ver mi avatar en 3d — inicio ⇄ hoy</div>
-    <div class="av3d-wrap" id="av3d-wrap">
-      <div class="av3d-cargando"><div class="lr" style="width:40px;height:40px"></div>CARGANDO VISOR 3D...</div>
-      <div id="av3d-canvas-zone"></div>
-      <div class="av3d-controles">
-        <div class="av3d-morph">
-          <div class="av3d-btn" id="av3d-btn-inicio" onclick="av3dMorph('inicio')">INICIO</div>
-          <div class="av3d-btn ac" id="av3d-btn-hoy" onclick="av3dMorph('hoy')">HOY</div>
-        </div>
-        <div class="av3d-cerrar" onclick="cerrarAvatar3D()">✕</div>
-      </div>
-      <div class="av3d-hint">Arrastra para rotar · el cuerpo cambia con tus medidas</div>
-    </div>
+    ${av3dHTML(true)}
     <div class="esp-lbl" style="margin:14px 0 8px">EVOLUCIÓN POR ZONA</div>
     <div class="chips-row">
       ${MED_CAMPOS.map(c=>`<div class="chip-sel ${medChartSel===c.id?'ac':''}" data-med="${c.id}" onclick="setMedChart('${c.id}')">${c.nm}</div>`).join('')}
@@ -5135,6 +5272,7 @@ function getMedidas(s){
 }
 
 // Avatar SVG frontal — escala hombros/pecho, cintura, cadera, brazos y muslos
+let _avatarIdSeq=0;
 function avatarSVG(med, opts){
   const o=Object.assign({h:170, color:'var(--v)', opacidad:1}, opts||{});
   const sP=medEscala(med,'pecho');   // pecho → hombros + torso alto
@@ -5142,6 +5280,7 @@ function avatarSVG(med, opts){
   const sH=medEscala(med,'cadera');  // cadera
   const sB=medEscala(med,'brazo');   // grosor de brazo
   const sM=medEscala(med,'muslo');   // grosor de muslo
+  const uid='av'+(_avatarIdSeq++);
 
   const cx=60;
   const hombro=19*sP, pechoW=16*sP, cintW=10.5*sW, cadW=13*sH;
@@ -5159,24 +5298,48 @@ function avatarSVG(med, opts){
   const armW=10*sB, thighW=13.5*sM;
   const armX=hombro+3;
 
-  return `<svg viewBox="0 0 120 175" height="${o.h}" style="opacity:${o.opacidad}">
-    <g fill="${o.color}" stroke="${o.color}" stroke-linecap="round">
+  // Líneas de definición muscular (pecho, abdomen, oblicuos) — puramente decorativas,
+  // se dibujan por ENCIMA del relleno con opacidad baja para dar look anatómico sin volverse ilustración realista.
+  const musculo=`
+    <path d="M ${cx-pechoW*0.55} ${yPecho-2} Q ${cx} ${yPecho+3} ${cx+pechoW*0.55} ${yPecho-2}" fill="none" stroke="url(#${uid}-ln)" stroke-width="1.3" opacity=".55"/>
+    <path d="M ${cx} ${yPecho+6} L ${cx} ${yCint+2}" fill="none" stroke="url(#${uid}-ln)" stroke-width="1.1" opacity=".5"/>
+    ${[0,1,2].map(i=>`<path d="M ${cx-cintW*0.5} ${yPecho+10+i*6} Q ${cx} ${yPecho+12+i*6} ${cx+cintW*0.5} ${yPecho+10+i*6}" fill="none" stroke="url(#${uid}-ln)" stroke-width="1" opacity=".4"/>`).join('')}
+    <path d="M ${cx-hombro*0.6} ${yHombro+2} Q ${cx-cintW*0.9} ${yPecho+8} ${cx-cintW*0.75} ${yCint-2}" fill="none" stroke="url(#${uid}-ln)" stroke-width="1" opacity=".4"/>
+    <path d="M ${cx+hombro*0.6} ${yHombro+2} Q ${cx+cintW*0.9} ${yPecho+8} ${cx+cintW*0.75} ${yCint-2}" fill="none" stroke="url(#${uid}-ln)" stroke-width="1" opacity=".4"/>`;
+
+  return `<svg viewBox="0 0 120 175" height="${o.h}" style="opacity:${o.opacidad};overflow:visible">
+    <defs>
+      <linearGradient id="${uid}-fill" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="${o.color==='var(--v)'?'var(--v2)':o.color}"/>
+        <stop offset="100%" stop-color="${o.color}"/>
+      </linearGradient>
+      <linearGradient id="${uid}-ln" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="${o.color}" stop-opacity=".9"/>
+        <stop offset="100%" stop-color="${o.color}" stop-opacity=".3"/>
+      </linearGradient>
+      <filter id="${uid}-glow" x="-40%" y="-40%" width="180%" height="180%">
+        <feGaussianBlur stdDeviation="2.2" result="b"/>
+        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+    </defs>
+    <g fill="url(#${uid}-fill)" stroke="none" stroke-linecap="round" filter="url(#${uid}-glow)">
       <!-- cabeza -->
-      <circle cx="${cx}" cy="14" r="9" stroke="none"/>
-      <rect x="${cx-3.5}" y="21" width="7" height="8" rx="2" stroke="none"/>
+      <circle cx="${cx}" cy="14" r="9"/>
+      <rect x="${cx-3.5}" y="21" width="7" height="8" rx="2"/>
       <!-- torso -->
-      <path d="${torso}" stroke="none"/>
+      <path d="${torso}"/>
       <!-- brazos -->
-      <line x1="${cx-armX}" y1="${yHombro+4}" x2="${cx-armX-5}" y2="60" stroke-width="${armW}"/>
-      <line x1="${cx-armX-5}" y1="60" x2="${cx-armX-7}" y2="84" stroke-width="${armW*0.72}"/>
-      <line x1="${cx+armX}" y1="${yHombro+4}" x2="${cx+armX+5}" y2="60" stroke-width="${armW}"/>
-      <line x1="${cx+armX+5}" y1="60" x2="${cx+armX+7}" y2="84" stroke-width="${armW*0.72}"/>
+      <line x1="${cx-armX}" y1="${yHombro+4}" x2="${cx-armX-5}" y2="60" stroke="url(#${uid}-fill)" stroke-width="${armW}"/>
+      <line x1="${cx-armX-5}" y1="60" x2="${cx-armX-7}" y2="84" stroke="url(#${uid}-fill)" stroke-width="${armW*0.72}"/>
+      <line x1="${cx+armX}" y1="${yHombro+4}" x2="${cx+armX+5}" y2="60" stroke="url(#${uid}-fill)" stroke-width="${armW}"/>
+      <line x1="${cx+armX+5}" y1="60" x2="${cx+armX+7}" y2="84" stroke="url(#${uid}-fill)" stroke-width="${armW*0.72}"/>
       <!-- piernas -->
-      <line x1="${cx-7}" y1="${yCad+2}" x2="${cx-8}" y2="124" stroke-width="${thighW}"/>
-      <line x1="${cx-8}" y1="124" x2="${cx-8}" y2="158" stroke-width="${thighW*0.62}"/>
-      <line x1="${cx+7}" y1="${yCad+2}" x2="${cx+8}" y2="124" stroke-width="${thighW}"/>
-      <line x1="${cx+8}" y1="124" x2="${cx+8}" y2="158" stroke-width="${thighW*0.62}"/>
+      <line x1="${cx-7}" y1="${yCad+2}" x2="${cx-8}" y2="124" stroke="url(#${uid}-fill)" stroke-width="${thighW}"/>
+      <line x1="${cx-8}" y1="124" x2="${cx-8}" y2="158" stroke="url(#${uid}-fill)" stroke-width="${thighW*0.62}"/>
+      <line x1="${cx+7}" y1="${yCad+2}" x2="${cx+8}" y2="124" stroke="url(#${uid}-fill)" stroke-width="${thighW}"/>
+      <line x1="${cx+8}" y1="124" x2="${cx+8}" y2="158" stroke="url(#${uid}-fill)" stroke-width="${thighW*0.62}"/>
     </g>
+    <g>${musculo}</g>
   </svg>`;
 }
 
@@ -5819,6 +5982,30 @@ function cerrarAvatar3D(){
   document.getElementById('av3d-wrap')?.classList.remove('on');
 }
 
+// ── Textura procedural "tejido muscular" (fibras + variación de tono) para el avatar 3D ──
+function crearTexturaMuscular(){
+  const c=document.createElement('canvas'); c.width=256; c.height=256;
+  const ctx=c.getContext('2d');
+  const grad=ctx.createLinearGradient(0,0,0,256);
+  grad.addColorStop(0,'#f2a394'); grad.addColorStop(0.5,'#e8786c'); grad.addColorStop(1,'#c2584b');
+  ctx.fillStyle=grad; ctx.fillRect(0,0,256,256);
+  // fibras claras (highlights de tendón/fascia)
+  ctx.strokeStyle='rgba(255,240,230,.22)'; ctx.lineWidth=1.1;
+  for(let i=0;i<90;i++){
+    const x=Math.random()*256, y=Math.random()*256, len=12+Math.random()*34, ang=Math.PI/2+(Math.random()-0.5)*0.5;
+    ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x+Math.cos(ang)*len,y+Math.sin(ang)*len); ctx.stroke();
+  }
+  // fibras oscuras (sombra entre haces musculares)
+  ctx.strokeStyle='rgba(80,20,14,.16)'; ctx.lineWidth=1.4;
+  for(let i=0;i<55;i++){
+    const x=Math.random()*256, y=Math.random()*256, len=10+Math.random()*26, ang=Math.PI/2+(Math.random()-0.5)*0.5;
+    ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x+Math.cos(ang)*len,y+Math.sin(ang)*len); ctx.stroke();
+  }
+  const tex=new THREE.CanvasTexture(c);
+  tex.wrapS=tex.wrapT=THREE.RepeatWrapping;
+  return tex;
+}
+
 function av3dCrear(zone, medHoy, medInicio){
   av3dDestruir();
   zone.innerHTML='';
@@ -5842,8 +6029,9 @@ function av3dCrear(zone, medHoy, medInicio){
   const fill=new THREE.DirectionalLight(0x00e5ff,0.35); fill.position.set(-5,3,5); scene.add(fill);
   const back=new THREE.DirectionalLight(0x4aff8c,0.25); back.position.set(0,-2,-5); scene.add(back);
 
-  // Materiales anatómicos (de tu prototipo)
-  const mMusc=new THREE.MeshPhongMaterial({color:0xe8786c,shininess:30});
+  // Materiales anatómicos — textura procedural tipo tejido muscular (fibras + brillo húmedo)
+  const muscTex=crearTexturaMuscular();
+  const mMusc=new THREE.MeshPhongMaterial({map:muscTex, shininess:70, specular:0x5a2018});
   const mHueso=new THREE.MeshPhongMaterial({color:0xd3d3d3,shininess:50});
   const mPiel=new THREE.MeshPhongMaterial({color:0xd9a584,shininess:20});
 
@@ -5867,6 +6055,17 @@ function av3dCrear(zone, medHoy, medInicio){
   pecho.position.y=2.05; pecho.scale.set(1.05,0.55,0.7); g.add(pecho);
   partes.pecho=pecho;
 
+  // Abdomen segmentado (six-pack) — pequeños relieves sobre el torso para dar textura anatómica
+  partes.abs=[];
+  for(let row=0;row<3;row++){
+    [-1,1].forEach(s=>{
+      const ab=new THREE.Mesh(new THREE.SphereGeometry(0.115,10,10),mMusc);
+      ab.position.set(s*0.135,1.78-row*0.24,0.40-row*0.02);
+      ab.scale.set(1,0.8,0.5);
+      g.add(ab); partes.abs.push(ab);
+    });
+  }
+
   // Hombros (deltoides)
   partes.hombros=[];
   [-1,1].forEach(s=>{
@@ -5879,6 +6078,8 @@ function av3dCrear(zone, medHoy, medInicio){
   [-1,1].forEach(s=>{
     const sup=new THREE.Mesh(new THREE.CylinderGeometry(0.17,0.13,0.85,12),mMusc);
     sup.position.set(s*0.86,1.65,0); sup.rotation.z=s*-0.18; g.add(sup); partes.brazosSup.push(sup);
+    const bicep=new THREE.Mesh(new THREE.SphereGeometry(0.1,10,10),mMusc);
+    bicep.position.set(s*0.88,1.7,0.13); bicep.scale.set(1,1.3,0.6); g.add(bicep);
     const inf=new THREE.Mesh(new THREE.CylinderGeometry(0.12,0.08,0.8,12),mMusc);
     inf.position.set(s*1.02,0.92,0); inf.rotation.z=s*-0.22; g.add(inf); partes.brazosInf.push(inf);
     const mano=new THREE.Mesh(new THREE.SphereGeometry(0.11,10,10),mPiel);
@@ -6445,6 +6646,7 @@ function openModal(idx){
   document.getElementById('m-title').textContent=nmHoy;
   document.getElementById('m-sub').textContent=`${ej.series} series · ${ej.reps} · ${ej.peso}${ej.descanso?' · descanso '+ej.descanso:''}`;
   document.getElementById('m-tip').textContent=(alt?'⇄ Opción en lugar de '+ej.nm+'. Busca la misma sensación: ':'💡 ')+(ej.tip||'Siente este músculo durante el movimiento.');
+  document.getElementById('m-musculo').innerHTML=muscleMapSVG((alt?alt.enf:ej.enf)||ej.enf||'');
 
   const mm=document.getElementById('m-metodo');
   if(ej.metodo && KB_METODOS[ej.metodo.id]){
