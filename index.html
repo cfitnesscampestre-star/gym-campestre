@@ -616,7 +616,7 @@ input:focus-visible,textarea:focus-visible,select:focus-visible{outline:none;}
 .opt.sel::after{content:'';position:absolute;top:12px;right:12px;width:20px;height:20px;border-radius:50%;background:var(--grad) ;box-shadow:var(--glow);}
 .opt.sel::before{content:'';position:absolute;top:17px;right:18px;width:8px;height:5px;border-left:2px solid var(--btn-tx);border-bottom:2px solid var(--btn-tx);transform:rotate(-45deg);z-index:2;}
 .opt.sel .ol{color:var(--v);}
-.oi{width:46px;height:46px;border-radius:15px;background:var(--gl2);display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:10px;}
+.oi{width:46px;height:46px;border-radius:15px;background:var(--gl2);display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:10px;color:var(--v);}
 .ol{font-family:var(--fd);font-weight:700;font-size:17px;line-height:1.15;letter-spacing:-.01em;margin-bottom:3px;padding-right:22px;}
 .os{font-size:13px;color:var(--mu);line-height:1.4;}
 .slider-wrap{margin-bottom:4px;}
@@ -1510,6 +1510,18 @@ input[type=range]::-webkit-slider-thumb{background:var(--lime);border-color:var(
     <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></symbol>
     <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
     <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+    <symbol id="i-pulse" viewBox="0 0 24 24"><path d="M2.5 12h4l2-6 3 12 2-9 1.5 3h6.5"/></symbol>
+    <symbol id="i-medical" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></symbol>
+    <symbol id="i-warn" viewBox="0 0 24 24"><path d="M12 3.5 21 19.5H3z"/><path d="M12 9.5v4.5M12 16.8h.01"/></symbol>
+    <symbol id="i-mars" viewBox="0 0 24 24"><circle cx="10" cy="14" r="6"/><path d="M14.2 9.8 20 4M14 4h6v6"/></symbol>
+    <symbol id="i-venus" viewBox="0 0 24 24"><circle cx="12" cy="9" r="6"/><path d="M12 15v6M9 19h6"/></symbol>
+    <symbol id="i-leg" viewBox="0 0 24 24"><circle cx="12" cy="5" r="2.5"/><path d="M12 7.5v9"/><circle cx="12" cy="19" r="2.5"/></symbol>
+    <symbol id="i-racquet" viewBox="0 0 24 24"><ellipse cx="9.5" cy="8.5" rx="5.5" ry="6.5"/><path d="M9.5 15v6M6.5 21h6"/></symbol>
+    <symbol id="i-golf" viewBox="0 0 24 24"><path d="M6 3v18"/><path d="M6 4l9 3-9 3z"/><circle cx="17" cy="19.5" r="1.8"/></symbol>
+    <symbol id="i-swim" viewBox="0 0 24 24"><path d="M2 15c2-1.5 4-1.5 6 0s4 1.5 6 0 4-1.5 6 0"/><path d="M2 19c2-1.5 4-1.5 6 0s4 1.5 6 0 4-1.5 6 0"/><circle cx="14" cy="6" r="1.8"/><path d="M9 10l4-2 3 2 3-1"/></symbol>
+    <symbol id="i-ball" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5 15.5 10l-1.3 4H9.8L8.5 10zM12 7.5V4M15.5 10l3-1M8.5 10l-3-1M10.2 14l-2 3.3M13.8 14l2 3.3"/></symbol>
+    <symbol id="i-basketball" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5v17M3.5 12h17M5.5 6c3 2 3 10 0 12M18.5 6c-3 2-3 10 0 12"/></symbol>
+    <symbol id="i-belt" viewBox="0 0 24 24"><path d="M2 12h6M16 12h6"/><rect x="8" y="9" width="8" height="6" rx="1.5"/><path d="M11 9v6M13 9v6"/></symbol>
   </defs>
 </svg>
 
@@ -1648,13 +1660,13 @@ input[type=range]::-webkit-slider-thumb{background:var(--lime);border-color:var(
       <div class="q-title">¿Cuál es<br>tu objetivo?</div>
       <div class="q-sub">Define la estructura de tu rutina y tu plan de nutrición.</div>
       <div class="opts">
-        <div class="opt" onclick="qSelObjetivo(this,'GANAR MÚSCULO')"><div class="oi">💪</div><div class="ol">Ganar músculo</div><div class="os">Hipertrofia y fuerza</div></div>
-        <div class="opt" onclick="qSelObjetivo(this,'PERDER PESO')"><div class="oi">🔥</div><div class="ol">Perder peso</div><div class="os">Recomposición corporal</div></div>
-        <div class="opt" onclick="qSelObjetivo(this,'FUERZA PURA')"><div class="oi">⚡</div><div class="ol">Fuerza pura</div><div class="os">Fuerza máxima</div></div>
-        <div class="opt" onclick="qSelObjetivo(this,'RESISTENCIA')"><div class="oi">🏃</div><div class="ol">Resistencia</div><div class="os">Cardio y aguante</div></div>
-        <div class="opt" onclick="qSelObjetivo(this,'FLEXIBILIDAD')"><div class="oi">🧘</div><div class="ol">Flexibilidad</div><div class="os">Movilidad y elasticidad</div></div>
-        <div class="opt" onclick="qSelObjetivo(this,'RENDIMIENTO DEPORTIVO')"><div class="oi">🏅</div><div class="ol">Rendimiento deportivo</div><div class="os">Para tu disciplina del club</div></div>
-        <div class="opt" onclick="qSelObjetivo(this,'REHABILITACIÓN GIMNASIA')"><div class="oi">🏥</div><div class="ol">Rehabilitación</div><div class="os">Recuperar una lesión</div></div>
+        <div class="opt" onclick="qSelObjetivo(this,'GANAR MÚSCULO')"><div class="oi"><svg class="ico" aria-hidden="true"><use href="#i-dumbbell"/></svg></div><div class="ol">Ganar músculo</div><div class="os">Hipertrofia y fuerza</div></div>
+        <div class="opt" onclick="qSelObjetivo(this,'PERDER PESO')"><div class="oi"><svg class="ico" aria-hidden="true"><use href="#i-flame"/></svg></div><div class="ol">Perder peso</div><div class="os">Recomposición corporal</div></div>
+        <div class="opt" onclick="qSelObjetivo(this,'FUERZA PURA')"><div class="oi"><svg class="ico" aria-hidden="true"><use href="#i-bolt"/></svg></div><div class="ol">Fuerza pura</div><div class="os">Fuerza máxima</div></div>
+        <div class="opt" onclick="qSelObjetivo(this,'RESISTENCIA')"><div class="oi"><svg class="ico" aria-hidden="true"><use href="#i-pulse"/></svg></div><div class="ol">Resistencia</div><div class="os">Cardio y aguante</div></div>
+        <div class="opt" onclick="qSelObjetivo(this,'FLEXIBILIDAD')"><div class="oi"><svg class="ico" aria-hidden="true"><use href="#i-stretch"/></svg></div><div class="ol">Flexibilidad</div><div class="os">Movilidad y elasticidad</div></div>
+        <div class="opt" onclick="qSelObjetivo(this,'RENDIMIENTO DEPORTIVO')"><div class="oi"><svg class="ico" aria-hidden="true"><use href="#i-trophy"/></svg></div><div class="ol">Rendimiento deportivo</div><div class="os">Para tu disciplina del club</div></div>
+        <div class="opt" onclick="qSelObjetivo(this,'REHABILITACIÓN GIMNASIA')"><div class="oi"><svg class="ico" aria-hidden="true"><use href="#i-medical"/></svg></div><div class="ol">Rehabilitación</div><div class="os">Recuperar una lesión</div></div>
       </div>
       <div class="nav-row"><div class="btn-prev" onclick="qPrev(2)">←</div><button class="btn-next" disabled id="qb2" onclick="qNext(2)">Continuar</button></div>
     </div>
@@ -1674,8 +1686,8 @@ input[type=range]::-webkit-slider-thumb{background:var(--lime);border-color:var(
       <div class="q-title">¿Dónde vas<br>a entrenar?</div>
       <div class="q-sub">Adaptamos los ejercicios al equipo que tengas disponible.</div>
       <div class="opts" style="grid-template-columns:1fr">
-        <div class="opt" onclick="qSelEntorno(this,'gimnasio')"><div class="oi">🏋️</div><div class="ol">Gimnasio</div><div class="os">Con aparatos, pesas y máquinas</div></div>
-        <div class="opt" onclick="qSelEntorno(this,'funcional')"><div class="oi">🤸</div><div class="ol">Funcional / salón</div><div class="os">Sin equipo — peso corporal y bandas</div></div>
+        <div class="opt" onclick="qSelEntorno(this,'gimnasio')"><div class="oi"><svg class="ico" aria-hidden="true"><use href="#i-dumbbell"/></svg></div><div class="ol">Gimnasio</div><div class="os">Con aparatos, pesas y máquinas</div></div>
+        <div class="opt" onclick="qSelEntorno(this,'funcional')"><div class="oi"><svg class="ico" aria-hidden="true"><use href="#i-stretch"/></svg></div><div class="ol">Funcional / salón</div><div class="os">Sin equipo — peso corporal y bandas</div></div>
       </div>
       <div class="nav-row"><div class="btn-prev" onclick="mostrarSub('qq2b')">←</div><button class="btn-next" disabled id="qb2b2" onclick="qNext2b2()">Continuar</button></div>
     </div>
@@ -1708,9 +1720,9 @@ input[type=range]::-webkit-slider-thumb{background:var(--lime);border-color:var(
       <div class="q-title">¿Desde cuándo<br>le duele?</div>
       <div class="q-sub">El tiempo de evolución ayuda a definir la intensidad del protocolo.</div>
       <div class="opts s3">
-        <div class="opt" onclick="gSel(this,'inicioDolor','Reciente (menos de 1 semana)')"><div class="oi">🆕</div><div class="ol" style="font-size:15px">Reciente</div><div class="os">Menos de 1 semana</div></div>
-        <div class="opt" onclick="gSel(this,'inicioDolor','Algunas semanas')"><div class="oi">📅</div><div class="ol" style="font-size:15px">Semanas</div><div class="os">2 a 6 semanas</div></div>
-        <div class="opt" onclick="gSel(this,'inicioDolor','Desde hace meses')"><div class="oi">⏳</div><div class="ol" style="font-size:15px">Meses</div><div class="os">Dolor persistente</div></div>
+        <div class="opt" onclick="gSel(this,'inicioDolor','Reciente (menos de 1 semana)')"><div class="oi"><svg class="ico" aria-hidden="true"><use href="#i-spark"/></svg></div><div class="ol" style="font-size:15px">Reciente</div><div class="os">Menos de 1 semana</div></div>
+        <div class="opt" onclick="gSel(this,'inicioDolor','Algunas semanas')"><div class="oi"><svg class="ico" aria-hidden="true"><use href="#i-calendar"/></svg></div><div class="ol" style="font-size:15px">Semanas</div><div class="os">2 a 6 semanas</div></div>
+        <div class="opt" onclick="gSel(this,'inicioDolor','Desde hace meses')"><div class="oi"><svg class="ico" aria-hidden="true"><use href="#i-clock"/></svg></div><div class="ol" style="font-size:15px">Meses</div><div class="os">Dolor persistente</div></div>
       </div>
       <div class="nav-row"><div class="btn-prev" onclick="mostrarSub('qqg1')">←</div><button class="btn-next" disabled id="gb2" onclick="gNext(2)">Continuar</button></div>
     </div>
@@ -1757,8 +1769,8 @@ input[type=range]::-webkit-slider-thumb{background:var(--lime);border-color:var(
       <div class="q-title">¿Ya tiene un<br>diagnóstico médico?</div>
       <div class="q-sub">Esto es clave para su seguridad. Define si puede entrenar o si conviene enfocarse solo en recuperar.</div>
       <div class="opts" style="grid-template-columns:1fr">
-        <div class="opt" onclick="gSelDiag(this,'si')"><div class="oi">✅</div><div class="ol">Sí, ya la valoró un doctor</div><div class="os">Trabajamos sobre el diagnóstico</div></div>
-        <div class="opt" onclick="gSelDiag(this,'no')"><div class="oi">⚠️</div><div class="ol">No, aún no la ve un doctor</div><div class="os">Priorizamos recuperar con seguridad</div></div>
+        <div class="opt" onclick="gSelDiag(this,'si')"><div class="oi"><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg></div><div class="ol">Sí, ya la valoró un doctor</div><div class="os">Trabajamos sobre el diagnóstico</div></div>
+        <div class="opt" onclick="gSelDiag(this,'no')"><div class="oi"><svg class="ico" aria-hidden="true"><use href="#i-warn"/></svg></div><div class="ol">No, aún no la ve un doctor</div><div class="os">Priorizamos recuperar con seguridad</div></div>
       </div>
       <div id="gdiag-detalle" style="display:none;margin-top:12px">
         <div class="q-sub" style="margin-bottom:8px">¿Qué indicó el médico? (opcional, ayuda a personalizar)</div>
@@ -1783,9 +1795,9 @@ input[type=range]::-webkit-slider-thumb{background:var(--lime);border-color:var(
       <div class="q-title">¿Cuál es<br>tu nivel?</div>
       <div class="q-sub">Sé honesto — una rutina mal calibrada puede causar lesiones.</div>
       <div class="opts s3">
-        <div class="opt" onclick="qSel(this,'nivel')"><div class="oi">🌱</div><div class="ol">Principiante</div><div class="os">Menos de 6 meses</div></div>
-        <div class="opt" onclick="qSel(this,'nivel')"><div class="oi">🔧</div><div class="ol">Intermedio</div><div class="os">6 meses – 2 años</div></div>
-        <div class="opt" onclick="qSel(this,'nivel')"><div class="oi">🏆</div><div class="ol">Avanzado</div><div class="os">Más de 2 años</div></div>
+        <div class="opt" onclick="qSel(this,'nivel')"><div class="oi"><svg class="ico" aria-hidden="true"><use href="#i-leaf"/></svg></div><div class="ol">Principiante</div><div class="os">Menos de 6 meses</div></div>
+        <div class="opt" onclick="qSel(this,'nivel')"><div class="oi"><svg class="ico" aria-hidden="true"><use href="#i-settings"/></svg></div><div class="ol">Intermedio</div><div class="os">6 meses – 2 años</div></div>
+        <div class="opt" onclick="qSel(this,'nivel')"><div class="oi"><svg class="ico" aria-hidden="true"><use href="#i-trophy"/></svg></div><div class="ol">Avanzado</div><div class="os">Más de 2 años</div></div>
       </div>
       <div class="nav-row"><div class="btn-prev" onclick="qPrev(3)">←</div><button class="btn-next" disabled id="qb3" onclick="qNext(3)">Continuar</button></div>
     </div>
@@ -1849,9 +1861,8 @@ input[type=range]::-webkit-slider-thumb{background:var(--lime);border-color:var(
       <div class="q-title">¿Con qué género<br>te identificas?</div>
       <div class="q-sub">Necesario para calcular tu metabolismo basal con precisión.</div>
       <div class="opts s3">
-        <div class="opt" onclick="qSel(this,'genero')"><div class="oi">♂️</div><div class="ol">Hombre</div></div>
-        <div class="opt" onclick="qSel(this,'genero')"><div class="oi">♀️</div><div class="ol">Mujer</div></div>
-        <div class="opt" onclick="qSel(this,'genero')"><div class="oi">⚧</div><div class="ol">Otro</div></div>
+        <div class="opt" onclick="qSel(this,'genero')"><div class="oi"><svg class="ico" aria-hidden="true"><use href="#i-mars"/></svg></div><div class="ol">Masculino</div></div>
+        <div class="opt" onclick="qSel(this,'genero')"><div class="oi"><svg class="ico" aria-hidden="true"><use href="#i-venus"/></svg></div><div class="ol">Femenino</div></div>
       </div>
       <div class="nav-row"><div class="btn-prev" onclick="qPrev(6)">←</div><button class="btn-next" disabled id="qb6" onclick="qNext(6)">Continuar</button></div>
     </div>
@@ -1888,10 +1899,10 @@ input[type=range]::-webkit-slider-thumb{background:var(--lime);border-color:var(
       <div class="q-title">¿Qué zonas<br>quieres priorizar?</div>
       <div class="mh">Puedes seleccionar más de una</div>
       <div class="opts">
-        <div class="opt" onclick="qMulti(this)"><div class="oi">🦵</div><div class="ol">Piernas</div><div class="os">Cuáds, femorales, glúteo</div></div>
-        <div class="opt" onclick="qMulti(this)"><div class="oi">🫀</div><div class="ol">Pecho / espalda</div><div class="os">Tren superior</div></div>
-        <div class="opt" onclick="qMulti(this)"><div class="oi">💼</div><div class="ol">Hombros / brazos</div><div class="os">Deltoides, bíceps, tríceps</div></div>
-        <div class="opt" onclick="qMulti(this)"><div class="oi">🎯</div><div class="ol">Core / abdomen</div><div class="os">Estabilidad central</div></div>
+        <div class="opt" onclick="qMulti(this)"><div class="oi"><svg class="ico" aria-hidden="true"><use href="#i-leg"/></svg></div><div class="ol">Piernas</div><div class="os">Cuáds, femorales, glúteo</div></div>
+        <div class="opt" onclick="qMulti(this)"><div class="oi"><svg class="ico" aria-hidden="true"><use href="#i-heart"/></svg></div><div class="ol">Pecho / espalda</div><div class="os">Tren superior</div></div>
+        <div class="opt" onclick="qMulti(this)"><div class="oi"><svg class="ico" aria-hidden="true"><use href="#i-dumbbell"/></svg></div><div class="ol">Hombros / brazos</div><div class="os">Deltoides, bíceps, tríceps</div></div>
+        <div class="opt" onclick="qMulti(this)"><div class="oi"><svg class="ico" aria-hidden="true"><use href="#i-target"/></svg></div><div class="ol">Core / abdomen</div><div class="os">Estabilidad central</div></div>
       </div>
       <div class="nav-row"><div class="btn-prev" onclick="qPrev(9)">←</div><button class="btn-next" onclick="qNext(9)">Continuar</button></div>
     </div>
@@ -2350,7 +2361,11 @@ function calcNutricion(s){
   // BMR Mifflin-St Jeor
   const bmrH = 10*peso + 6.25*est - 5*edad + 5;
   const bmrM = 10*peso + 6.25*est - 5*edad - 161;
-  const bmr = Math.round(s.genero==='HOMBRE' ? bmrH : s.genero==='MUJER' ? bmrM : (bmrH+bmrM)/2);
+  // Género: acepta datos históricos (Hombre/Mujer) y las etiquetas actuales (Masculino/Femenino)
+  const g=(s.genero||'').toUpperCase();
+  const esHombre = g.includes('HOMBRE')||g.includes('MASCULINO');
+  const esMujer = g.includes('MUJER')||g.includes('FEMENINO');
+  const bmr = Math.round(esHombre ? bmrH : esMujer ? bmrM : (bmrH+bmrM)/2);
 
   // Factor de actividad según días de entrenamiento/semana
   const factores = {2:1.375, 3:1.45, 4:1.55, 5:1.65, 6:1.725};
@@ -3114,9 +3129,10 @@ function mostrarSub(id){
   document.getElementById(id).classList.add('on');
   window.scrollTo(0,0);
 }
+const DEPORTE_ICONOS={tenis:'racquet',golf:'golf',natacion:'swim',gimnasia:'stretch',futbol:'ball',padel:'racquet',frontenis:'racquet',basquet:'basketball',taekwondo:'belt',squash:'racquet',fitness:'flame'};
 function abrirDisciplinas(){
   const cont=document.getElementById('disc-opts');
-  cont.innerHTML=DEPORTES.map(d=>`<div class="opt" onclick="qSelDisc(this,'${d.id}')"><div class="oi">${d.emoji}</div><div class="ol" style="font-size:15px">${d.nm}</div></div>`).join('');
+  cont.innerHTML=DEPORTES.map(d=>`<div class="opt" onclick="qSelDisc(this,'${d.id}')"><div class="oi">${ico(DEPORTE_ICONOS[d.id]||'star')}</div><div class="ol" style="font-size:15px">${d.nm}</div></div>`).join('');
 }
 function qSelDisc(el,id){
   el.parentElement.querySelectorAll('.opt').forEach(o=>o.classList.remove('sel'));
@@ -3221,7 +3237,8 @@ function gNext(paso){
 
 function abrirLesiones(){
   const cont=document.getElementById('lesion-opts');
-  cont.innerHTML=REHAB_PROTOCOLOS.map(p=>`<div class="opt" onclick="qSelLesion(this,'${p.id}')"><div class="oi">${p.emoji}</div><div class="ol" style="font-size:14px">${p.zona}</div><div class="os">${p.subtitulo}</div></div>`).join('');
+const REHAB_ICONOS={osgood:'leg',tobillo:'leg',plantar:'leg',muneca:'dumbbell',cadera:'leg',espalda:'stretch'};
+  cont.innerHTML=REHAB_PROTOCOLOS.map(p=>`<div class="opt" onclick="qSelLesion(this,'${p.id}')"><div class="oi">${ico(REHAB_ICONOS[p.id]||'medical')}</div><div class="ol" style="font-size:14px">${p.zona}</div><div class="os">${p.subtitulo}</div></div>`).join('');
 }
 function qSelLesion(el,id){
   el.parentElement.querySelectorAll('.opt').forEach(o=>o.classList.remove('sel'));
@@ -6775,7 +6792,7 @@ function abrirEditarSocio(code){
   document.getElementById('es-edad').value=s.edad||'';
   document.getElementById('es-estatura').value=s.estatura||'';
   document.getElementById('es-peso').value=pesoActual(s)||'';
-  document.getElementById('es-genero').innerHTML=opcionesSel(['HOMBRE','MUJER','OTRO'],s.genero);
+  document.getElementById('es-genero').innerHTML=opcionesSel(['MASCULINO','FEMENINO'],s.genero);
   document.getElementById('es-objetivo').innerHTML=opcionesSel(OBJETIVOS_LISTA,s.objetivo);
   document.getElementById('es-nivel').innerHTML=opcionesSel(['PRINCIPIANTE','INTERMEDIO','AVANZADO'],s.nivel);
   document.getElementById('es-dias').innerHTML=[2,3,4,5,6].map(n=>`<option value="${n}" ${+s.dias===n?'selected':''}>${n} días por semana</option>`).join('');
@@ -7515,7 +7532,7 @@ function abrirConocimiento(){
   document.getElementById('staff-content').innerHTML=`
   <div style="padding:22px;max-width:900px">
     <h2 style="font-family:var(--fd);font-size:30px;margin:0">Base de conocimiento</h2>
-    <p style="font-size:13px;color:var(--mu);margin:4px 0 16px;line-height:1.5">Lo que consulta el sistema al crear cada rutina, junto con la filosofía del entrenador elegido. ${KB_EJERCICIOS.length} ejercicios, ${Object.keys(KB_METODOS).length} métodos de intensidad, ${KB_PRINCIPIOS.length} principios y ${notas.length} nota(s).${esCoord?' Como coordinador puedes agregar lo que falte.':''}</p>
+    <p style="font-size:13px;color:var(--mu);margin:4px 0 16px;line-height:1.5">Lo que consulta el sistema al crear cada rutina, junto con la filosofía del entrenador elegido. ${KB_EJERCICIOS.length} ejercicios, ${Object.keys(KB_METODOS).length} métodos de intensidad, ${KB_CLASES_GRUPALES.length} clases grupales, ${KB_PRINCIPIOS.length} principios y ${notas.length} nota(s).${esCoord?' Como coordinador puedes agregar lo que falte.':''}</p>
 
     <h3 class="kb-h">Lineamientos del coordinador</h3>
     <p class="kb-p">Reglas del club que la IA debe cumplir en todas las rutinas, por encima de la filosofía de cada entrenador.</p>
@@ -7542,6 +7559,15 @@ function abrirConocimiento(){
         <div style="font-size:13px;line-height:1.5">${esc(M.como)}</div></div>`).join('')}
     </div>
     ${btnAdd('kbFormMetodo()','Agregar método')}
+
+    <h3 class="kb-h">Clases grupales del club</h3>
+    <p class="kb-p">De qué trata cada clase, para que el sistema NO programe el mismo enfoque muscular el día antes, el mismo día o el día después de una clase que ya toma el socio — así se evita sobrecargar sin que tenga que decírtelo. Se usa cuando un socio marca en el cuestionario que toma clases además del gimnasio.</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:8px">
+      ${KB_CLASES_GRUPALES.map(c=>`<div class="kb-card" style="margin:0">
+        <div style="font-weight:700;font-size:14px">${esc(c.nm)}</div>
+        <div style="font-size:12.5px;color:var(--mu);margin:2px 0 6px">${esc(c.tipo)} · impacto ${esc(c.impacto)} · ${c.enfoque.map(e=>esc(KB_ENFOQUES[e]||e)).join(', ')}</div>
+        <div style="font-size:13px;line-height:1.5">${esc(c.desc)}</div></div>`).join('')}
+    </div>
 
     <h3 class="kb-h">Catálogo por zona del gimnasio</h3>
     <p class="kb-p">Las opciones por área ocupada se eligen de preferencia en otra zona.</p>
