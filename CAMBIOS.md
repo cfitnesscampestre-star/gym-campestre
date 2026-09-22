@@ -1,3 +1,19 @@
+# Cambios — v6.6 · Modo sin conexión
+
+## Qué cambió
+- **Bandeja de cambios pendientes**: todo lo que se guarda (sesiones, pesos, medidas, ediciones del staff, conocimiento, entrenadores, bajas) queda en el dispositivo y en una bandeja que **sobrevive aunque se cierre la app**. Al volver internet se sube solo.
+- **Fusión segura al sincronizar**: las sesiones, pesos, medidas, asistencias y récords se **unen** con lo que ya hay en Firebase (transacción). Si el coordinador cambió la rutina mientras el socio estaba sin señal, se respeta el cambio del coordinador.
+- **Socios dados de baja** desde otro dispositivo no "reviven" al sincronizar.
+- **Indicador superior**: "Sin conexión · N cambios por subir", "Sincronizando…" y "✓ Todo sincronizado".
+- **Service worker `fitnesspro-v13`**: guarda desde la instalación las fotos, íconos, Firebase SDK, PDF (jsPDF), 3D (three.js) y tipografías. La app abre en máximo 4 s aunque la señal sea mala.
+- Si la app abrió sin internet, al volver la señal carga Firebase sola (sin recargar).
+
+## Límites
+- La primera vez en cada dispositivo se necesita internet (para descargar la app).
+- Sin internet no hay sincronización entre dispositivos ni rutinas con IA.
+
+---
+
 # Cambios — versión revisada
 
 ## Correcciones

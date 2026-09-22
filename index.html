@@ -16,8 +16,8 @@
 <meta name="apple-mobile-web-app-title" content="Gimnasio CC">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js" crossorigin="anonymous"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js" crossorigin="anonymous"></script>
 <script>
 /* ════════════════════════════════════════════════════════════════════
    BASE DE CONOCIMIENTO — Fitness System Pro · Club Campestre Aguascalientes
@@ -427,7 +427,7 @@ function muscleMapSVG(enfKey){
 
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,600;0,700;0,800;1,700;1,800&family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,600;0,700;0,800;1,700;1,800&family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet" crossorigin="anonymous">
 <style>/* ═══════════════════════════════════════════════════════════════
    FITNESS SYSTEM PRO · Club Campestre — Diseño "Vidrio + Pulso"
    Dos temas: claro (Día) y oscuro (Noche). Se cambia con el
@@ -1005,6 +1005,11 @@ canvas.chart{width:100%;height:170px;display:block;}
 
 /* ── Complementos ── */
 @media(max-width:480px){.live-tag{display:none;}}
+.sync-pill{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 64px);transform:translate(-50%,-160%);z-index:400;display:flex;align-items:center;gap:7px;max-width:92vw;padding:6px 13px;border-radius:999px;font-family:var(--fb);font-size:12px;font-weight:700;line-height:1.2;background:var(--dk2);color:var(--tx);border:1px solid var(--b2);box-shadow:var(--shadow);pointer-events:none;opacity:0;transition:transform .3s ease,opacity .3s ease;white-space:nowrap;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);}
+.sync-pill.on{transform:translate(-50%,0);opacity:1;}
+.sync-pill .dot{width:8px;height:8px;border-radius:50%;background:var(--g);flex:none;}
+.sync-pill.off .dot{background:var(--r);}
+.sync-pill.ok .dot{background:var(--v2);}
 .toast{display:none;position:fixed;left:50%;transform:translateX(-50%);bottom:calc(92px + var(--safe-b));max-width:90vw;padding:13px 20px;background:var(--dk2);border:1px solid var(--b2);border-radius:999px;font-size:14px;font-weight:600;color:var(--tx);z-index:300;box-shadow:0 18px 40px -12px rgba(0,0,0,.45);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);text-align:center;animation:fi .25s ease;}
 .pv-row{display:grid;grid-template-columns:34px 1fr auto;gap:12px;align-items:center;padding:11px 12px;border-radius:var(--r-md);background:var(--in-bg2);margin-bottom:8px;cursor:pointer;transition:background .2s;}
 .pv-row:hover{background:var(--gl2);}
@@ -2168,6 +2173,7 @@ input[type=range]::-webkit-slider-thumb{background:var(--lime);border-color:var(
 
 <!-- TOAST -->
 <div id="toast" class="toast" role="status"></div>
+<div id="sync-pill" class="sync-pill" role="status" aria-live="polite"></div>
 
 <script>
 // ═════════════════════════════════════════
@@ -2233,13 +2239,26 @@ function initFirebase(cfg){
 }
 
 function fbEscuchar(){
-  if(!fbListo) return;
+  if(!fbListo || fbEscuchando) return;
+  fbEscuchando=true;
+  fbDB.ref('.info/connected').on('value', snap=>{
+    fbConectado=!!snap.val();
+    if(fbConectado){ fbYaConecto=true; vaciarBandeja(); }
+    actualizarPillSync();
+  });
   fbDB.ref('/socios').on('value', snap=>{
-    const data=snap.val();
-    if(data){
+    const raw=snap.val();
+    // Huella de lo confirmado por Firebase (solo socios sin cambios pendientes en este dispositivo)
+    const srv=raw||{};
+    Object.keys(srv).forEach(c=>{ if(!tienePendiente(c)) BASE[c]=baseDeSocio(srv[c]); });
+    Object.keys(BASE).forEach(c=>{ if(!srv[c] && !tienePendiente(c)) delete BASE[c]; });
+    baseGuardar();
+    const data=aplicarPendientes('/socios', raw?srv:{});
+    if(Object.keys(data).length){
       aplicarSnapshotSocios(data);
       guardarLocal();
       if(document.getElementById('s-panel')?.classList.contains('on')) staffRenderList();
+      OUTBOX.forEach(en=>{ if(en.tipo==='socio' && !enVuelo.has(en.id)) enviar(en); });  // reintentar pendientes en espera
     } else {
       // Base vacía: ya NO se siembran socios demo en producción
       DB.socios={};
@@ -2247,18 +2266,20 @@ function fbEscuchar(){
     }
   }, ()=>{ const l=lsLoad(); if(l) DB=l; });
 
-  fbDB.ref('/config').on('value', snap=>{ DB.config=snap.val()||{}; kbAplicarExtra(); guardarLocal(); if(document.getElementById('s-panel')?.classList.contains('on') && document.querySelector('#staff-content .kb-h')) abrirConocimiento(); }, ()=>{});
+  fbDB.ref('/config').on('value', snap=>{ DB.config=aplicarPendientes('/config', snap.val()||{}); kbAplicarExtra(); guardarLocal(); if(document.getElementById('s-panel')?.classList.contains('on') && document.querySelector('#staff-content .kb-h')) abrirConocimiento(); }, ()=>{});
 
   fbDB.ref('/entrenadores').on('value', snap=>{
-    const data=snap.val();
-    if(data){
+    const raw=snap.val();
+    const data=aplicarPendientes('/entrenadores', raw||{});
+    if(Object.keys(data).length){
       DB.entrenadores=data;
       guardarLocal();
-    } else {
+    } else if(!raw) {
       seedEntrenadores(); // solo escribe si la rama está vacía (ver seedEntrenadores)
     }
     if(document.getElementById('s-quiz')?.classList.contains('on')) renderTrainerPicker();
   }, ()=>{});
+  vaciarBandeja();   // subir lo que quedó pendiente de antes (aunque se haya cerrado la app)
 }
 
 // ── Sincronización segura ──
@@ -2313,33 +2334,224 @@ function fbErrorMsg(e){
   return '⚠ Sin conexión — cambio guardado localmente';
 }
 
+// ═════════════════════════════════════════
+// MODO SIN CONEXIÓN — bandeja de cambios pendientes
+// Cada cambio se guarda primero en el dispositivo y en una "bandeja" que
+// sobrevive aunque se cierre la app. Al volver internet se sube solo.
+// Las sesiones/pesos/medidas se FUSIONAN con lo que ya hay en Firebase
+// (transacción), así no se pisan datos registrados desde otro dispositivo.
+// ═════════════════════════════════════════
+const LS_OUT='fitkiosk_outbox_v1', LS_BASE='fitkiosk_base_v1';
+const FB_SDK=['https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js','https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js'];
+let OUTBOX=(()=>{ try{ const o=JSON.parse(localStorage.getItem(LS_OUT)); return Array.isArray(o)?o:[]; }catch(e){ return []; } })();
+let BASE=(()=>{ try{ return JSON.parse(localStorage.getItem(LS_BASE))||{}; }catch(e){ return {}; } })(); // huella de lo último CONFIRMADO por Firebase, por socio y campo
+const enVuelo=new Set(), OUT_CB={};
+let outSeq=Date.now(), fbConectado=false, fbYaConecto=false, fbEscuchando=false;
+function outGuardar(){ try{ localStorage.setItem(LS_OUT,JSON.stringify(OUTBOX)); }catch(e){} actualizarPillSync(); }
+function baseGuardar(){ try{ localStorage.setItem(LS_BASE,JSON.stringify(BASE)); }catch(e){} }
+function quitarEntrada(id){ const n=OUTBOX.length; OUTBOX=OUTBOX.filter(x=>x.id!==id); if(OUTBOX.length!==n) outGuardar(); }
+function tienePendiente(code){ const p='/socios/'+code; return OUTBOX.some(x=>x.path===p||x.path.indexOf(p+'/')===0); }
+
+// Representación canónica (llaves ordenadas, sin vacíos ni temporales) — igual a como lo guarda Firebase
+function canon(v){
+  if(v===null||v===undefined) return 'n';
+  if(Array.isArray(v)){ return v.length ? '['+v.map(canon).join(',')+']' : 'n'; }
+  if(typeof v==='object'){
+    const out=[]; Object.keys(v).sort().forEach(k=>{ if(k.charAt(0)==='_') return; const c=canon(v[k]); if(c!=='n') out.push(JSON.stringify(k)+':'+c); });
+    return out.length ? '{'+out.join(',')+'}' : 'n';
+  }
+  if(typeof v==='number' && !isFinite(v)) return 'n';
+  return JSON.stringify(v);
+}
+function huella(v){ const t=canon(v); let h=5381; for(let i=0;i<t.length;i++) h=((h<<5)+h+t.charCodeAt(i))|0; return (h>>>0).toString(36)+'.'+t.length; }
+function camposSocio(a,b){ const k=new Set([...Object.keys(a||{}),...Object.keys(b||{})]); return [...k].filter(x=>x!=='logs'&&x.charAt(0)!=='_'); }
+function baseDeSocio(s){ const o={}; camposSocio(s,null).forEach(k=>{ o[k]=huella(s[k]); }); return o; }
+
+// Historial: se unen los registros de ambos lados (nada se pierde)
+const LOG_LLAVES={
+  sesiones:x=>x.ts?('t'+x.ts):(x.fecha+'|'+(x.hora||'')+'|'+(x.diaKey||'')),
+  asistencia:x=>x.fecha, pesoCorporal:x=>x.fecha, medidas:x=>x.fecha,
+  lesiones:x=>(x.protoId||'')+'|'+(x.fechaInicio||'')
+};
+function unirLogs(L,S){
+  L=L||{}; S=S||{};
+  const out=Object.assign({},S,L);
+  Object.keys(LOG_LLAVES).forEach(k=>{
+    const la=comoArray(L[k]), sa=comoArray(S[k]), key=LOG_LLAVES[k], vistos=new Set(la.filter(Boolean).map(key));
+    const extra=sa.filter(x=>x && !vistos.has(key(x)));
+    let r=la.concat(extra);
+    if(extra.length){
+      if(k==='asistencia') r=r.sort((a,b)=>String(b.fecha||'').localeCompare(String(a.fecha||''))).slice(0,90);
+      else if(k==='sesiones') r=r.sort((a,b)=>String(a.fecha||'').localeCompare(String(b.fecha||''))||((a.ts||0)-(b.ts||0)));
+      else if(k==='pesoCorporal'||k==='medidas') r=r.sort((a,b)=>String(a.fecha||'').localeCompare(String(b.fecha||'')));
+    }
+    out[k]=r;
+  });
+  const pl=(L.prs&&typeof L.prs==='object')?L.prs:{}, ps=(S.prs&&typeof S.prs==='object')?S.prs:{}, prs=Object.assign({},ps);
+  Object.keys(pl).forEach(k=>{ if(!ps[k] || (+pl[k].kg||0)>=(+ps[k].kg||0)) prs[k]=pl[k]; });
+  out.prs=prs;
+  return out;
+}
+// Fusión de 3 vías por campo: si solo cambió en Firebase (p. ej. el coordinador editó la rutina) gana Firebase;
+// si cambió en este dispositivo, gana el dispositivo. El historial siempre se une.
+function fusionarSocio(code,local,server){
+  const b=BASE[code]||{}, r={};
+  camposSocio(local,server).forEach(k=>{
+    const hs=huella(server[k]), hl=huella(local[k]); let v;
+    if(b[k]!==undefined && hs!==b[k] && hl===b[k]) v=server[k];
+    else if(local[k]===undefined && b[k]===undefined) v=server[k];
+    else v=local[k];
+    if(v!==undefined) r[k]=v;
+  });
+  r.logs=unirLogs(local.logs, server.logs);
+  return asegurarLogs(r);
+}
+// Aplica un cambio pendiente sobre un árbol de datos (para que lo que llega de Firebase no borre lo pendiente)
+function ponerEn(obj,partes,val){
+  let o=obj;
+  for(let i=0;i<partes.length-1;i++){ if(!o[partes[i]]||typeof o[partes[i]]!=='object') o[partes[i]]={}; o=o[partes[i]]; }
+  const ult=partes[partes.length-1];
+  if(val===null||val===undefined) delete o[ult]; else o[ult]=JSON.parse(JSON.stringify(val));
+}
+function aplicarPendientes(raiz,data){
+  data=data||{};
+  OUTBOX.slice().forEach(en=>{
+    if(en.path!==raiz && en.path.indexOf(raiz+'/')!==0) return;
+    const rel=en.path.slice(raiz.length+1), partes=rel?rel.split('/'):[];
+    if(en.tipo==='socio'){
+      const local=DB.socios&&DB.socios[en.code];
+      if(!local) return;
+      if(data[en.code]) data[en.code]=fusionarSocio(en.code,local,asegurarLogs(data[en.code]));
+      else if(BASE[en.code]) quitarEntrada(en.id);   // lo eliminaron desde otro dispositivo: no revivirlo
+      else data[en.code]=local;                       // socio nuevo creado sin conexión
+      return;
+    }
+    if(!partes.length) return;
+    if(en.op==='set') ponerEn(data,partes,en.data);
+    else if(en.op==='remove') ponerEn(data,partes,null);
+    else if(en.op==='update' && en.data) Object.keys(en.data).forEach(k=>ponerEn(data,partes.concat(k.split('/')),en.data[k]));
+  });
+  return data;
+}
+
+function enviar(en){
+  if(!fbListo || !fbDB) return;
+  const id=en.id, gen=en.gen;
+  let p;
+  try{
+    const ref=fbDB.ref(en.path);
+    if(en.tipo==='socio'){
+      const code=en.code;
+      if(!DB.socios[code]){ quitarEntrada(id); return; }
+      p=ref.transaction(cur=>{
+        const local=DB.socios[code];
+        if(!local) return;                                   // eliminado localmente → cancelar
+        if(!cur){
+          if(BASE[code]) return;                             // existía en Firebase y ya no: se espera a confirmar (no revivir socios dados de baja)
+          return limpio(asegurarLogs(local));                // socio nuevo creado sin conexión
+        }
+        return limpio(fusionarSocio(code,local,asegurarLogs(cur)));
+      }).then(res=>{
+        if(res && res.committed && res.snapshot && res.snapshot.val()){ BASE[code]=baseDeSocio(res.snapshot.val()); baseGuardar(); return true; }
+        return !!(res && res.committed);
+      });
+    }
+    else if(en.op==='set') p=ref.set(en.data);
+    else if(en.op==='update') p=ref.update(en.data);
+    else if(en.op==='remove') p=ref.remove();
+    else { quitarEntrada(id); return; }
+  }catch(e){
+    console.warn('Firebase no aceptó los datos:',e); quitarEntrada(id);
+    showToast('⚠ No se pudo sincronizar: '+(e.message||e)); return;
+  }
+  enVuelo.add(id);
+  p.then(ok=>{
+    enVuelo.delete(id);
+    if(ok===false){ actualizarPillSync(); return; }   // transacción en espera: se reintenta al llegar datos de Firebase
+    const cur=OUTBOX.find(x=>x.id===id);
+    if(cur && cur.gen===gen) quitarEntrada(id);
+    const cb=OUT_CB[id]; if(cb && cur && cur.gen===gen){ delete OUT_CB[id]; if(cb.ok) cb.ok(); }
+    actualizarPillSync();
+  }).catch(e=>{
+    enVuelo.delete(id);
+    console.warn('Firebase write error',en.path,e);
+    const txt=String(e&&(e.code||e.message)||'').toLowerCase();
+    if(txt.includes('permission')) quitarEntrada(id);   // reglas de Firebase: reintentar no sirve
+    const cb=OUT_CB[id]; delete OUT_CB[id];
+    if(cb && cb.err) cb.err(e); else showToast(fbErrorMsg(e));
+    actualizarPillSync();
+  });
+}
+// Cambio genérico (staff, conocimiento, entrenadores…)
+function fbEncolar(path,op,data,cb){
+  if(op==='set') OUTBOX=OUTBOX.filter(x=>!(x.tipo!=='socio' && x.path===path && x.op==='set'));
+  const en={id:'o'+(++outSeq), path, op, data:(data===undefined?null:limpio(data)), gen:1, ts:Date.now()};
+  OUTBOX.push(en); outGuardar();
+  if(cb) OUT_CB[en.id]=cb;
+  enviar(en);
+  return en;
+}
+// Datos de un socio (sesiones, pesos, medidas, rutina…) — se fusionan al subir
+function fbEncolarSocio(code){
+  let en=OUTBOX.find(x=>x.tipo==='socio' && x.code===code);
+  if(en){ en.gen=(en.gen||1)+1; en.ts=Date.now(); }
+  else { en={id:'o'+(++outSeq), tipo:'socio', code, path:'/socios/'+code, gen:1, ts:Date.now()}; OUTBOX.push(en); }
+  outGuardar();
+  enviar(en);
+}
+function vaciarBandeja(){
+  if(!fbListo) return;
+  OUTBOX.slice().forEach(en=>{ if(!enVuelo.has(en.id)) enviar(en); });
+  actualizarPillSync();
+}
+function estaSinConexion(){ return !navigator.onLine || (fbListo && fbYaConecto && !fbConectado); }
+
+// Indicador superior: "Sin conexión · 3 cambios por subir" / "Sincronizando…" / "Todo sincronizado"
+let pillTimer=null, pillHabiaPend=false;
+function actualizarPillSync(){
+  const el=document.getElementById('sync-pill'); if(!el) return;
+  const n=OUTBOX.length, cambios=n+' '+(n===1?'cambio':'cambios');
+  let txt='', cls='';
+  if(estaSinConexion()){ cls='off'; txt='Sin conexión · '+(n?cambios+' por subir':'modo local'); }
+  else if(n && fbListo){ txt='Sincronizando '+cambios+'…'; }
+  else if(!n && pillHabiaPend){ cls='ok'; txt='✓ Todo sincronizado'; }
+  pillHabiaPend = n>0;
+  if(!txt){ if(!el.classList.contains('ok')) el.classList.remove('on'); return; }
+  clearTimeout(pillTimer);
+  el.className='sync-pill on '+cls;
+  el.innerHTML='<span class="dot"></span><span></span>'; el.lastChild.textContent=txt;
+  if(cls==='ok') pillTimer=setTimeout(()=>{ el.classList.remove('on'); setTimeout(()=>el.classList.remove('ok'),350); },2500);
+}
+function cargarScript(src){ return new Promise((res,rej)=>{ const sc=document.createElement('script'); sc.src=src; sc.crossOrigin='anonymous'; sc.onload=res; sc.onerror=rej; document.head.appendChild(sc); }); }
+window.addEventListener('offline', actualizarPillSync);
+window.addEventListener('online', ()=>{
+  actualizarPillSync();
+  if(fbListo) return;
+  // La app abrió sin internet y sin SDK de Firebase: cargarlo ahora y subir lo pendiente
+  const cfg=leerFbConfig(); if(!cfg) return;
+  const carga = (typeof firebase==='undefined') ? cargarScript(FB_SDK[0]).then(()=>cargarScript(FB_SDK[1])) : Promise.resolve();
+  carga.then(()=>{ fbIntentos=0; if(initFirebase(cfg)){ fbEscuchar(); if(typeof actualizarFbBadge==='function') actualizarFbBadge(); } }).catch(()=>{});
+});
+
 function dbSave(socioCode){
   guardarLocal();
-  if(!fbListo) return;
   if(!socioCode){ console.warn('dbSave sin código bloqueado: no se reescribe toda la base'); return; }
   if(!DB.socios[socioCode]) return; // el socio fue eliminado: no lo volvemos a crear
-  try{
-    fbDB.ref('/socios/'+socioCode).set(limpio(asegurarLogs(DB.socios[socioCode])))
-      .catch(e=>{ console.warn('Firebase write error (socios):',e); showToast(fbErrorMsg(e)); });
-  }catch(e){ console.warn('Firebase no aceptó los datos:',e); showToast('⚠ No se pudo sincronizar: '+(e.message||e)); }
+  fbEncolarSocio(socioCode);
 }
 // Guardado del staff: solo los campos que edita el staff (no pisa sesiones/pesos que el socio registró mientras tanto)
 function dbSaveStaff(code){
   guardarLocal();
   staffDirty.delete(code);
-  if(!fbListo) return;
   const s=DB.socios[code]; if(!s) return;
-  try{
-    fbDB.ref('/socios/'+code).update(limpio({rutina:s.rutina,status:s.status,asignado:s.asignado,entrenadorId:s.entrenadorId||''}))
-      .catch(e=>{ console.warn('Firebase write error (staff):',e); showToast(fbErrorMsg(e)); });
-  }catch(e){ console.warn('Firebase no aceptó los datos:',e); showToast('⚠ No se pudo sincronizar: '+(e.message||e)); }
+  fbEncolar('/socios/'+code,'update',{rutina:s.rutina,status:s.status,asignado:s.asignado,entrenadorId:s.entrenadorId||''});
 }
 
 function dbSaveEntrenador(entId){
   guardarLocal();
-  if(!fbListo) return;
   if(!entId){ console.warn('dbSaveEntrenador sin id bloqueado'); return; }
-  fbDB.ref('/entrenadores/'+entId).set(limpio(DB.entrenadores[entId])).catch(e=>{ console.warn('Firebase write error (entrenadores):',e); showToast(fbErrorMsg(e)); });
+  if(!DB.entrenadores[entId]) return;
+  fbEncolar('/entrenadores/'+entId,'set',DB.entrenadores[entId]);
 }
 
 function getEntrenador(id){ return DB.entrenadores[id]||null; }
@@ -2904,6 +3116,7 @@ window.addEventListener('load', ()=>{
   }
   initGeofence();
   restaurarSesion();
+  actualizarPillSync();
   // Footer del inicio
   { const whp=document.getElementById('wc-hero-pic'); if(whp) whp.innerHTML=pic(['hero/bienvenida','hero/inicio'],'bolt','fill'); }
   const n = new Date();
@@ -4592,7 +4805,7 @@ function cargarJsPDF(){
   if(_jsPDFPromise) return _jsPDFPromise;
   _jsPDFPromise = new Promise((res,rej)=>{
     const s=document.createElement('script');
-    s.src='https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+    s.src='https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'; s.crossOrigin='anonymous';
     s.onload=()=>res();
     s.onerror=()=>{ _jsPDFPromise=null; rej(new Error('jspdf load')); };
     document.head.appendChild(s);
@@ -5979,7 +6192,7 @@ function cargarThree(){
   if(av3dThreePromise) return av3dThreePromise;
   av3dThreePromise = new Promise((res,rej)=>{
     const s=document.createElement('script');
-    s.src='https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
+    s.src='https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js'; s.crossOrigin='anonymous';
     s.onload=()=>res();
     s.onerror=()=>{ av3dThreePromise=null; rej(new Error('three load')); };
     document.head.appendChild(s);
@@ -6942,20 +7155,19 @@ function guardarEdicionSocio(){
   if(nuevo){   // cambio de código: se mueve el registro completo
     delete DB.socios[code]; s.code=nuevo; s.id='#CC-'+nuevo; DB.socios[nuevo]=s; staffActivoId=nuevo;
     guardarLocal();
-    if(fbListo){
-      try{ fbDB.ref('/socios/'+nuevo).set(limpio(s)).then(()=>fbDB.ref('/socios/'+code).remove()).catch(e=>showToast(fbErrorMsg(e))); }
-      catch(e){ showToast('⚠ No se pudo sincronizar: '+(e.message||e)); }
-    }
+    OUTBOX=OUTBOX.filter(x=>!(x.tipo==='socio' && x.code===code)); outGuardar();
+    fbEncolar('/socios/'+nuevo,'set',asegurarLogs(s));
+    fbEncolar('/socios/'+code,'remove',null);
   } else {
     guardarLocal();
-    if(fbListo){
-      try{
-        fbDB.ref('/socios/'+code).update(limpio({
+    {
+      {
+        fbEncolar('/socios/'+code,'update',({
           nombre:s.nombre, edad:s.edad, estatura:s.estatura, genero:s.genero, objetivo:s.objetivo, nivel:s.nivel, dias:s.dias,
           status:s.status, asignado:s.asignado, entrenadorId:s.entrenadorId||'',
           limitaciones:s.limitaciones.length?s.limitaciones:null, 'logs/pesoCorporal':s.logs.pesoCorporal
-        })).catch(e=>{ console.warn(e); showToast(fbErrorMsg(e)); });
-      }catch(e){ showToast('⚠ No se pudo sincronizar: '+(e.message||e)); }
+        }));
+      }
     }
   }
   cerrarModalEditarSocio();
@@ -6974,17 +7186,17 @@ function confirmarEliminarSocio(code){
   if(prompt('Para confirmar, escribe ELIMINAR')!=='ELIMINAR') return;
   const copia=s;
   delete DB.socios[code]; guardarLocal();
+  OUTBOX=OUTBOX.filter(x=>!(x.tipo==='socio' && x.code===code)); outGuardar();
   staffActivoId=null; staffRenderList(); staffMostrarVacio();
-  if(!fbListo){ showToast('🗑 Socio eliminado de este dispositivo'); return; }
-  try{
-    fbDB.ref('/socios/'+code).remove()
-      .then(()=>showToast('🗑 Socio eliminado'))
-      .catch(e=>{
-        DB.socios[code]=copia; guardarLocal(); staffRenderList();
-        console.warn('No se pudo eliminar',e);
-        showToast('🔒 Firebase no permitió eliminar. Pega las reglas nuevas de firebase-rules.json y vuelve a intentar.');
-      });
-  }catch(e){ DB.socios[code]=copia; guardarLocal(); staffRenderList(); showToast('⚠ No se pudo eliminar: '+(e.message||e)); }
+  fbEncolar('/socios/'+code,'remove',null,{
+    ok:()=>showToast('🗑 Socio eliminado'),
+    err:e=>{
+      DB.socios[code]=copia; guardarLocal(); staffRenderList();
+      console.warn('No se pudo eliminar',e);
+      showToast('🔒 Firebase no permitió eliminar. Pega las reglas nuevas de firebase-rules.json y vuelve a intentar.');
+    }
+  });
+  if(estaSinConexion() || !fbListo) showToast('🗑 Socio eliminado · se aplicará en todos los dispositivos al volver la conexión');
 }
 
 // ═════════════════════════════════════════
@@ -7484,12 +7696,9 @@ function kbNuevoId(pref,nm){
 function kbGuardar(msg){
   kbAplicarExtra(); guardarLocal();
   const fin=()=>{ abrirConocimiento(); };
-  if(fbListo){
-    try{
-      const payload=limpio(kbExtra()); payload._v=1;   // _v evita que Firebase deje la rama vacía (y la rechace)
-      fbDB.ref('/config/kb').set(payload).then(()=>showToast('📚 '+msg)).catch(e=>showToast(fbErrorMsg(e)));
-    }catch(e){ showToast('⚠ No se pudo sincronizar: '+(e.message||e)); }
-  } else showToast('📚 '+msg+' (en este dispositivo)');
+  const payload=limpio(kbExtra()); payload._v=1;   // _v evita que Firebase deje la rama vacía (y la rechace)
+  fbEncolar('/config/kb','set',payload,{ok:()=>showToast('📚 '+msg)});
+  if(estaSinConexion() || !fbListo) showToast('📚 '+msg+' · se subirá al volver la conexión');
   fin();
 }
 function kbModal(titulo,cuerpo,onSave){
@@ -7686,10 +7895,8 @@ function guardarLineamientos(){
   const v=document.getElementById('kb-lineamientos').value.trim();
   DB.config=DB.config||{}; DB.config.lineamientos=v;
   guardarLocal();
-  if(fbListo){
-    try{ fbDB.ref('/config/lineamientos').set(v||' ').then(()=>showToast('📚 Lineamientos guardados — se aplican a las próximas rutinas')).catch(e=>showToast(fbErrorMsg(e))); }
-    catch(e){ showToast('⚠ No se pudo sincronizar: '+(e.message||e)); }
-  } else showToast('📚 Lineamientos guardados en este dispositivo');
+  fbEncolar('/config/lineamientos','set',v||' ',{ok:()=>showToast('📚 Lineamientos guardados — se aplican a las próximas rutinas')});
+  if(estaSinConexion() || !fbListo) showToast('📚 Lineamientos guardados · se subirán al volver la conexión');
 }
 
 // ═════════════════════════════════════════
@@ -8046,7 +8253,8 @@ function confirmarEliminarEntrenador(id){
   socios.forEach(s=>{ s.entrenadorId=''; s.asignado='Sin asignar'; dbSaveStaff(s.code); });
   delete DB.entrenadores[id];
   guardarLocal();
-  if(fbListo) fbDB.ref('/entrenadores/'+id).remove().catch(e=>showToast(fbErrorMsg(e)));
+  OUTBOX=OUTBOX.filter(x=>!(x.path==='/entrenadores/'+id && x.op==='set')); outGuardar();
+  fbEncolar('/entrenadores/'+id,'remove',null);
   abrirEntrenadores();
   showToast('🗑 Entrenador eliminado'+(socios.length?' — reasigna a sus socios cuando puedas':''));
 }
