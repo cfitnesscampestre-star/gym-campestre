@@ -850,6 +850,9 @@ canvas.chart{width:100%;height:170px;display:block;}
 .set-i{font-size:14px;font-weight:600;color:var(--tx);}
 .set-kg{width:100%;height:40px;padding:0 8px;background:var(--in-bg);border:1.5px solid var(--b);border-radius:12px;font-family:var(--fd);font-weight:800;font-size:17px;color:var(--tx);outline:none;text-align:center;caret-color:var(--v);}
 .set-kg:focus{border-color:var(--v2);box-shadow:0 0 0 3px color-mix(in srgb,var(--v2) 22%,transparent);}
+.unit-toggle{display:inline-flex;background:var(--in-bg);border:1px solid var(--b);border-radius:999px;padding:2px;font-family:var(--fb);font-size:10.5px;font-weight:700;cursor:pointer;user-select:none;}
+.unit-toggle .unit-opt{padding:4px 11px;border-radius:999px;color:var(--mu);transition:background .2s,color .2s;}
+.unit-toggle .unit-opt.on{background:var(--v);color:var(--btn-tx);}
 .set-d{width:40px;height:40px;border-radius:50%;border:2px solid var(--b2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all .2s;}
 .set-d:hover{border-color:var(--v2);}
 .set-d.ok{background:var(--grad);border-color:transparent;color:var(--btn-tx);box-shadow:var(--glow);}
@@ -1393,6 +1396,14 @@ html[data-theme="dark"] .bn-i.ac{color:var(--lime);}
 /* DETALLE DEL DÍA */
 #s-det{padding:0;}
 .btn-bk.fl{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));left:14px;z-index:130;width:42px;height:42px;background:rgba(10,14,19,.55);border:1px solid rgba(255,255,255,.18);color:#fff;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);}
+.btn-bk.fr{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));right:14px;left:auto;z-index:130;width:42px;height:42px;background:rgba(10,14,19,.55);border:1px solid rgba(255,255,255,.18);color:#fff;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);}
+.btn-bk.fr.ac{background:var(--v);border-color:var(--v);color:var(--btn-tx);}
+.rest-bubble{position:fixed;right:16px;bottom:110px;width:62px;height:62px;border-radius:50%;background:var(--grad);box-shadow:var(--glow);display:none;align-items:center;justify-content:center;flex-direction:column;z-index:500;cursor:grab;touch-action:none;font-family:var(--fb);}
+.rest-bubble:active{cursor:grabbing;}
+.rest-bubble .rb-t{font-size:13px;font-weight:800;color:var(--btn-tx);line-height:1.1;}
+.rest-bubble .rb-lbl{font-size:7.5px;font-weight:700;color:var(--btn-tx);opacity:.85;letter-spacing:.04em;margin-top:1px;}
+.rest-bubble.running{box-shadow:0 0 0 4px color-mix(in srgb,var(--v2) 45%,transparent),var(--glow);}
+.rest-bubble .rb-x{position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;background:var(--r);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;}
 .det-hero{position:relative;height:248px;overflow:hidden;border-radius:0 0 28px 28px;background:#111820;}
 .det-hero::after{content:'';position:absolute;right:-40px;top:-20px;bottom:-20px;width:170px;background:linear-gradient(115deg,transparent 30%,rgba(200,242,58,.9) 30% 39%,transparent 39% 50%,rgba(200,242,58,.55) 50% 54%,transparent 54%);pointer-events:none;}
 .det-ov{position:absolute;inset:0;background:linear-gradient(0deg,rgba(6,10,14,.92) 0%,rgba(6,10,14,.45) 50%,rgba(6,10,14,.15) 100%);}
@@ -2029,6 +2040,7 @@ input[type=range]::-webkit-slider-thumb{background:var(--lime);border-color:var(
 <!-- ═══ S6: DETALLE DÍA ═══ -->
 <div class="sc" id="s-det">
   <button type="button" class="btn-bk fl" onclick="go('s-dash');refreshDash();" aria-label="Volver"><svg class="ico " aria-hidden="true"><use href="#i-chevl"/></svg></button>
+  <button type="button" class="btn-bk fr" id="btn-rest-timer" onclick="toggleBurbujaVisible()" aria-label="Cronómetro de descanso"><svg class="ico" aria-hidden="true"><use href="#i-timer"/></svg></button>
   <div class="det-hero" id="det-hero"></div>
   <div class="det-stats" id="det-stats"></div>
   <div class="det-prog-w"><div class="det-prog-t"><b>Tu avance</b><span id="det-prog-n">0 de 0</span></div><div class="det-prog"><i id="det-prog-i"></i></div></div>
@@ -2046,8 +2058,13 @@ input[type=range]::-webkit-slider-thumb{background:var(--lime);border-color:var(
     <div class="m-tag" id="m-tag">Ejercicio</div>
     <div class="m-title" id="m-title">—</div>
     <div class="m-sub" id="m-sub">—</div>
+    <div style="display:flex;justify-content:flex-end;padding:2px 11px 6px">
+      <div class="unit-toggle" id="unit-toggle" onclick="toggleUnidadPeso()">
+        <span class="unit-opt" data-u="kg">KG</span><span class="unit-opt" data-u="lb">LB</span>
+      </div>
+    </div>
     <div style="display:grid;grid-template-columns:24px 1fr 76px 24px;gap:9px;padding:0 11px 5px;font-family:var(--fb);font-size:11.5px;letter-spacing:.02em;color:var(--mu)">
-      <span>#</span><span>OBJETIVO</span><span style="text-align:center">KG USADOS</span><span>✓</span>
+      <span>#</span><span>OBJETIVO</span><span style="text-align:center" id="m-kg-label">KG USADOS</span><span>✓</span>
     </div>
     <div class="m-sets" id="m-sets"></div>
     <div class="m-tip" id="m-tip">—</div>
@@ -2056,6 +2073,13 @@ input[type=range]::-webkit-slider-thumb{background:var(--lime);border-color:var(
     <div id="m-alts" class="m-alts" style="display:none"></div>
     <div class="m-pr" id="m-pr" style="display:none"></div>
   </div>
+</div>
+
+<!-- BURBUJA DE DESCANSO — cronómetro flotante y movible, solo visual (cuenta hacia arriba) -->
+<div class="rest-bubble" id="rest-bubble">
+  <span class="rb-x" onclick="event.stopPropagation();toggleBurbujaVisible()" aria-label="Ocultar cronómetro">✕</span>
+  <div class="rb-t" id="rest-bubble-t">00:00</div>
+  <div class="rb-lbl" id="rest-bubble-lbl">TOCA</div>
 </div>
 
 <!-- ═══ STAFF LOGIN ═══ -->
@@ -4880,7 +4904,7 @@ function renderProgresoTab(){
   const prKeys=Object.keys(prs);
   const prHTML = prKeys.length
     ? prKeys.sort((a,b)=>prs[b].kg-prs[a].kg).slice(0,6).map(nm=>`
-        <div class="pr-row"><div class="pr-nm">${nm}</div><div class="pr-kg">${prs[nm].kg} kg</div><div class="pr-dt">${fmtFecha(prs[nm].fecha)}</div></div>`).join('')
+        <div class="pr-row"><div class="pr-nm">${nm}</div><div class="pr-kg">${kgToDisplay(prs[nm].kg)} ${unidadPeso}</div><div class="pr-dt">${fmtFecha(prs[nm].fecha)}</div></div>`).join('')
     : '<div class="empty-msg">Registra los kg que usas en cada ejercicio<br>y aquí aparecerán tus récords personales.</div>';
 
   const sesHTML = ses.length
@@ -6658,6 +6682,86 @@ function elegirAlternativa(idx,ai){
   openModal(idx);
   showToast(alt ? '⇄ Hoy harás: '+alt.nm : '↺ Regresaste al ejercicio original');
 }
+// ── Preferencia de unidad de peso (kg/lb) para registrar series y ver PRs — solo de visualización, todo se guarda en kg ──
+let unidadPeso = localStorage.getItem('unidadPeso')==='lb' ? 'lb' : 'kg';
+const KG_A_LB = 2.20462;
+function kgToDisplay(kg){
+  if(kg==null||kg===''||isNaN(kg)) return '';
+  const v = unidadPeso==='lb' ? kg*KG_A_LB : kg;
+  return Math.round(v*2)/2; // redondeado a .5, como los discos/placas típicos
+}
+function displayToKg(v){
+  if(v===''||v==null) return 0;
+  const n=parseFloat(v); if(isNaN(n)) return 0;
+  return unidadPeso==='lb' ? n/KG_A_LB : n;
+}
+function toggleUnidadPeso(){
+  unidadPeso = unidadPeso==='kg' ? 'lb' : 'kg';
+  localStorage.setItem('unidadPeso', unidadPeso);
+  if(window._modalIdx!=null) openModal(window._modalIdx);
+}
+function actualizarUnitToggleUI(){
+  document.querySelectorAll('#unit-toggle .unit-opt').forEach(el=>el.classList.toggle('on', el.dataset.u===unidadPeso));
+  const lbl=document.getElementById('m-kg-label'); if(lbl) lbl.textContent = unidadPeso==='lb' ? 'LB USADAS' : 'KG USADOS';
+}
+
+// ── Burbuja de descanso: cronómetro flotante y movible, solo visual (cuenta hacia arriba desde 0) ──
+let burbuja={visible:false, running:false, startTs:0, elapsed:0, interval:null, dragging:false, moved:false};
+function toggleBurbujaVisible(){
+  burbuja.visible=!burbuja.visible;
+  const el=document.getElementById('rest-bubble');
+  if(el) el.style.display=burbuja.visible?'flex':'none';
+  const btn=document.getElementById('btn-rest-timer');
+  if(btn) btn.classList.toggle('ac',burbuja.visible);
+}
+function burbujaTap(){
+  const el=document.getElementById('rest-bubble');
+  if(burbuja.running){
+    clearInterval(burbuja.interval); burbuja.interval=null; burbuja.running=false;
+    document.getElementById('rest-bubble-lbl').textContent='TOCA';
+  } else {
+    burbuja.startTs=Date.now(); burbuja.running=true;
+    document.getElementById('rest-bubble-lbl').textContent='DESCANSO';
+    burbujaActualizarTexto();
+    burbuja.interval=setInterval(burbujaActualizarTexto,250);
+  }
+  el.classList.toggle('running',burbuja.running);
+}
+function burbujaActualizarTexto(){
+  const seg=burbuja.running?Math.floor((Date.now()-burbuja.startTs)/1000):0;
+  const mm=String(Math.floor(seg/60)).padStart(2,'0'), ss=String(seg%60).padStart(2,'0');
+  const t=document.getElementById('rest-bubble-t'); if(t) t.textContent=mm+':'+ss;
+}
+function burbujaInitDrag(){
+  const el=document.getElementById('rest-bubble'); if(!el||el._dragInit) return;
+  el._dragInit=true;
+  let sx=0,sy=0,ox=0,oy=0;
+  el.addEventListener('pointerdown',e=>{
+    if(e.target.classList.contains('rb-x')) return;
+    burbuja.dragging=true; burbuja.moved=false;
+    sx=e.clientX; sy=e.clientY;
+    const r=el.getBoundingClientRect(); ox=r.left; oy=r.top;
+    el.setPointerCapture(e.pointerId);
+  });
+  el.addEventListener('pointermove',e=>{
+    if(!burbuja.dragging) return;
+    const dx=e.clientX-sx, dy=e.clientY-sy;
+    if(Math.abs(dx)>6||Math.abs(dy)>6) burbuja.moved=true;
+    if(burbuja.moved){
+      el.style.left=Math.max(4,Math.min(window.innerWidth-el.offsetWidth-4,ox+dx))+'px';
+      el.style.top=Math.max(4,Math.min(window.innerHeight-el.offsetHeight-4,oy+dy))+'px';
+      el.style.right='auto'; el.style.bottom='auto';
+    }
+  });
+  el.addEventListener('pointerup',e=>{
+    if(!burbuja.dragging) return;
+    burbuja.dragging=false;
+    if(!burbuja.moved && !e.target.classList.contains('rb-x')) burbujaTap();
+  });
+}
+document.addEventListener('DOMContentLoaded',burbujaInitDrag);
+if(document.readyState!=='loading') burbujaInitDrag();
+
 function openModal(idx){
   const s=activeSocio; if(!s) return;
   const d=s.rutina[activeRutinaKey];
@@ -6691,9 +6795,10 @@ function openModal(idx){
   // PR actual
   const pr=s.logs?.prs?.[prKey(nmHoy)]||s.logs?.prs?.[nmHoy];
   const prEl=document.getElementById('m-pr');
-  if(pr){ prEl.style.display='block'; prEl.textContent=`🏆 Tu récord en este ejercicio: ${pr.kg} kg (${fmtFecha(pr.fecha)})`; }
+  if(pr){ prEl.style.display='block'; prEl.textContent=`🏆 Tu récord en este ejercicio: ${kgToDisplay(pr.kg)} ${unidadPeso} (${fmtFecha(pr.fecha)})`; }
   else prEl.style.display='none';
 
+  actualizarUnitToggleUI();
   if(!sesionTemp.ej[idx]) sesionTemp.ej[idx]={done:false,sets:[]};
   const saved=sesionTemp.ej[idx].sets;
   const n=parseInt(ej.series)||4;
@@ -6701,8 +6806,8 @@ function openModal(idx){
     <div class="set-r">
       <div class="set-n">${i+1}</div>
       <div class="set-i">${esc(repsDeSerie(ej,i))}</div>
-      <input class="set-kg" type="number" inputmode="decimal" step="0.5" placeholder="kg"
-        value="${saved[i]?.kg??''}" onchange="setKg(${idx},${i},this.value)" onclick="event.stopPropagation()">
+      <input class="set-kg" type="number" inputmode="decimal" step="0.5" placeholder="${unidadPeso}"
+        value="${saved[i]?.kg!=null?kgToDisplay(saved[i].kg):''}" onchange="setKg(${idx},${i},this.value)" onclick="event.stopPropagation()">
       <div class="set-d ${saved[i]?.ok?'ok':''}" onclick="setOk(${idx},${i},this)">${saved[i]?.ok?'✓':''}</div>
     </div>`).join('');
   document.getElementById('modal-ej').classList.add('open');
@@ -6710,7 +6815,7 @@ function openModal(idx){
 function setKg(idx,i,v){
   if(!sesionTemp.ej[idx]) sesionTemp.ej[idx]={done:false,sets:[]};
   if(!sesionTemp.ej[idx].sets[i]) sesionTemp.ej[idx].sets[i]={};
-  sesionTemp.ej[idx].sets[i].kg=parseFloat(v)||0;
+  sesionTemp.ej[idx].sets[i].kg=displayToKg(v);
 }
 function setOk(idx,i,el){
   if(!sesionTemp.ej[idx]) sesionTemp.ej[idx]={done:false,sets:[]};
