@@ -1431,7 +1431,7 @@ html[data-theme="dark"] .bn-i.ac{color:var(--lime);}
 .det-foot::before{content:'';position:absolute;inset:-24px 0 0 0;background:linear-gradient(0deg,var(--dk) 55%,transparent);z-index:-1;pointer-events:none;}
 
 /* BIENVENIDA (pantalla de inicio) */
-#s-inicio{padding:0;}
+#s-inicio{padding:0;justify-content:flex-start;}
 .destellos{display:none;}
 .wc-hero{position:relative;height:clamp(300px,46vh,420px);overflow:hidden;border-radius:0 0 28px 28px;background:#111820;}
 .wc-hero::after{content:'';position:absolute;right:-40px;top:-20px;bottom:-20px;width:170px;background:linear-gradient(115deg,transparent 30%,rgba(200,242,58,.9) 30% 39%,transparent 39% 50%,rgba(200,242,58,.55) 50% 54%,transparent 54%);pointer-events:none;}
@@ -1449,6 +1449,12 @@ html[data-theme="dark"] .bn-i.ac{color:var(--lime);}
   .wc-hero{height:clamp(320px,50vh,460px);}
   #s-inicio .inicio-wrap{max-width:900px;padding:28px 32px 40px;}
   #s-inicio .inicio-cards{grid-template-columns:1fr 1fr;}
+}
+@media(min-width:1024px){
+  .wc-hero{height:clamp(360px,42vh,520px);}
+  #s-inicio .inicio-wrap{max-width:1080px;padding:36px 40px 48px;gap:24px;}
+  .wc-tx h1{font-size:clamp(38px,4.2vw,56px);}
+  .wc-tx p{font-size:17px;max-width:44ch;}
 }
 
 /* Otras pantallas con la paleta nueva */
