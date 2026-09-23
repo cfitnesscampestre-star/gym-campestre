@@ -1,3 +1,20 @@
+# Cambios — v7.4 · Cardio por tiempo/FC y peso calculado con tu RM
+
+## Ejercicios cardiovasculares (elíptica, remo, bici, caminadora...)
+- Ya no se registran como "series × repeticiones × peso". El editor del entrenador muestra "Bloques / Tiempo / Frecuencia cardíaca", y el socio, al entrenar, ve un campo de minutos y de frecuencia cardíaca (lpm) en vez del teclado de peso.
+
+## Peso calculado con tu RM (repetición máxima)
+- Los ejercicios de fuerza que antes mostraban un porcentaje fijo ("Moderado — 55-60% 1RM") ya no lo muestran — ahora dicen "Esfuerzo moderado — deja 2 reps en reserva" en las cuatro pantallas donde aparecía (lista del día, ficha del ejercicio, vista previa de la rutina y el PDF).
+- El peso real se calcula solo, con el progreso del socio: cada serie registrada estima su 1RM (fórmula de Epley) y, a partir de ahí, el sistema calcula el peso según las repeticiones que pida cada ejercicio, dejando 2 en reserva — ya no un porcentaje fijo desconectado de las repeticiones, que antes podía sugerir menos peso del que el socio ya había levantado.
+- Si el socio ya conoce su RM, puede anotarlo él mismo: en su Perfil hay un botón "Tus RM (opcional)" que abre una ventana flotante para capturarlo por ejercicio, sin tener que esperar a que el sistema lo calcule solo. A los socios nuevos les aparece un aviso en Inicio invitándolos a hacerlo, que desaparece en cuanto visitan su Perfil.
+- Corregido: si ya había una sesión guardada ese día, un segundo registro se descartaba en silencio (sin PR ni RM). Ahora se pregunta si se quiere reemplazar la sesión del día con los datos nuevos.
+- Campo de peso más ancho, para números de 3-4 dígitos (kg o lb).
+
+## Nutriólogos, progresión, lugares y ajustes de rutina (de una entrega anterior)
+- Alta de nutriólogos, asignación interna de entrenador/nutriólogo con balanceo de carga, personalización de macros y menú, reparto automático de comidas, progresión por bloques, reporte de lugares visitados, intercambio de días completos de rutina.
+
+---
+
 # Cambios — v7.1 · Nutriólogos, progresión, lugares y ajustes de rutina
 
 ## Nutrición y equipo

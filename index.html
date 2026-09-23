@@ -845,10 +845,10 @@ canvas.chart{width:100%;height:170px;display:block;}
 .m-title{font-family:var(--fd);font-weight:800;font-size:28px;line-height:1.05;letter-spacing:-.03em;margin-bottom:4px;padding-right:44px;}
 .m-sub{font-size:14px;color:var(--mu);margin-bottom:18px;}
 .m-sets{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;}
-.set-r{display:grid;grid-template-columns:30px 1fr 92px 40px;align-items:center;gap:10px;padding:10px 12px;background:var(--gl);border:1px solid var(--b);border-radius:var(--r-md);}
+.set-r{display:grid;grid-template-columns:26px 1fr 104px 40px;align-items:center;gap:8px;padding:10px 12px;background:var(--gl);border:1px solid var(--b);border-radius:var(--r-md);}
 .set-n{font-family:var(--fd);font-weight:800;font-size:20px;color:var(--mu);}
 .set-i{font-size:14px;font-weight:600;color:var(--tx);}
-.set-kg{width:100%;height:40px;padding:0 8px;background:var(--in-bg);border:1.5px solid var(--b);border-radius:12px;font-family:var(--fd);font-weight:800;font-size:17px;color:var(--tx);outline:none;text-align:center;caret-color:var(--v);}
+.set-kg{width:100%;height:40px;padding:0 4px;background:var(--in-bg);border:1.5px solid var(--b);border-radius:12px;font-family:var(--fd);font-weight:800;font-size:16px;color:var(--tx);outline:none;text-align:center;caret-color:var(--v);}
 .set-kg:focus{border-color:var(--v2);box-shadow:0 0 0 3px color-mix(in srgb,var(--v2) 22%,transparent);}
 .unit-toggle{display:inline-flex;background:var(--in-bg);border:1px solid var(--b);border-radius:999px;padding:2px;font-family:var(--fb);font-size:10.5px;font-weight:700;cursor:pointer;user-select:none;}
 .unit-toggle .unit-opt{padding:4px 11px;border-radius:999px;color:var(--mu);transition:background .2s,color .2s;}
@@ -856,8 +856,12 @@ canvas.chart{width:100%;height:170px;display:block;}
 .set-d{width:40px;height:40px;border-radius:50%;border:2px solid var(--b2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all .2s;}
 .set-d:hover{border-color:var(--v2);}
 .set-d.ok{background:var(--grad);border-color:transparent;color:var(--btn-tx);box-shadow:var(--glow);}
+.cardio-log{display:flex;flex-direction:column;gap:10px;margin-bottom:6px;}
+.cardio-log label{display:flex;flex-direction:column;gap:5px;font-size:11px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.02em;}
+.set-d.cardio-ok{width:100%;height:46px;border-radius:999px;font-size:14px;font-weight:700;gap:6px;}
 .m-tip{padding:13px 15px;background:color-mix(in srgb,var(--n) 10%,transparent);border:1px solid color-mix(in srgb,var(--n) 28%,transparent);border-radius:var(--r-md);font-size:14px;color:var(--tx);line-height:1.55;}
 .m-pr{margin-top:10px;padding:11px 14px;background:color-mix(in srgb,var(--g) 12%,transparent);border:1px solid color-mix(in srgb,var(--g) 32%,transparent);border-radius:var(--r-md);font-size:13.5px;font-weight:600;color:var(--g);}
+.m-rm{margin-top:10px;padding:11px 14px;background:color-mix(in srgb,var(--p) 8%,transparent);border:1px solid color-mix(in srgb,var(--p) 26%,transparent);border-radius:var(--r-md);font-size:12.5px;color:var(--mu);line-height:1.6;}
 .m-metodo{margin-top:10px;padding:13px 15px;border-radius:var(--r-md);background:color-mix(in srgb,var(--p) 10%,transparent);border-left:4px solid var(--p);font-size:14px;line-height:1.55}
 .m-metodo-nm{font-weight:700;color:var(--p);margin-bottom:3px}
 .m-metodo-nm span{font-weight:500;color:var(--mu);font-size:13px}
@@ -1296,6 +1300,7 @@ select.ti{padding-right:34px;background-image:linear-gradient(45deg,transparent 
 .ej-ed-x:hover{color:var(--r);border-color:var(--r);}
 .ej-ed label{display:flex;flex-direction:column;gap:4px;font-size:12.5px;font-weight:700;color:var(--mu);min-width:0;}
 .ej-ed-r3{display:grid;grid-template-columns:.8fr 1.3fr 1.2fr;gap:8px;margin-top:10px;}
+.ej-ed-cardio-tag{font-size:11px;font-weight:700;color:var(--r);margin-top:8px;}
 .ej-ed-r2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;}
 .ej-ed-l{margin-top:10px;}
 #staff-content .sf-in{width:100%;min-height:44px;padding:0 12px;background:var(--in-bg);border:1.5px solid var(--b);border-radius:12px;font-size:15px;font-weight:500;color:var(--tx);font-family:var(--fb);outline:none;transition:border-color .2s,box-shadow .2s;}
@@ -1479,6 +1484,10 @@ html[data-theme="light"] .btn-go.soft{color:#2F6500;}
 .lg span{font-size:11.5px;color:var(--mu);line-height:1.2;}
 .pf-card{padding:6px 16px;}
 .pf-dato{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid var(--b);font-size:14.5px;}
+.pf-rm-info{padding:12px 0;border-bottom:1px solid var(--b);font-size:12.5px;color:var(--mu);line-height:1.6;}
+.pf-rm-row span{flex:1;min-width:0;}
+.pf-rm-in input{width:78px;height:38px;padding:0 6px;border-radius:10px;border:1.5px solid var(--b);background:var(--in-bg);color:var(--tx);font-family:var(--fd);font-weight:700;font-size:14px;text-align:center;}
+.pf-rm-in input:focus{border-color:var(--v2);outline:none;}
 .pf-dato:last-child{border-bottom:none;}
 .pf-dato span{color:var(--mu);}
 .pf-row{display:flex;align-items:center;gap:12px;width:100%;min-height:58px;background:none;border:none;border-bottom:1px solid var(--b);font-size:15.5px;font-weight:700;color:var(--tx);cursor:pointer;text-align:left;}
@@ -2162,13 +2171,15 @@ input[type=range]::-webkit-slider-thumb{background:var(--lime);border-color:var(
     <div class="m-tag" id="m-tag">Ejercicio</div>
     <div class="m-title" id="m-title">—</div>
     <div class="m-sub" id="m-sub">—</div>
-    <div style="display:flex;justify-content:flex-end;padding:2px 11px 6px">
-      <div class="unit-toggle" id="unit-toggle" onclick="toggleUnidadPeso()">
-        <span class="unit-opt" data-u="kg">KG</span><span class="unit-opt" data-u="lb">LB</span>
+    <div id="m-sets-head">
+      <div style="display:flex;justify-content:flex-end;padding:2px 11px 6px">
+        <div class="unit-toggle" id="unit-toggle" onclick="toggleUnidadPeso()">
+          <span class="unit-opt" data-u="kg">KG</span><span class="unit-opt" data-u="lb">LB</span>
+        </div>
       </div>
-    </div>
-    <div style="display:grid;grid-template-columns:24px 1fr 76px 24px;gap:9px;padding:0 11px 5px;font-family:var(--fb);font-size:11.5px;letter-spacing:.02em;color:var(--mu)">
-      <span>#</span><span>OBJETIVO</span><span style="text-align:center" id="m-kg-label">KG USADOS</span><span>✓</span>
+      <div style="display:grid;grid-template-columns:24px 1fr 76px 24px;gap:9px;padding:0 11px 5px;font-family:var(--fb);font-size:11.5px;letter-spacing:.02em;color:var(--mu)">
+        <span>#</span><span>OBJETIVO</span><span style="text-align:center" id="m-kg-label">KG USADOS</span><span>✓</span>
+      </div>
     </div>
     <div class="m-sets" id="m-sets"></div>
     <div class="m-tip" id="m-tip">—</div>
@@ -2176,6 +2187,9 @@ input[type=range]::-webkit-slider-thumb{background:var(--lime);border-color:var(
     <div id="m-metodo" class="m-metodo" style="display:none"></div>
     <div id="m-alts" class="m-alts" style="display:none"></div>
     <div class="m-pr" id="m-pr" style="display:none"></div>
+    <div class="m-rm" id="m-rm" style="display:none">
+      <div id="m-rm-txt"></div>
+    </div>
   </div>
 </div>
 
@@ -4058,7 +4072,7 @@ function renderPreview(rutina){
             <div style="font-family:var(--fd);font-size:15px;color:var(--v)">${String(ei+1).padStart(2,'0')}</div>
             <div>
               <div style="font-size:12px;font-weight:600">${esc(e.nm||e.nombre)}</div>
-              <div style="font-size:12px;color:var(--mu);font-family:var(--fb)">${e.series} × ${e.reps} · ${e.peso}</div>
+              <div style="font-size:12px;color:var(--mu);font-family:var(--fb)">${e.series} × ${e.reps} · ${esEjCardio(e)?(e.peso||''):(pct1RM(e.peso)?'Esfuerzo moderado — 2 reps en reserva':e.peso)}</div>
               <div style="font-size:12px;color:var(--v);margin-top:2px">${e.ms||e.musculo||''}${e.descanso?' · descanso '+esc(e.descanso):''}</div>
               ${e.metodo?`<div style="font-size:12px;margin-top:3px;color:var(--p)">${e.grupo?'<b>'+esc(e.grupo)+'</b> · ':''}⚡ ${esc(e.metodo.nm)}${e.metodo.detalle?' — '+esc(e.metodo.detalle):''}</div>`:''}
               ${(e.alternativas||[]).length?`<div style="font-size:12px;margin-top:3px;color:var(--mu)">⇄ Si está ocupado: ${e.alternativas.map(a=>esc(a.nm)).join(' · ')}</div>`:''}
@@ -4820,6 +4834,7 @@ function refreshDash(){
     </div>
     ${asist?`<div class="asist-w">${asist}</div>`:''}
     ${pqCardSocio(s)}
+    ${rmAvisoHTML(s)}
 
     <div class="hero-card">
       ${pic(['hero/inicio'],'bolt','fill')}
@@ -4905,9 +4920,47 @@ function temaSegHTML(){
     <button type="button" data-t="dark" onclick="setTema('dark')">${ico('moon')}Oscuro</button>
   </div>`;
 }
+function rmAvisoHTML(s){
+  if(s.avisoRMVisto || s.status!=='activo') return '';
+  if(!rmListaSocio(s).length) return '';
+  return `<div class="pg-home soft" style="cursor:pointer" onclick="dashTab('perfil');abrirModalRM()">
+    <div class="pg-home-m">💪 <b>¿Ya conoces tu peso máximo en algún ejercicio?</b> Anótalo en tu Perfil → Tus RM, y tu peso de entrenamiento se calcula desde hoy en vez de esperar a que se vaya calculando solo.
+    <span style="display:block;margin-top:6px;color:var(--v);font-weight:700">Ir a Tus RM →</span></div>
+  </div>`;
+}
+function rmListaSocio(s){
+  const vistos=new Set(), lista=[];
+  DIAS_ORDER.forEach(k=>{
+    comoArray(s.rutina[k]&&s.rutina[k].ejercicios).forEach(e=>{
+      if(!e||!e.nm||vistos.has(e.nm)) return;
+      if(pct1RM(e.peso) && !esEjCardio(e)){ vistos.add(e.nm); lista.push(e.nm); }
+    });
+  });
+  return lista;
+}
+function setRMPerfil(key,v){
+  const s=activeSocio; if(!s) return;
+  asegurarLogs(s);
+  if(!s.logs.rm) s.logs.rm={};
+  const kg=v===''?null:displayToKg(+v);
+  if(kg==null) delete s.logs.rm[key]; else s.logs.rm[key]=kg;
+  dbSave(s.code);
+}
+function abrirModalRM(){
+  const s=activeSocio; if(!s) return;
+  asegurarLogs(s);
+  const rmLista=rmListaSocio(s);
+  document.getElementById('rm-perfil-body').innerHTML = rmLista.map(nm=>{
+    const key=prKey(nm), val=s.logs.rm&&s.logs.rm[key];
+    return `<div class="pf-dato pf-rm-row"><span>${esc(nm)}</span><div class="pf-rm-in"><input type="number" inputmode="decimal" step="0.5" value="${val!=null?kgToDisplay(val):''}" placeholder="${unidadPeso}" onchange="setRMPerfil('${esc(key)}',this.value)"></div></div>`;
+  }).join('');
+  document.getElementById('modal-rm-perfil').classList.add('open');
+}
+function cerrarModalRM(){ document.getElementById('modal-rm-perfil').classList.remove('open'); }
 function renderPerfilTab(){
   const s=activeSocio; if(!s) return;
   asegurarLogs(s);
+  if(!s.avisoRMVisto){ s.avisoRMVisto=true; dbSave(s.code); }
   const ev=calcEvolucion(s);
   const prsN=Object.keys(s.logs.prs||{}).length;
   const logros=[
@@ -4921,6 +4974,7 @@ function renderPerfilTab(){
     ['Peso actual',pesoActual(s)+' kg'],['Frecuencia',s.dias+' días por semana'],['Entrenador',s.asignado||'Sin asignar'],
   ];
   const pend=s.status==='pendiente';
+  const rmLista=rmListaSocio(s);
   document.getElementById('dsec-perfil').innerHTML=`
     <div class="pf-h">
       <div class="pf-av">${esc(iniciales(s.nombre))}</div>
@@ -4942,6 +4996,10 @@ function renderPerfilTab(){
     <div class="card pf-card">${temaSegHTML()}</div>
     <div class="sec-row"><div class="sec-t">Mis datos</div></div>
     <div class="card pf-card">${datos.map(([k,v])=>`<div class="pf-dato"><span>${k}</span><b>${esc(v)}</b></div>`).join('')}</div>
+    ${rmLista.length?`<div class="sec-row"><div class="sec-t">Rendimiento</div></div>
+    <div class="card pf-card">
+      <button type="button" class="pf-row" onclick="abrirModalRM()">${it('dumbbell','sm')}<span>Tus RM (opcional)</span>${ico('chev')}</button>
+    </div>`:''}
     <div class="sec-row"><div class="sec-t">Cuenta</div></div>
     <div class="card pf-card">
       ${s.status==='activo'?`<button type="button" class="pf-row" onclick="generarPDFRutina()">${it('file','sm')}<span id="btn-pdf-rutina">Descargar mi rutina en PDF</span>${ico('chev')}</button>`:''}
@@ -5126,7 +5184,7 @@ async function generarPDFRutina(){
         const nameLines=isDup?[ej.nm||'']:doc.splitTextToSize(ej.nm||'', NAME_WRAP_W);
         doc.setFont('helvetica','normal'); doc.setFontSize(7.4);
         const srLines=doc.splitTextToSize(`${ej.series}×${ej.reps}`, SR_W-1.5);
-        const pesoLines=doc.splitTextToSize(String(ej.peso||'—'), PESO_W-1.5);
+        const pesoLines=doc.splitTextToSize(String(esEjCardio(ej)?(ej.peso||'—'):(pct1RM(ej.peso)?'Moderado — 2 reps en reserva':(ej.peso||'—'))), PESO_W-1.5);
         let tipLines=[];
         if(!isDup && (ej.tip || ej.metodo || (ej.alternativas||[]).length)){
           doc.setFont('helvetica','italic'); doc.setFontSize(7);
@@ -6809,6 +6867,13 @@ function datosEj(e){
   const tipo=(kb&&kb.t) || (/press|sentadilla|remo|jal[oó]n|peso muerto|dominad|prensa|desplante|zancad|hip thrust/i.test(e.nm||e.nombre||'')?'c':'a');
   return {kb,enf,tipo};
 }
+// Detección compartida de ejercicios aeróbicos (elíptica, remo, bici, caminadora, etc.)
+// para mostrar tiempo + frecuencia cardíaca en vez de series/repeticiones/peso.
+function esEjCardio(e){
+  const nm=e.nm||e.nombre||'';
+  const d=datosEj(e);
+  return d.enf==='cardio' || /cardio|caminad|bici|el[ií]ptica|trote|correr|remo erg[oó]?metro/i.test(nm);
+}
 function cargaLesion(ctx,d){
   return ctx.les.some(l=>(d.kb&&(d.kb.ev||[]).includes(l)) || (ZONA_LESION_ENF[l]||[]).includes(d.enf));
 }
@@ -7025,7 +7090,7 @@ function openDay(key){
           <div class="ej-pic">${pic(basesEjercicio(ej),'dumbbell','thumb')}<span class="ej-n">${ej.grupo?esc(ej.grupo):String(idx+1)}</span></div>
           <div class="ej-i">
             <div class="ej-nm" id="ejnm-${idx}">${esc(ej.nm)}</div>
-            <div class="ej-dt">${ej.series} × ${esc(ej.reps)} · ${esc(ej.peso)}${ej.descanso?' · '+esc(ej.descanso):''}</div>
+            <div class="ej-dt">${ej.series} × ${esc(ej.reps)} · ${esc(esEjCardio(ej)?ej.peso:(pct1RM(ej.peso)?'Esfuerzo moderado — deja 2 reps en reserva':ej.peso))}${ej.descanso?' · '+esc(ej.descanso):''}</div>
             <div class="ej-ms">${esc(ej.ms)}</div>
             ${(ej.metodo||(ej.alternativas||[]).length)?`<div class="ej-extra">${ej.metodo?`<span class="ej-met">${ico('bolt')}${esc(ej.metodo.nm)}</span>`:''}${(ej.alternativas||[]).length?`<span class="ej-alt">${ej.alternativas.length} ${ej.alternativas.length>1?'opciones':'opción'} por área ocupada</span>`:''}</div>`:''}
           </div>
@@ -7159,6 +7224,21 @@ function burbujaInitDrag(){
 document.addEventListener('DOMContentLoaded',burbujaInitDrag);
 if(document.readyState!=='loading') burbujaInitDrag();
 
+// Detecta si el peso está dado como % de 1RM (ej. "Moderado — 55% 1RM" o "50-60% 1RM")
+function pct1RM(pesoTxt){
+  const m=String(pesoTxt||'').match(/(\d+)(?:\s*[-–]\s*(\d+))?\s*%\s*1\s*RM/i);
+  if(!m) return null;
+  const a=+m[1], b=m[2]?+m[2]:a;
+  return {a,b};
+}
+// % real de 1RM según las repeticiones del ejercicio, dejando "rir" reps en reserva
+// (misma fórmula de Epley usada para estimar el 1RM, así el cálculo es consistente en ambos sentidos
+// y nunca sugiere un peso muy por debajo de lo que el socio ya demostró poder levantar).
+function pctPorReps(reps,rir){
+  rir = rir==null ? 2 : rir;
+  const r = Math.max(1, (reps||10) + rir);
+  return 30/(30+r);
+}
 function openModal(idx){
   const s=activeSocio; if(!s) return;
   const d=s.rutina[activeRutinaKey];
@@ -7168,7 +7248,9 @@ function openModal(idx){
   const nmHoy=alt?alt.nm:ej.nm;
   document.getElementById('m-tag').textContent=((alt?alt.ms:ej.ms)||'Ejercicio')+(ej.grupo?' · grupo '+ej.grupo:'');
   document.getElementById('m-title').textContent=nmHoy;
-  document.getElementById('m-sub').textContent=`${ej.series} series · ${ej.reps} · ${ej.peso}${ej.descanso?' · descanso '+ej.descanso:''}`;
+  document.getElementById('m-sub').textContent = esEjCardio(ej)
+    ? `${ej.reps}${ej.peso?' · Meta FC: '+ej.peso:''}`
+    : `${ej.series} series · ${ej.reps} · ${pct1RM(ej.peso)?'Esfuerzo moderado — deja 2 reps en reserva':ej.peso}${ej.descanso?' · descanso '+ej.descanso:''}`;
   document.getElementById('m-tip').textContent=(alt?'⇄ Opción en lugar de '+ej.nm+'. Busca la misma sensación: ':'💡 ')+(ej.tip||'Siente este músculo durante el movimiento.');
   document.getElementById('m-musculo').innerHTML=muscleMapSVG((alt?alt.enf:ej.enf)||ej.enf||'');
 
@@ -7195,10 +7277,49 @@ function openModal(idx){
   if(pr){ prEl.style.display='block'; prEl.textContent=`🏆 Tu récord en este ejercicio: ${kgToDisplay(pr.kg)} ${unidadPeso} (${fmtFecha(pr.fecha)})`; }
   else prEl.style.display='none';
 
+  // RM (repetición máxima): si el peso está dado como % de 1RM, se calcula solo con
+  // el progreso del socio (fórmula de Epley sobre sus series registradas). No lo captura nadie a mano.
+  // El % que se aplica NO es el texto fijo de la plantilla (es solo una etiqueta de dificultad, no
+  // está calibrado por repeticiones) — se recalcula según las repeticiones reales del ejercicio,
+  // dejando 2 en reserva, para que nunca sugiera menos peso del que el socio ya demostró levantar.
+  const pctRM=pct1RM(ej.peso);
+  const rmBox=document.getElementById('m-rm');
+  if(pctRM && !esEjCardio(ej)){
+    const rmKey=prKey(nmHoy);
+    const rmKg=s.logs?.rm?.[rmKey];
+    const repsBase=parseInt(ej.reps)||10;
+    const pctCalc=pctPorReps(repsBase,2);
+    rmBox.style.display='block';
+    if(rmKg){
+      const kgTarget=kgToDisplay(rmKg*pctCalc);
+      document.getElementById('m-rm-txt').innerHTML=`💪 <b>Peso sugerido hoy: ${kgTarget} ${unidadPeso}</b> <span style="font-weight:400">(≈${Math.round(pctCalc*100)}% de tu 1RM estimado, dejando 2 reps en reserva)</span><br><span style="font-weight:400">Calculado con tu progreso en este ejercicio — se sigue ajustando solo cada vez que registras una serie.</span>`;
+    } else {
+      document.getElementById('m-rm-txt').innerHTML=`💡 <b>Aún no tenemos tu peso calculado aquí.</b><br><span style="font-weight:400">Registra tus series con el peso que uses hoy. Desde tu próxima sesión, aquí verás el peso real en vez del porcentaje.</span>`;
+    }
+  } else {
+    rmBox.style.display='none';
+  }
+
   actualizarUnitToggleUI();
   if(!sesionTemp.ej[idx]) sesionTemp.ej[idx]={done:false,sets:[]};
   const saved=sesionTemp.ej[idx].sets;
+  const head=document.getElementById('m-sets-head');
+  if(esEjCardio(ej)){
+    if(head) head.style.display='none';
+    const s0=saved[0]||{};
+    document.getElementById('m-sets').innerHTML=`
+    <div class="cardio-log">
+      <label>Tiempo (min)<input class="sf-in" type="number" inputmode="numeric" placeholder="Ej. 20"
+        value="${s0.min!=null?s0.min:''}" onchange="setCardioMin(${idx},this.value)" onclick="event.stopPropagation()"></label>
+      <label>Frecuencia cardíaca (lpm)<input class="sf-in" type="number" inputmode="numeric" placeholder="Opcional"
+        value="${s0.fc!=null?s0.fc:''}" onchange="setCardioFc(${idx},this.value)" onclick="event.stopPropagation()"></label>
+      <div class="set-d cardio-ok ${s0.ok?'ok':''}" onclick="setCardioOk(${idx},this)">${s0.ok?'✓ Completado':'Marcar como completado'}</div>
+    </div>`;
+    document.getElementById('modal-ej').classList.add('open');
+    return;
+  }
   const n=parseInt(ej.series)||4;
+  if(head) head.style.display='';
   document.getElementById('m-sets').innerHTML=Array.from({length:n},(_,i)=>`
     <div class="set-r">
       <div class="set-n">${i+1}</div>
@@ -7208,6 +7329,23 @@ function openModal(idx){
       <div class="set-d ${saved[i]?.ok?'ok':''}" onclick="setOk(${idx},${i},this)">${saved[i]?.ok?'✓':''}</div>
     </div>`).join('');
   document.getElementById('modal-ej').classList.add('open');
+}
+function setCardioMin(idx,v){
+  if(!sesionTemp.ej[idx]) sesionTemp.ej[idx]={done:false,sets:[]};
+  if(!sesionTemp.ej[idx].sets[0]) sesionTemp.ej[idx].sets[0]={};
+  sesionTemp.ej[idx].sets[0].min = v===''?null:+v;
+}
+function setCardioFc(idx,v){
+  if(!sesionTemp.ej[idx]) sesionTemp.ej[idx]={done:false,sets:[]};
+  if(!sesionTemp.ej[idx].sets[0]) sesionTemp.ej[idx].sets[0]={};
+  sesionTemp.ej[idx].sets[0].fc = v===''?null:+v;
+}
+function setCardioOk(idx,el){
+  if(!sesionTemp.ej[idx]) sesionTemp.ej[idx]={done:false,sets:[]};
+  if(!sesionTemp.ej[idx].sets[0]) sesionTemp.ej[idx].sets[0]={};
+  const on=!el.classList.contains('ok');
+  el.classList.toggle('ok',on); el.textContent=on?'✓ Completado':'Marcar como completado';
+  sesionTemp.ej[idx].sets[0].ok=on;
 }
 function setKg(idx,i,v){
   if(!sesionTemp.ej[idx]) sesionTemp.ej[idx]={done:false,sets:[]};
@@ -7234,7 +7372,7 @@ function finalizarSesion(){
   if(hechos0===0) uiConfirm('No marcaste ningún ejercicio. ¿Registrar la sesión de todas formas?',finalizarSesionConfirmada,{label:'Registrar de todas formas'});
   else finalizarSesionConfirmada();
 }
-function finalizarSesionConfirmada(){
+function finalizarSesionConfirmada(reemplazar){
   try{
     const s=activeSocio;
     if(!s) return;
@@ -7244,11 +7382,13 @@ function finalizarSesionConfirmada(){
     const idxs=Object.keys(sesionTemp.ej);
     const hechos=idxs.filter(i=>sesionTemp.ej[i].done || (sesionTemp.ej[i].sets||[]).some(x=>x&&(x.ok||x.kg))).length;
     const hoy=fechaISO(new Date());
-    if(s.logs.sesiones.some(x=>x.fecha===hoy)){
-      showToast('ℹ Ya registraste tu sesión de hoy');
-      sesionTemp=null; go('s-dash'); refreshDash(); dashTab('progreso');
+    const previa=s.logs.sesiones.find(x=>x.fecha===hoy);
+    if(previa && !reemplazar){
+      uiConfirm('Ya registraste una sesión hoy ('+(previa.tipo||'tu rutina')+'). ¿Quieres reemplazarla con lo que acabas de registrar? Tus récords y pesos calculados se actualizarán con estos datos nuevos.',
+        ()=>finalizarSesionConfirmada(true), {label:'Reemplazar sesión de hoy'});
       return;
     }
+    if(previa) s.logs.sesiones=s.logs.sesiones.filter(x=>x.fecha!==hoy);
 
     // Volumen y PRs
     let volumen=0; const cambios=[], detalle=[];
@@ -7264,9 +7404,17 @@ function finalizarSesionConfirmada(){
       if(hechas||kgs.length){ const reg={n:ej.nm, s:hechas, p:parseInt(ej.series)||hechas}; if(kgs.length) reg.kg=Math.max(...kgs); if(alt) reg.alt=alt.nm; detalle.push(reg); }
       (sesionTemp.ej[i].sets||[]).forEach((set,si)=>{
         if(set&&set.kg>0){
-          volumen += set.kg*(parseInt(repsDeSerie(ej,si))||10);
+          const repsTxt=repsDeSerie(ej,si), repsObj=parseInt(repsTxt)||0;
+          volumen += set.kg*(repsObj||10);
           const k=prKey(nmHecho), pr=s.logs.prs[k];
           if(!pr || set.kg>pr.kg) s.logs.prs[k]={kg:set.kg,fecha:hoy};
+          // 1RM estimado (fórmula de Epley) a partir de esta serie — solo con reps de fuerza normales,
+          // nunca con series de tiempo (seg/min) donde el número no son repeticiones.
+          if(repsObj>0 && repsObj<=20 && !/seg|min/i.test(repsTxt)){
+            const rmEst=Math.round(set.kg*(1+repsObj/30)*10)/10;
+            if(!s.logs.rm) s.logs.rm={};
+            if(!s.logs.rm[k] || rmEst>s.logs.rm[k]) s.logs.rm[k]=rmEst;
+          }
         }
       });
     });
@@ -7586,10 +7734,11 @@ function staffRenderContent(s){
           <input class="sf-in" value="${esc(e.nm||'')}" placeholder="Nombre del ejercicio" list="kb-nombres" ${fld(s.code,k,ei,'nm')}>
           <button type="button" class="ej-ed-x" onclick="staffDelEj('${s.code}','${k}',${ei})" aria-label="Quitar ejercicio">✕</button>
         </div>
+        ${esEjCardio(e)?'<div class="ej-ed-cardio-tag">💓 Aeróbico — tiempo y frecuencia cardíaca en vez de series/peso</div>':''}
         <div class="ej-ed-r3">
-          <label>Series<input class="sf-in" inputmode="numeric" value="${esc(e.series??'')}" ${fld(s.code,k,ei,'series')}></label>
-          <label>Repeticiones<input class="sf-in" value="${esc(e.reps||'')}" ${fld(s.code,k,ei,'reps')}></label>
-          <label>Peso<input class="sf-in" value="${esc(e.peso||'')}" ${fld(s.code,k,ei,'peso')}></label>
+          <label>${esEjCardio(e)?'Bloques':'Series'}<input class="sf-in" inputmode="numeric" value="${esc(e.series??'')}" ${fld(s.code,k,ei,'series')}></label>
+          <label>${esEjCardio(e)?'Tiempo':'Repeticiones'}<input class="sf-in" placeholder="${esEjCardio(e)?'Ej. 20 min — zona 2':''}" value="${esc(e.reps||'')}" ${fld(s.code,k,ei,'reps')}></label>
+          <label>${esEjCardio(e)?'Frecuencia cardíaca':'Peso'}<input class="sf-in" placeholder="${esEjCardio(e)?'Ej. 65–75% FCmáx':''}" value="${esc(e.peso||'')}" ${fld(s.code,k,ei,'peso')}></label>
         </div>
         <label class="ej-ed-l">Nota propioceptiva<input class="sf-in" value="${esc(e.tip||'')}" placeholder="Dónde y cómo sentir el estímulo" ${fld(s.code,k,ei,'tip')}></label>
         <details class="ej-ed-more">
@@ -9291,6 +9440,18 @@ if('serviceWorker' in navigator){
   </div>
 </div>
 
+
+<!-- ═══ MODAL TUS RM (perfil del socio) ═══ -->
+<div class="modal" id="modal-rm-perfil" onclick="if(event.target===this)cerrarModalRM()">
+  <div class="mbox" style="max-width:480px">
+    <div class="mx" onclick="cerrarModalRM()">✕</div>
+    <div class="m-tag">Rendimiento</div>
+    <div class="m-title" style="font-size:22px">Tus RM (opcional)</div>
+    <div class="pf-rm-info" style="border-bottom:none;padding-top:2px">Si ya conoces tu peso máximo en alguno de estos ejercicios, anótalo aquí y tu peso de entrenamiento se calcula desde hoy. Si no lo sabes, no hay problema — se va calculando solo conforme entrenas.</div>
+    <div id="rm-perfil-body"></div>
+    <button class="btn-main" style="margin-top:16px" onclick="cerrarModalRM()">Guardar y cerrar</button>
+  </div>
+</div>
 
 <!-- ═══ MODAL NUTRICIÓN (nutriólogo/entrenador/coordinador) ═══ -->
 <div class="modal" id="modal-nutricion" onclick="if(event.target===this)nutCerrar()">
