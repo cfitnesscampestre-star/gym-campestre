@@ -1,3 +1,37 @@
+# Cambios — v7.1 · Nutriólogos, progresión, lugares y ajustes de rutina
+
+## Nutrición y equipo
+- **Nutriólogos**: se dan de alta igual que un entrenador, marcando si da entrenamiento, nutrición, o ambos. Un entrenador que ya sabe de nutrición puede tener las dos funciones.
+- **Asignación de staff** (solo coordinador, decisión interna — el socio nunca la ve ni la elige): en la ficha de cada socio, dos selectores rápidos para elegir quién lleva su entrenamiento y quién su nutrición. El de entrenador muestra cuántos socios activos tiene cada quien, para balancear carga de trabajo. Reasignar solo cambia quién ve y edita la ficha — la rutina, historial y datos del socio se quedan intactos.
+- **Personalizar nutrición**: quien tenga la función asignada puede ajustar manualmente calorías/macros/agua y armar un menú por comidas para un socio. El socio lo ve reflejado al instante, con el cálculo automático como referencia.
+- **Reparto de comidas** (automático, sin que nadie lo escriba): el socio elige en cuántas comidas divide su día (3 a 6) y el sistema arma, según sus propios requerimientos, cuánto pesa cada comida y una guía general de plato (verduras/proteína/carbohidratos/grasas) — no es un menú ni una receta, solo una proporción de referencia.
+- Filtro "📈 Progresión" y el resto del sistema de bloques de progresión (evaluación al socio, propuesta automática de siguiente bloque, aprobación e historial) de una entrega anterior.
+- Corregido: un nutriólogo sin función de entrenamiento ya no aparece como opción al elegir entrenador en el alta de un socio nuevo.
+- Corregido: cada entrenador y nutriólogo ve solo a los socios que tiene asignados — ya no ve a todos los que están sin asignar.
+
+## Ubicación
+- Se quitó el aviso de "dentro/fuera del gimnasio" que se mostraba al socio al entrar — la app ya no da esa impresión de estar limitada a un solo lugar.
+- Nueva sección **📍 Lugares** (menú del coordinador): agrupa los check-ins por zona (~55 m) y muestra cuántas veces y en cuántos días distintos se ha abierto la app desde cada lugar, separando "Club Campestre" de "otros lugares" — con un enlace directo a Google Maps para cada uno. Pensado para detectar otros gimnasios donde ya conocen la app.
+
+## Rutinas
+- **Intercambiar día completo**: al abrir cualquier día de la rutina de un socio, se puede intercambiar todo su contenido (tipo de sesión + todos los ejercicios) con el de otro día — útil cuando un socio cambia su disponibilidad y hay que reacomodar sin recapturar nada a mano.
+
+## Modo sin conexión (de una entrega anterior)
+- Bandeja de cambios pendientes, fusión segura al sincronizar, service worker con todo precargado (fotos, PDF, 3D, tipografías, Firebase SDK) e indicador de estado.
+
+---
+
+# Cambios — v6.7 · Progresión por bloques
+
+## Nuevo
+- **Evaluación de progresión**: al terminar un bloque (4-6 semanas), el coordinador o entrenador manda un botón "📋 Enviar evaluación" desde la ficha del socio. Le aparece al socio en su Inicio.
+- **Cuestionario del socio** (11 preguntas, ~2 min): intensidad, reps en reserva, asistencia, recuperación, molestias articulares, técnica, avance percibido, preferencia (más carga / variedad / sesiones cortas / enfocar una zona), disponibilidad, ejercicios que quiere cambiar y comentario libre.
+- **Propuesta automática**: el sistema cruza las respuestas con lo que el socio realmente registró (peso máximo y series completadas por ejercicio durante el bloque) y arma la siguiente rutina: sube cargas donde hay margen, cambia ejercicios con molestia o que no le gustaron, ajusta series por recuperación o enfoque de zona, sube reps/tiempo en flexibilidad y rehabilitación. Cada cambio muestra su motivo.
+- **Revisión del entrenador**: la propuesta se puede regenerar, descartar o aprobar (con duración del nuevo bloque, 4-6 semanas). Al aprobar, la rutina anterior se guarda en el historial del socio (hasta 12 bloques) y la nueva queda activa al instante.
+- **El socio ve su progresión**: tarjeta "Nuevo bloque" con lo que cambió (peso anterior vs nuevo, ejercicios nuevos), y un botón "Mi progresión" en Mi plan con la línea de tiempo de todos sus bloques.
+- Funciona sin conexión: se apoya en la misma bandeja de cambios pendientes de la v6.6.
+- Filtro "📈 Progresión" en la lista de socios del panel: quiénes tienen evaluación contestada, propuesta por aprobar, o ya les toca progresar.
+
 # Cambios — v6.6 · Modo sin conexión
 
 ## Qué cambió

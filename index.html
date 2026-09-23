@@ -1150,6 +1150,105 @@ select.ti{padding-right:34px;background-image:linear-gradient(45deg,transparent 
 .sl-st.ok{color:var(--v);background:color-mix(in srgb,var(--v) 10%,transparent);border-color:color-mix(in srgb,var(--v) 32%,transparent);}
 .sl-st.pend{color:var(--g);background:color-mix(in srgb,var(--g) 12%,transparent);border-color:color-mix(in srgb,var(--g) 34%,transparent);}
 
+/* ── Progresión por bloques ── */
+.sd-pri.danger{background:var(--r);box-shadow:0 8px 20px -8px color-mix(in srgb,var(--r) 50%,transparent);}
+.comida-sel{display:flex;gap:6px;margin-bottom:14px;}
+.comida-sel button{flex:1;height:40px;border:1.5px solid var(--b);border-radius:12px;background:var(--in-bg);color:var(--tx);font-family:var(--fd);font-weight:800;font-size:16px;cursor:pointer;transition:background .2s,color .2s,border-color .2s;}
+.comida-sel button.on{background:var(--grad);color:var(--btn-tx);border-color:transparent;box-shadow:var(--glow);}
+.comida-list{display:flex;flex-direction:column;gap:8px;}
+.comida-it{padding:11px 13px;border-radius:14px;background:var(--in-bg2);border:1px solid var(--b);}
+.comida-it-h{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px;}
+.comida-it-h b{font-family:var(--fd);font-size:15px;flex:1;min-width:60px;}
+.comida-kcal{font-size:12px;color:var(--mu);font-family:var(--fb);}
+.comida-tag{font-size:9px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;padding:3px 8px;border-radius:999px;border:1px solid var(--b);color:var(--mu);}
+.comida-tag.fuerte{color:var(--v);border-color:color-mix(in srgb,var(--v) 40%,transparent);background:color-mix(in srgb,var(--v) 10%,transparent);}
+.comida-tag.media{color:var(--n);border-color:color-mix(in srgb,var(--n) 35%,transparent);background:color-mix(in srgb,var(--n) 8%,transparent);}
+.comida-tag.ligera{color:var(--mu);}
+.comida-plato{font-size:12.5px;color:var(--mu);font-family:var(--fb);line-height:1.5;}
+.comida-plato.ligera{font-style:italic;}
+.nut-comida{position:relative;padding:12px;border:1px solid var(--b);border-radius:14px;background:var(--in-bg2);margin-bottom:8px;}
+.nut-comida .nut-del{position:absolute;top:8px;right:8px;width:26px;height:26px;border-radius:50%;border:1px solid var(--b);background:var(--gl);color:var(--mu);font-size:12px;line-height:1;cursor:pointer;z-index:1;}
+.pg-card{background:var(--gl);border:1px solid var(--b);border-radius:20px;padding:14px;box-shadow:var(--shadow);}
+.pg-card.hot{border-color:color-mix(in srgb,var(--v2) 55%,transparent);box-shadow:0 0 0 3px color-mix(in srgb,var(--v2) 16%,transparent),var(--shadow);}
+.pg-p{font-size:14px;line-height:1.55;color:var(--mu);margin:0 0 12px;}
+.pg-p b{color:var(--tx);}
+.pg-p.sm{font-size:12.5px;margin:10px 0 0;text-align:center;}
+.pg-acts{display:flex;flex-wrap:wrap;gap:8px;}
+.pg-acts .sd-b{flex:1 1 140px;}
+.pg-ok{font-size:13.5px;font-weight:700;color:var(--v);margin-bottom:8px;}
+.pg-wait{font-size:14px;line-height:1.5;margin-bottom:12px;padding:10px 12px;border-radius:14px;background:color-mix(in srgb,var(--g) 10%,transparent);border:1px solid color-mix(in srgb,var(--g) 30%,transparent);}
+.pg-k{font-size:12.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--v);margin-bottom:8px;}
+.pg-resp{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.pg-r{padding:8px 10px;border-radius:12px;background:var(--in-bg2);border:1px solid var(--b);min-width:0;}
+.pg-r span{display:block;font-size:11.5px;font-weight:700;color:var(--mu);}
+.pg-r b{display:block;font-size:13.5px;line-height:1.3;overflow-wrap:anywhere;}
+.pg-r.al{border-color:color-mix(in srgb,var(--r) 40%,transparent);background:color-mix(in srgb,var(--r) 8%,transparent);}
+.pg-r.al b{color:var(--r);}
+.pg-com{margin-top:8px;padding:10px 12px;border-radius:12px;background:color-mix(in srgb,var(--n) 8%,transparent);border:1px solid color-mix(in srgb,var(--n) 26%,transparent);font-size:14px;font-style:italic;line-height:1.5;}
+.pg-ul{margin:0 0 10px;padding-left:18px;font-size:14px;line-height:1.55;}
+.pg-ul li{margin-bottom:4px;}
+.pg-cnt{font-size:13.5px;color:var(--mu);margin-bottom:6px;}
+.pg-cnt b{color:var(--tx);font-size:16px;}
+.pg-dia{font-family:var(--fd);font-weight:800;font-size:15px;color:var(--v);margin:14px 0 6px;letter-spacing:-.01em;}
+.pg-ch{padding:10px 12px;border-radius:14px;background:var(--in-bg2);margin-bottom:6px;}
+.pg-ch-n{font-size:14.5px;line-height:1.3;overflow-wrap:anywhere;}
+.pg-ch-n s{color:var(--mu);font-weight:500;}
+.pg-ch-v{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:13px;margin-top:4px;}
+.pg-ch-v span{color:var(--mu);}
+.pg-ch-v i{font-style:normal;color:var(--mu);}
+.pg-ch-v b{color:var(--tx);}
+.pg-ch-m{font-size:12.5px;color:var(--n);margin-top:4px;line-height:1.4;}
+.pg-apr{margin-top:14px;padding-top:14px;border-top:1px solid var(--b);display:flex;flex-direction:column;gap:10px;}
+.pg-apr label{display:flex;flex-direction:column;gap:4px;font-size:12.5px;font-weight:700;color:var(--mu);}
+.pg-apr .sd-pri{width:100%;}
+.pg-hist-t{font-family:var(--fd);font-weight:800;font-size:16px;margin:16px 0 8px;}
+.pg-h{background:var(--gl);border:1px solid var(--b);border-radius:16px;padding:10px 14px;margin-bottom:8px;}
+.pg-card .pg-h{background:var(--in-bg2);margin-bottom:12px;}
+.pg-h summary{cursor:pointer;display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline;font-size:14.5px;list-style:none;}
+.pg-h summary::-webkit-details-marker{display:none;}
+.pg-h summary span{font-size:12.5px;color:var(--mu);}
+.pg-h[open] summary{margin-bottom:8px;}
+.pg-mini{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid var(--b);font-size:13.5px;}
+.pg-mini:last-child{border-bottom:none;}
+.pg-mini span{min-width:0;overflow-wrap:anywhere;}
+.pg-mini small{display:block;font-size:11.5px;color:var(--mu);margin-top:2px;}
+.pg-mini b{flex-shrink:0;text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:3px;max-width:48%;}
+.pg-tag{font-style:normal;font-size:11px;font-weight:800;padding:2px 8px;border-radius:999px;background:var(--in-bg2);color:var(--mu);border:1px solid var(--b);}
+.pg-tag.up{color:var(--v);background:color-mix(in srgb,var(--v) 12%,transparent);border-color:color-mix(in srgb,var(--v) 34%,transparent);}
+.pg-tag.new{color:var(--p);background:color-mix(in srgb,var(--p) 10%,transparent);border-color:color-mix(in srgb,var(--p) 30%,transparent);}
+/* Socio */
+.pg-home{margin-bottom:14px;padding:18px 16px;border-radius:var(--r-xl);background:color-mix(in srgb,var(--v) 10%,var(--gl));border:1px solid color-mix(in srgb,var(--v2) 45%,transparent);box-shadow:var(--shadow);}
+.pg-home.soft{padding:13px 16px;background:var(--gl);border-color:var(--b);}
+.pg-home-k{font-size:12.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--v);}
+.pg-home-t{font-family:var(--fd);font-weight:800;font-size:22px;letter-spacing:-.02em;margin:4px 0;}
+.pg-home-m{font-size:14px;color:var(--mu);line-height:1.5;margin-bottom:12px;}
+.pg-home.soft .pg-home-m{margin:0;color:var(--tx);}
+.pg-plan{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px;padding:13px 16px;border-radius:var(--r-lg);background:var(--gl);border:1px solid var(--b);box-shadow:var(--shadow);color:var(--tx);font-family:var(--fb);cursor:pointer;text-align:left;}
+.pg-plan b{display:block;font-family:var(--fd);font-size:17px;}
+.pg-plan span{font-size:13px;color:var(--mu);}
+.pg-plan em{font-style:normal;font-size:14px;font-weight:700;color:var(--v);display:flex;align-items:center;gap:2px;}
+.pg-m-t{font-family:var(--fd);font-weight:800;font-size:24px;letter-spacing:-.02em;margin-bottom:12px;}
+.pg-tls{display:flex;flex-direction:column;gap:6px;}
+.pg-tl{padding:9px 12px;border-radius:12px;background:var(--in-bg2);border:1px solid var(--b);}
+.pg-tl b{display:block;font-size:14px;}
+.pg-tl span{font-size:12.5px;color:var(--mu);}
+.pg-tl.on{border-color:var(--v2);background:color-mix(in srgb,var(--v) 10%,var(--gl));}
+.pg-q-top{display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:700;color:var(--mu);}
+.pg-x{width:36px;height:36px;border-radius:50%;border:1px solid var(--b);background:var(--gl);color:var(--mu);font-size:14px;cursor:pointer;}
+.pg-q-t{font-family:var(--fd);font-weight:800;font-size:22px;line-height:1.15;letter-spacing:-.02em;}
+.pg-q-s{font-size:14px;color:var(--mu);margin-top:6px;}
+.pg-opts{display:flex;flex-direction:column;gap:8px;margin-top:16px;}
+.opt.pg-opt{padding:13px 16px;}
+.opt.pg-opt .ol{font-size:16px;margin-bottom:1px;}
+.pg-chk{margin-top:16px;}
+.pg-chk .chk{justify-content:flex-start;text-align:left;line-height:1.25;}
+.pg-txt{width:100%;margin-top:16px;padding:12px;border-radius:14px;background:var(--in-bg);border:1.5px solid var(--b);color:var(--tx);font-family:var(--fb);font-size:15px;outline:none;resize:vertical;box-sizing:border-box;}
+.pg-txt:focus{border-color:var(--v2);}
+.pg-q-nav{display:flex;justify-content:space-between;gap:10px;margin-top:20px;}
+.pg-q-nav .btn-go{min-width:120px;justify-content:center;}
+.pg-bar{height:6px;border-radius:999px;background:var(--fill-track);overflow:hidden;margin:8px 0 16px;}
+.pg-bar>div{height:100%;border-radius:999px;background:var(--grad);transition:width .35s ease;}
+
 /* Ficha del socio */
 .sd{padding-bottom:110px;}
 .sd-head{padding:16px 16px 14px;border-bottom:1px solid var(--b);}
@@ -1179,6 +1278,10 @@ select.ti{padding-right:34px;background-image:linear-gradient(45deg,transparent 
 .sd-body{padding:0 16px;}
 .dia-card{background:var(--gl);border:1px solid var(--b);border-radius:20px;margin-bottom:10px;box-shadow:var(--shadow);overflow:hidden;}
 .dia-h{display:grid;grid-template-columns:auto 1fr auto 18px;align-items:center;gap:10px;padding:8px 14px;min-height:60px;cursor:pointer;}
+.dia-swap{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;padding:12px;background:var(--in-bg2);border-radius:18px;margin-bottom:10px;}
+.dia-swap label{flex:1;min-width:150px;display:flex;flex-direction:column;gap:5px;font-size:10.5px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.02em;}
+.dia-swap select{width:100%;}
+.dia-swap button{flex:none;white-space:nowrap;}
 .dia-n{font-family:var(--fd);font-weight:800;font-size:22px;color:var(--v);letter-spacing:-.02em;min-width:42px;}
 #staff-content .dia-t{min-width:0;height:42px;padding:0 10px;background:transparent;border:1.5px solid transparent;border-radius:12px;font-size:16px;font-weight:700;color:var(--tx);font-family:var(--fb);outline:none;}
 #staff-content .dia-t:focus{border-color:var(--v2);background:var(--in-bg);}
@@ -1630,10 +1733,6 @@ input[type=range]::-webkit-slider-thumb{background:var(--lime);border-color:var(
       <div class="lc-tag">Acceso socio</div>
       <div class="lc-title">Ingresa<br>tu código</div>
       <div class="lc-sub">4 dígitos, entregados al activar tu plan.</div>
-      <div class="geo-banner geo-wait" id="geo-banner">
-        <div class="geo-dot"></div>
-        <span id="geo-txt">Verificando ubicación...</span>
-      </div>
       <div class="code-row">
         <input type="text" maxlength="1" class="cd" id="cd1" inputmode="numeric">
         <input type="text" maxlength="1" class="cd" id="cd2" inputmode="numeric">
@@ -2134,6 +2233,7 @@ input[type=range]::-webkit-slider-thumb{background:var(--lime);border-color:var(
       <div class="tb-btn" id="btn-nuevo-ent" onclick="abrirNuevoEntrenador()" style="display:none;color:var(--v);border-color:color-mix(in srgb, var(--v) 30%, transparent)">➕ Nuevo entrenador</div>
       <div class="tb-btn" id="btn-conocimiento" onclick="abrirConocimiento()" style="color:var(--p);border-color:color-mix(in srgb,var(--p) 25%,transparent)">📚 Conocimiento</div>
       <div class="tb-btn" id="btn-resumen" onclick="abrirResumen()" style="display:none;color:var(--v);border-color:color-mix(in srgb, var(--v) 30%, transparent)">📊 Resumen</div>
+      <div class="tb-btn" id="btn-lugares" onclick="abrirLugares()" style="display:none;color:var(--p);border-color:color-mix(in srgb, var(--p) 30%, transparent)">📍 Lugares</div>
       <div class="tb-btn" id="btn-respaldo" onclick="descargarRespaldo()" style="display:none;color:var(--n);border-color:color-mix(in srgb,var(--n) 20%,transparent)">💾 Respaldo</div>
       <div class="tb-btn" id="btn-reset" onclick="resetDemo()" style="display:none;color:var(--g);border-color:color-mix(in srgb,var(--g) 20%,transparent)">⟲ Reset datos</div>
       <div class="tb-btn" id="btn-firebase" onclick="go('s-fbsetup');fbAbrirSetup();" style="display:none;color:var(--n);border-color:color-mix(in srgb,var(--n) 20%,transparent)">🔥 Firebase</div>
@@ -2157,6 +2257,7 @@ input[type=range]::-webkit-slider-thumb{background:var(--lime);border-color:var(
           <button type="button" class="sl-f ac" onclick="staffFilterStatus(this,'todos')">Todos <i id="slc-todos"></i></button>
           <button type="button" class="sl-f" onclick="staffFilterStatus(this,'pendiente')">Pendientes <i id="slc-pendiente"></i></button>
           <button type="button" class="sl-f" onclick="staffFilterStatus(this,'activo')">Activos <i id="slc-activo"></i></button>
+          <button type="button" class="sl-f" onclick="staffFilterStatus(this,'progresion')">📈 Progresión <i id="slc-progresion"></i></button>
         </div>
       </div>
       <div id="staff-socio-list"></div>
@@ -2561,7 +2662,7 @@ function listaEntrenadoresConFilosofia(){
 // Todos los entrenadores elegibles (rol entrenador), tengan o no filosofía definida.
 // Los que ya definieron su filosofía van primero.
 function listaEntrenadoresParaElegir(){
-  return Object.values(DB.entrenadores||{}).filter(e=>e && e.rol!=='coordinador')
+  return Object.values(DB.entrenadores||{}).filter(e=>e && e.rol!=='coordinador' && entHace(e,'entrenamiento'))
     .sort((a,b)=>{
       const fa=a.filosofia&&a.filosofia.tagline?1:0, fb=b.filosofia&&b.filosofia.tagline?1:0;
       return fb-fa || (a.nombre||'').localeCompare(b.nombre||'');
@@ -2645,6 +2746,38 @@ function calcNutricion(s){
   const agua = Math.round(peso * 35 / 100) / 10;                 // litros (35 ml/kg)
 
   return { bmr, factor, tdee, kcal, prot, protKg, grasas, carbs, agua, ajusteTxt, nota, pesoBase: peso };
+}
+const MEAL_TEMPLATES={
+  3:[{nombre:'Desayuno',pct:30,tag:'media'},{nombre:'Comida',pct:40,tag:'fuerte'},{nombre:'Cena',pct:30,tag:'media'}],
+  4:[{nombre:'Desayuno',pct:27,tag:'media'},{nombre:'Colación',pct:13,tag:'ligera'},{nombre:'Comida',pct:37,tag:'fuerte'},{nombre:'Cena',pct:23,tag:'media'}],
+  5:[{nombre:'Desayuno',pct:25,tag:'media'},{nombre:'Colación AM',pct:10,tag:'ligera'},{nombre:'Comida',pct:30,tag:'fuerte'},{nombre:'Colación PM',pct:10,tag:'ligera'},{nombre:'Cena',pct:25,tag:'media'}],
+  6:[{nombre:'Desayuno',pct:20,tag:'media'},{nombre:'Colación AM',pct:8,tag:'ligera'},{nombre:'Comida',pct:27,tag:'fuerte'},{nombre:'Colación PM',pct:8,tag:'ligera'},{nombre:'Cena',pct:22,tag:'media'},{nombre:'Colación noche',pct:15,tag:'ligera'}]
+};
+const TAG_INFO={fuerte:{lbl:'Comida fuerte',v:0.30},media:{lbl:'Comida media',v:0.30},ligera:{lbl:'Colación',v:0}};
+// Reparto muy general del plato por comida: reserva un espacio fijo de verduras (comidas fuertes/medias)
+// y divide el resto entre proteína/carbohidratos/grasas en la misma proporción que tus macros del día.
+function nutPlato(pP,cP,gP,verdurasPct){
+  const rem=100-verdurasPct;
+  let prot=Math.round(rem*pP/100), carb=Math.round(rem*cP/100);
+  let grasa=100-verdurasPct-prot-carb;
+  if(grasa<0){ carb=Math.max(0,carb+grasa); grasa=0; }
+  return {verduras:verdurasPct, prot, carb, grasa};
+}
+function nutRepartoComidas(n,kcal,pP,cP,gP){
+  const plant=MEAL_TEMPLATES[n]||MEAL_TEMPLATES[4];
+  return plant.map(m=>{
+    const info=TAG_INFO[m.tag];
+    return Object.assign({kcal:Math.round(kcal*m.pct/100)}, m, info.v?{plato:nutPlato(pP,cP,gP,info.v*100)}:{});
+  });
+}
+// Nutrición final: la calculada, o la que ajustó el nutriólogo/entrenador si personalizó al socio
+function nutricionFinal(s){
+  const base=calcNutricion(s), o=s.nutricion;
+  if(!o || !o.override) return Object.assign({},base,{manual:false});
+  return Object.assign({},base,{
+    kcal:+o.kcal||base.kcal, prot:+o.prot||base.prot, carbs:+o.carbs||base.carbs, grasas:+o.grasas||base.grasas, agua:+o.agua||base.agua,
+    manual:true
+  });
 }
 
 // ═════════════════════════════════════════
@@ -3015,18 +3148,19 @@ function seedEntrenadores(){
 function resetDemo(){
   if(staffRol!=='coordinador'){ showToast('Solo el coordinador puede reiniciar datos'); return; }
   if(fbListo){ showToast('⛔ Desactivado con Firebase conectado: son datos reales. Usa 💾 RESPALDO.'); return; }
-  if(prompt('Modo local: se borrarán socios, sesiones y registros de ESTE dispositivo. Escribe BORRAR para confirmar')!=='BORRAR') return;
-  localStorage.removeItem(LS_KEY);
-  const ses=leerSesion(); if(ses&&ses.tipo==='socio') borrarSesion();
-  const seeded=seedDB();
-  if(fbListo){
-    fbDB.ref('/socios').set(seeded.socios)
-      .then(()=>{ staffRenderList(); showToast('⟲ Datos demo reiniciados en Firebase'); })
-      .catch(()=>{ showToast('⚠ Error al reiniciar en Firebase'); });
-  } else {
-    staffRenderList(); showToast('⟲ Datos demo reiniciados localmente');
-  }
-  document.getElementById('staff-content').innerHTML = '<div style="flex:1;display:flex;align-items:center;justify-content:center;color:var(--mu);font-family:var(--fb);font-size:11px;">Reiniciando...</div>';
+  uiPrompt('Modo local: se borrarán socios, sesiones y registros de ESTE dispositivo. Escribe BORRAR para confirmar','BORRAR',()=>{
+    localStorage.removeItem(LS_KEY);
+    const ses=leerSesion(); if(ses&&ses.tipo==='socio') borrarSesion();
+    const seeded=seedDB();
+    if(fbListo){
+      fbDB.ref('/socios').set(seeded.socios)
+        .then(()=>{ staffRenderList(); showToast('⟲ Datos demo reiniciados en Firebase'); })
+        .catch(()=>{ showToast('⚠ Error al reiniciar en Firebase'); });
+    } else {
+      staffRenderList(); showToast('⟲ Datos demo reiniciados localmente');
+    }
+    document.getElementById('staff-content').innerHTML = '<div style="flex:1;display:flex;align-items:center;justify-content:center;color:var(--mu);font-family:var(--fb);font-size:11px;">Reiniciando...</div>';
+  },{label:'Borrar'});
 }
 
 // ═════════════════════════════════════════
@@ -3037,18 +3171,37 @@ const GEO_RADIO_M = 200;
 let geoStatus = 'unknown';
 let geoCoords = null;
 
+// Ya no restringe nada — la app funciona en cualquier lugar. Solo usa el GPS (si el
+// socio lo permite) para clasificar el check-in en el Resumen y para armar "Lugares
+// visitados" en el menú del coordinador, sin mostrarle nada de esto al socio.
 function initGeofence(){
-  if(!navigator.geolocation){ setGeoBanner('err','📍 GPS no disponible en este dispositivo'); return; }
+  if(!navigator.geolocation) return;
   navigator.geolocation.getCurrentPosition(
     pos => {
       geoCoords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
       const dist = haversine(geoCoords.lat, geoCoords.lng, GEO_CENTER.lat, GEO_CENTER.lng);
-      if(dist <= GEO_RADIO_M){ geoStatus='gym'; setGeoBanner('ok',`📍 Estás en el gimnasio (${Math.round(dist)}m del centro)`); }
-      else { geoStatus='outside'; setGeoBanner('out',`📍 Fuera del gimnasio (${Math.round(dist)}m de distancia)`); }
+      geoStatus = dist <= GEO_RADIO_M ? 'gym' : 'outside';
     },
-    () => { geoStatus='unknown'; setGeoBanner('err','📍 No se pudo obtener ubicación'); },
+    () => { geoStatus='unknown'; },
     { timeout: 8000, maximumAge: 60000, enableHighAccuracy: false }
   );
+}
+// Agrupa el check-in en una celda de ~55m (para juntar el ruido normal del GPS) y lleva
+// la cuenta de cuántas veces y en qué días se ha abierto la app desde ahí.
+function registrarLugarVisitado(coords){
+  if(!coords || typeof coords.lat!=='number' || typeof coords.lng!=='number') return;
+  const lat=Math.round(coords.lat*2000)/2000, lng=Math.round(coords.lng*2000)/2000;
+  const arr=comoArray(DB.config&&DB.config.lugares).slice();
+  const hoy=fechaISO(new Date());
+  const i=arr.findIndex(x=>x&&x.lat===lat&&x.lng===lng);
+  if(i>=0){
+    const l=arr[i]; l.visitas=(l.visitas||1)+1; l.ultima=hoy;
+    l.dias=comoArray(l.dias); if(!l.dias.includes(hoy)){ l.dias.push(hoy); if(l.dias.length>60) l.dias=l.dias.slice(-60); }
+  } else arr.push({lat,lng,visitas:1,primera:hoy,ultima:hoy,dias:[hoy]});
+  arr.sort((a,b)=>(b.visitas||0)-(a.visitas||0));
+  DB.config=DB.config||{}; DB.config.lugares=arr.slice(0,80);
+  guardarLocal();
+  fbEncolar('/config/lugares','set',DB.config.lugares);
 }
 function setGeoBanner(type, msg){
   const b=document.getElementById('geo-banner'), t=document.getElementById('geo-txt');
@@ -3076,6 +3229,7 @@ function registrarAsistencia(s){
     s.logs.asistencia.unshift(registro);
     if(s.logs.asistencia.length>90) s.logs.asistencia = s.logs.asistencia.slice(0,90);
     dbSave(s.code);
+    registrarLugarVisitado(geoCoords);
   }
   return { registro, yaRegistrado };
 }
@@ -4665,6 +4819,7 @@ function refreshDash(){
       </div>
     </div>
     ${asist?`<div class="asist-w">${asist}</div>`:''}
+    ${pqCardSocio(s)}
 
     <div class="hero-card">
       ${pic(['hero/inicio'],'bolt','fill')}
@@ -4732,6 +4887,7 @@ function renderRutinaTab(){
       ${it('target')}
       <div><div class="goal-k">Objetivo principal</div><div class="goal-t">${esc(sc(s.objetivo||'Entrenar'))}</div></div>
     </div>
+    ${pqPlanChip(s)}
     <div class="chips3">
       <div class="ch3">${ico('calendar')}<b>${s.dias}</b><span>días por semana</span></div>
       <div class="ch3">${ico('layers')}<b>${esc(sc(s.nivel))}</b><span>nivel</span></div>
@@ -5323,16 +5479,24 @@ function drawPesoChart(pesos){
 }
 
 // ── TAB: NUTRICIÓN ──
+function nutElegirComidas(n){
+  const s=activeSocio; if(!s) return;
+  s.comidasPorDia=n; dbSave(s.code); renderNutricionTab();
+}
 function renderNutricionTab(){
   const s=activeSocio; if(!s) return;
-  const nut=calcNutricion(s);
+  const nut=nutricionFinal(s), base=calcNutricion(s);
   const pK=nut.prot*4, cK=nut.carbs*4, gK=nut.grasas*9;
   const tot=pK+cK+gK;
   const pP=Math.round(pK/tot*100), cP=Math.round(cK/tot*100), gP=100-pP-cP;
+  const menu=comoArray(s.nutricion&&s.nutricion.menu);
+  const nComidas=[3,4,5,6].includes(+s.comidasPorDia)?+s.comidasPorDia:4;
+  const reparto=nutRepartoComidas(nComidas,nut.kcal,pP,cP,gP);
 
   document.getElementById('dsec-nutricion').innerHTML=`
-    ${appHead('Nutrición','Tu plan de alimentación, calculado con tus datos.')}
-    <div class="nut-note">Objetivo: <b style="color:var(--tx)">${esc(sc(s.objetivo))}</b> · ${nut.ajusteTxt}<br>Calculado con tu peso actual: <b style="color:var(--tx)">${nut.pesoBase} kg</b> — se actualiza solo al registrar peso en Progreso.</div>
+    ${appHead('Nutrición',nut.manual?'Tu plan de alimentación, personalizado para ti.':'Tu plan de alimentación, calculado con tus datos.')}
+    ${nut.manual?`<div class="nut-note" style="border-color:color-mix(in srgb,var(--v2) 45%,transparent)">🥗 Ajustado por <b style="color:var(--tx)">${esc(s.nutricion.por||'tu nutriólogo')}</b>${s.nutricion.fecha?' · '+esc(fmtFecha(s.nutricion.fecha)):''}${s.nutricion.nota?`<br><span style="font-style:italic">“${esc(s.nutricion.nota)}”</span>`:''}</div>`
+      :`<div class="nut-note">Objetivo: <b style="color:var(--tx)">${esc(sc(s.objetivo))}</b> · ${nut.ajusteTxt}<br>Calculado con tu peso actual: <b style="color:var(--tx)">${nut.pesoBase} kg</b> — se actualiza solo al registrar peso en Progreso.</div>`}
 
     <div class="macro-grid">
       <div class="macro-c" style="--mc:var(--v)">${it('flame')}<div class="mc-v">${nut.kcal}<span class="mc-u"> kcal</span></div><div class="mc-l">Calorías / día</div><div class="mc-s">${nut.ajusteTxt}</div></div>
@@ -5356,20 +5520,39 @@ function renderNutricionTab(){
     </div>
 
     <div class="card">
-      <div class="card-t">${it('info','sm')}Cómo se calculó (datos reales)</div>
-      <div class="nut-detail"><span>Metabolismo basal (Mifflin-St Jeor)</span><b>${nut.bmr} kcal</b></div>
-      <div class="nut-detail"><span>Factor de actividad (${s.dias} días/sem)</span><b>× ${nut.factor}</b></div>
-      <div class="nut-detail"><span>Gasto total diario (TDEE)</span><b>${nut.tdee} kcal</b></div>
-      <div class="nut-detail"><span>Ajuste por objetivo</span><b>${nut.kcal} kcal</b></div>
-      <div class="nut-detail"><span>Agua recomendada (35 ml/kg)</span><b>${nut.agua} L/día + 0.5 L por sesión</b></div>
+      <div class="card-t">${it('leaf','sm')}Reparto de tus comidas</div>
+      <div class="q-sub" style="margin:2px 0 12px">¿En cuántas comidas repartes tu día?</div>
+      <div class="comida-sel">${[3,4,5,6].map(n=>`<button type="button" class="${n===nComidas?'on':''}" onclick="nutElegirComidas(${n})">${n}</button>`).join('')}</div>
+      <div class="comida-list">
+        ${reparto.map(m=>`<div class="comida-it">
+          <div class="comida-it-h"><span class="comida-tag ${m.tag}">${esc(m.tag==='ligera'?'Colación':m.tag==='fuerte'?'Fuerte':'Media')}</span><b>${esc(m.nombre)}</b><span class="comida-kcal">~${m.kcal} kcal</span></div>
+          ${m.plato?`<div class="comida-plato">🥦 ${m.plato.verduras}% verduras · 🍗 ${m.plato.prot}% proteína · 🍚 ${m.plato.carb}% carbohidratos${m.plato.grasa?` · 🥑 ${m.plato.grasa}% grasas`:''}</div>`
+            :`<div class="comida-plato ligera">🥜 Snack: proteína + grasa saludable — evita cargarlo de carbohidratos simples</div>`}
+        </div>`).join('')}
+      </div>
+      <div class="f-nota" style="margin-top:10px">Guía general para armar tu plato — no es una receta ni un menú fijo. Ajusta las porciones a tu ojo con estas proporciones como referencia.</div>
+    </div>
+
+    ${menu.length?`<div class="card">
+      <div class="card-t">${it('leaf','sm')}Menú sugerido</div>
+      ${menu.map(m=>`<div class="nut-detail" style="align-items:flex-start"><span style="flex:0 0 auto;font-weight:700;color:var(--tx)">${esc(m.nombre)}</span><b style="text-align:right;font-weight:500;color:var(--mu)">${esc(m.detalle)}</b></div>`).join('')}
+    </div>`:''}
+
+    <div class="card">
+      <div class="card-t">${it('info','sm')}${nut.manual?'Cálculo automático (referencia)':'Cómo se calculó (datos reales)'}</div>
+      <div class="nut-detail"><span>Metabolismo basal (Mifflin-St Jeor)</span><b>${base.bmr} kcal</b></div>
+      <div class="nut-detail"><span>Factor de actividad (${s.dias} días/sem)</span><b>× ${base.factor}</b></div>
+      <div class="nut-detail"><span>Gasto total diario (TDEE)</span><b>${base.tdee} kcal</b></div>
+      <div class="nut-detail"><span>Ajuste por objetivo</span><b>${base.kcal} kcal</b></div>
+      <div class="nut-detail"><span>Agua recomendada (35 ml/kg)</span><b>${base.agua} L/día + 0.5 L por sesión</b></div>
     </div>
 
     <div class="card">
-      <div class="card-t">${it('star','sm')}Guía de tu entrenador</div>
-      <div style="font-size:11px;color:var(--n);font-family:var(--fb);line-height:1.8">${nut.nota}</div>
+      <div class="card-t">${it('star','sm')}Guía de tu ${nut.manual?'nutriólogo':'entrenador'}</div>
+      <div style="font-size:11px;color:var(--n);font-family:var(--fb);line-height:1.8">${nut.manual&&s.nutricion.nota?esc(s.nutricion.nota):base.nota}</div>
     </div>
 
-    <div style="font-size:11.5px;color:var(--mu);font-family:var(--fb);line-height:1.7;padding:0 4px;">⚕ Estos valores son una guía calculada con fórmulas estándar. Coméntalos con tu entrenador y, si tienes alguna condición médica, con tu médico o nutriólogo.</div>`;
+    <div style="font-size:11.5px;color:var(--mu);font-family:var(--fb);line-height:1.7;padding:0 4px;">⚕ Estos valores son una guía${nut.manual?' personalizada por tu nutriólogo o entrenador':' calculada con fórmulas estándar'}. Coméntalos con tu entrenador y, si tienes alguna condición médica, con tu médico o nutriólogo.</div>`;
 }
 
 
@@ -6009,11 +6192,12 @@ function rehabActivar(protoId){
 }
 function rehabQuitar(protoId){
   const s=activeSocio; if(!s) return;
-  if(!confirm('¿Marcar esta rehabilitación como terminada? Se quitará de tu plan.')) return;
+  uiConfirm('¿Marcar esta rehabilitación como terminada? Se quitará de tu plan.',()=>{
   s.logs.lesiones=(s.logs.lesiones||[]).filter(l=>l.protoId!==protoId);
   dbSave(s.code);
   showToast('Rehabilitación finalizada — ¡bien hecho!');
   renderRehabTab();
+  });
 }
 function rehabAvanzarFase(protoId){
   const s=activeSocio; if(!s) return;
@@ -7042,18 +7226,23 @@ document.getElementById('modal-ej').addEventListener('click',e=>{ if(e.target===
 
 // ── Finalizar sesión: registra evolución y PRs ──
 function finalizarSesion(){
+  const s0=activeSocio;
+  if(!s0){ showToast('⚠ Vuelve a entrar con tu código para registrar la sesión'); return; }
+  if(!sesionTemp){ showToast('⚠ Abre el día desde tu rutina para registrar la sesión'); return; }
+  const idxs0=Object.keys(sesionTemp.ej);
+  const hechos0=idxs0.filter(i=>sesionTemp.ej[i].done || (sesionTemp.ej[i].sets||[]).some(x=>x&&(x.ok||x.kg))).length;
+  if(hechos0===0) uiConfirm('No marcaste ningún ejercicio. ¿Registrar la sesión de todas formas?',finalizarSesionConfirmada,{label:'Registrar de todas formas'});
+  else finalizarSesionConfirmada();
+}
+function finalizarSesionConfirmada(){
   try{
     const s=activeSocio;
-    if(!s){ showToast('⚠ Vuelve a entrar con tu código para registrar la sesión'); return; }
-    if(!sesionTemp){ showToast('⚠ Abre el día desde tu rutina para registrar la sesión'); return; }
+    if(!s) return;
     asegurarLogs(s);
     const d=s.rutina[sesionTemp.diaKey];
     if(!d){ showToast('⚠ No se encontró la rutina de ese día'); return; }
     const idxs=Object.keys(sesionTemp.ej);
     const hechos=idxs.filter(i=>sesionTemp.ej[i].done || (sesionTemp.ej[i].sets||[]).some(x=>x&&(x.ok||x.kg))).length;
-    if(hechos===0){
-      if(!confirm('No marcaste ningún ejercicio. ¿Registrar la sesión de todas formas?')) return;
-    }
     const hoy=fechaISO(new Date());
     if(s.logs.sesiones.some(x=>x.fecha===hoy)){
       showToast('ℹ Ya registraste tu sesión de hoy');
@@ -7062,12 +7251,17 @@ function finalizarSesion(){
     }
 
     // Volumen y PRs
-    let volumen=0; const cambios=[];
+    let volumen=0; const cambios=[], detalle=[];
     idxs.forEach(i=>{
       const ej=d.ejercicios[i]; if(!ej) return;
       const alt=ejEjecutado(ej,i);
       const nmHecho=alt?alt.nm:ej.nm;
       if(alt) cambios.push({orig:ej.nm, alt:alt.nm});
+      // Detalle por ejercicio: peso máximo y series hechas (para proponer la progresión)
+      const sets=(sesionTemp.ej[i].sets||[]).filter(Boolean);
+      const kgs=sets.map(x=>+x.kg||0).filter(x=>x>0);
+      const hechas=sets.filter(x=>x.ok||x.kg>0).length || (sesionTemp.ej[i].done?(parseInt(ej.series)||0):0);
+      if(hechas||kgs.length){ const reg={n:ej.nm, s:hechas, p:parseInt(ej.series)||hechas}; if(kgs.length) reg.kg=Math.max(...kgs); if(alt) reg.alt=alt.nm; detalle.push(reg); }
       (sesionTemp.ej[i].sets||[]).forEach((set,si)=>{
         if(set&&set.kg>0){
           volumen += set.kg*(parseInt(repsDeSerie(ej,si))||10);
@@ -7080,7 +7274,7 @@ function finalizarSesion(){
     s.logs.sesiones.push({
       fecha:hoy, ts:Date.now(), diaKey:sesionTemp.diaKey,
       tipo:d.tipo, ejercicios:hechos||d.ejercicios.length, volumen:Math.round(volumen),
-      hora:new Date().toTimeString().substring(0,5), cambios
+      hora:new Date().toTimeString().substring(0,5), cambios, detalle
     });
     dbSave(s.code);
     sesionTemp=null;
@@ -7114,8 +7308,10 @@ function abrirEditarSocio(code){
   document.getElementById('es-objetivo').innerHTML=opcionesSel(OBJETIVOS_LISTA,s.objetivo);
   document.getElementById('es-nivel').innerHTML=opcionesSel(['PRINCIPIANTE','INTERMEDIO','AVANZADO'],s.nivel);
   document.getElementById('es-dias').innerHTML=[2,3,4,5,6].map(n=>`<option value="${n}" ${+s.dias===n?'selected':''}>${n} días por semana</option>`).join('');
-  const ents=Object.values(DB.entrenadores||{});
+  const ents=Object.values(DB.entrenadores||{}).filter(e=>e&&e.rol!=='coordinador');
   document.getElementById('es-ent').innerHTML='<option value="">Sin asignar</option>'+ents.map(e=>`<option value="${esc(e.id)}" ${s.entrenadorId===e.id?'selected':''}>${esc(e.nombre)}</option>`).join('');
+  const nutris=staffNutricionistas();
+  document.getElementById('es-nut').innerHTML='<option value="">Sin asignar (o el mismo entrenador, si da nutrición)</option>'+nutris.map(e=>`<option value="${esc(e.id)}" ${s.nutriologoId===e.id?'selected':''}>${esc(e.nombre)}${entHace(e,'entrenamiento')?' (también entrena)':''}</option>`).join('');
   document.getElementById('es-status').innerHTML=`<option value="activo" ${s.status==='activo'?'selected':''}>Activo</option><option value="pendiente" ${s.status!=='activo'?'selected':''}>Pendiente de revisión</option>`;
   document.getElementById('es-limit').value=(s.limitaciones||[]).join(', ');
   document.getElementById('es-nuevocode').value='';
@@ -7145,6 +7341,9 @@ function guardarEdicionSocio(){
   const entId=v('es-ent');
   if(entId && DB.entrenadores[entId]){ s.entrenadorId=entId; s.asignado=DB.entrenadores[entId].nombre; }
   else { s.entrenadorId=''; s.asignado='Sin asignar'; }
+  const nutId=v('es-nut');
+  if(nutId && DB.entrenadores[nutId]){ s.nutriologoId=nutId; s.nutriologo=DB.entrenadores[nutId].nombre; }
+  else { s.nutriologoId=''; s.nutriologo=''; }
   s.limitaciones=limpiarTexto(v('es-limit')).split(',').map(x=>x.trim()).filter(Boolean);
   // El peso nuevo se registra como pesaje de hoy (así la nutrición y las gráficas lo toman)
   if(peso!==pesoActual(s)){
@@ -7165,6 +7364,7 @@ function guardarEdicionSocio(){
         fbEncolar('/socios/'+code,'update',({
           nombre:s.nombre, edad:s.edad, estatura:s.estatura, genero:s.genero, objetivo:s.objetivo, nivel:s.nivel, dias:s.dias,
           status:s.status, asignado:s.asignado, entrenadorId:s.entrenadorId||'',
+          nutriologoId:s.nutriologoId||'', nutriologo:s.nutriologo||'',
           limitaciones:s.limitaciones.length?s.limitaciones:null, 'logs/pesoCorporal':s.logs.pesoCorporal
         }));
       }
@@ -7182,8 +7382,12 @@ function confirmarEliminarSocio(code){
   if(staffRol!=='coordinador'){ showToast('Solo el coordinador puede eliminar socios'); return; }
   const s=getSocio(code); if(!s) return;
   const nSes=comoArray(s.logs&&s.logs.sesiones).length;
-  if(!confirm(`¿Eliminar a ${tc(s.nombre)}?\n\nSe borrará su rutina y todo su historial (${nSes} sesión(es), pesos y récords). No se puede deshacer.\n\nSi quieres conservar una copia, cancela y usa 💾 Respaldo.`)) return;
-  if(prompt('Para confirmar, escribe ELIMINAR')!=='ELIMINAR') return;
+  uiConfirm(`¿Eliminar a ${tc(s.nombre)}?\n\nSe borrará su rutina y todo su historial (${nSes} sesión(es), pesos y récords). No se puede deshacer.\n\nSi quieres conservar una copia, cancela y usa 💾 Respaldo.`,
+    ()=>uiPrompt('Para confirmar, escribe ELIMINAR','ELIMINAR',()=>confirmarEliminarSocioFinal(code),{label:'Eliminar'}),
+    {label:'Continuar',danger:true});
+}
+function confirmarEliminarSocioFinal(code){
+  const s=getSocio(code); if(!s) return;
   const copia=s;
   delete DB.socios[code]; guardarLocal();
   OUTBOX=OUTBOX.filter(x=>!(x.tipo==='socio' && x.code===code)); outGuardar();
@@ -7218,10 +7422,10 @@ function doStaffLogin(){
   const p=document.getElementById('staff-pass').value;
   // 1) Usuarios fijos de coordinación · 2) Entrenadores dados de alta dinámicamente (DB.entrenadores)
   let acc = STAFF_USERS[u];
-  let entId = null;
+  let entId = null, entObj=null;
   if(!acc){
     const ent = DB.entrenadores && DB.entrenadores[u];
-    if(ent && ent.pass===p){ acc={pass:ent.pass, rol:ent.rol||'entrenador', nombre:ent.nombre}; entId=u; }
+    if(ent && ent.pass===p){ acc={pass:ent.pass, rol:ent.rol||'entrenador', nombre:ent.nombre}; entId=u; entObj=ent; }
   }
   if(!acc||acc.pass!==p){ document.getElementById('staff-err').style.display='block'; return; }
   document.getElementById('staff-err').style.display='none';
@@ -7230,7 +7434,7 @@ function doStaffLogin(){
   staffActivoEntId=entId;
   const badge=document.getElementById('staff-role-badge');
   badge.style.display='inline-block';
-  badge.textContent=sc(acc.rol.toUpperCase());
+  badge.textContent=sc((entObj?entTipoLabel(entObj):acc.rol).toUpperCase());
   document.getElementById('staff-nombre').textContent=acc.nombre;
   staffActivoId=null;
   staffRenderList();
@@ -7242,7 +7446,7 @@ function doStaffLogin(){
 function staffLogout(){ borrarSesion(); staffActivoId=null; staffActivoEntId=null; go('s-inicio'); }
 
 // las secciones que se abren en el área de contenido pasan a la vista de detalle en celular
-['abrirConocimiento','abrirResumen','abrirEntrenadores'].forEach(n=>{
+['abrirConocimiento','abrirResumen','abrirEntrenadores','abrirLugares'].forEach(n=>{
   const f=window[n]; if(typeof f!=='function') return;
   window[n]=function(){ const r=f.apply(this,arguments); staffVista('detalle'); return r; };
 });
@@ -7288,7 +7492,7 @@ function actualizarFbBadge(){
 function staffMenu(){
   const grupos=[
     ['Personas',['btn-mi-filosofia','btn-ver-ent','btn-nuevo-ent','btn-conocimiento']],
-    ['Datos y sistema',['btn-resumen','btn-respaldo','btn-firebase','btn-reset']],
+    ['Datos y sistema',['btn-resumen','btn-lugares','btn-respaldo','btn-firebase','btn-reset']],
     ['Cuenta',['btn-logout']]
   ];
   let html='';
@@ -7311,16 +7515,19 @@ function staffMenuIr(id){ staffMenuCerrar(); const b=document.getElementById(id)
 function staffGetSocios(){
   const todos=Object.values(DB.socios||{}).filter(Boolean);
   if(staffRol==='coordinador' || !staffActivoEntId) return todos;
-  return todos.filter(s=>!s.entrenadorId || s.entrenadorId===staffActivoEntId);
+  // Cada entrenador o nutriólogo ve solo a quienes lo eligieron a él (entrenamiento) o se lo asignaron a él (nutrición).
+  // Los socios sin asignar solo los ve el coordinador.
+  return todos.filter(s=>s.entrenadorId===staffActivoEntId || s.nutriologoId===staffActivoEntId);
 }
 function staffRenderList(){
   const cont=document.getElementById('staff-socio-list'); if(!cont) return;
   const todos=staffGetSocios();
-  const cnt={todos:todos.length,pendiente:todos.filter(s=>s.status==='pendiente').length,activo:todos.filter(s=>s.status==='activo').length};
-  ['todos','pendiente','activo'].forEach(k=>{ const e=document.getElementById('slc-'+k); if(e) e.textContent=cnt[k]; });
+  const cnt={todos:todos.length,pendiente:todos.filter(s=>s.status==='pendiente').length,activo:todos.filter(s=>s.status==='activo').length,progresion:todos.filter(pqNecesitaAccion).length};
+  ['todos','pendiente','activo','progresion'].forEach(k=>{ const e=document.getElementById('slc-'+k); if(e) e.textContent=cnt[k]; });
   const tt=document.getElementById('sl-count'); if(tt) tt.textContent='('+todos.length+')';
   let list=todos.slice();
-  if(staffFilterVal!=='todos') list=list.filter(s=>s.status===staffFilterVal);
+  if(staffFilterVal==='progresion') list=list.filter(pqNecesitaAccion);
+  else if(staffFilterVal!=='todos') list=list.filter(s=>s.status===staffFilterVal);
   const q=(staffSearchVal||'').trim().toLowerCase();
   if(q) list=list.filter(s=>String(s.nombre||'').toLowerCase().includes(q)||String(s.code||'').includes(q));
   list.sort((a,b)=>((a.status==='pendiente'?0:1)-(b.status==='pendiente'?0:1))||String(a.nombre||'').localeCompare(String(b.nombre||''),'es'));
@@ -7329,7 +7536,7 @@ function staffRenderList(){
     const pend=s.status==='pendiente';
     return `<div class="sl-item${staffActivoId===s.code?' sel':''}" onclick="staffOpenSocio('${esc(s.code)}')" role="button" tabindex="0">
       <div class="sl-ini">${esc(ini)}</div>
-      <div class="sl-tx"><div class="sl-nm">${esc(tc(s.nombre))}</div><div class="sl-sub">${esc(s.id)} · ${esc(sc(s.objetivo))}</div></div>
+      <div class="sl-tx"><div class="sl-nm">${esc(tc(s.nombre))}</div><div class="sl-sub">${esc(s.id)} · ${esc(sc(s.objetivo))}${esc(pqBadgeLista(s))}</div></div>
       <span class="sl-st ${pend?'pend':'ok'}">${pend?'Pendiente':'Activo'}</span>
     </div>`;
   }).join('') : `<div class="empty-msg">${q?'Ningún socio coincide con tu búsqueda.':'Aún no hay socios en esta lista.'}</div>`;
@@ -7355,7 +7562,6 @@ function staffRenderContent(s){
   const ca=document.getElementById('staff-content');
   const isPend=s.status==='pendiente';
   const ev=calcEvolucion(s);
-  const nut=calcNutricion(s);
   const pesoNow=pesoActual(s);
   const limitHTML=s.limitaciones?.length
     ? s.limitaciones.map(l=>`<span style="padding:2px 7px;border-radius:4px;font-size:11.5px;font-family:var(--fb);color:var(--r);border:1px solid color-mix(in srgb,var(--r) 30%,transparent);background:color-mix(in srgb,var(--r) 6%,transparent);margin-right:4px">${l}</span>`).join('')
@@ -7410,6 +7616,15 @@ function staffRenderContent(s){
           <span class="dia-c">${d.ejercicios.length} ej.</span><span class="dia-chev" aria-hidden="true">›</span>
         </div>
         <div id="stb-${s.code}-${k}" class="dia-b" style="display:none">
+          <div class="dia-swap">
+            <label>Intercambiar todo este día con
+              <select class="sf-in" id="swap-${s.code}-${k}">
+                <option value="">Elige un día…</option>
+                ${DIAS_ORDER.filter(k2=>k2!==k).map(k2=>`<option value="${k2}">${esc(DIAS_NAMES[k2])} — ${esc(sc((s.rutina[k2]&&s.rutina[k2].tipo)||'Descanso'))}</option>`).join('')}
+              </select>
+            </label>
+            <button type="button" class="sd-b" onclick="diaIntercambiar('${s.code}','${k}',document.getElementById('swap-${s.code}-${k}').value)">🔀 Intercambiar</button>
+          </div>
           ${ejRows}
           <button type="button" class="dia-add" onclick="staffAddEj('${s.code}','${k}')">+ Agregar ejercicio</button>
         </div>
@@ -7431,7 +7646,7 @@ function staffRenderContent(s){
         <div class="sd-chips">
           <span>${esc(sc(s.nivel))}</span><span>${esc(s.edad)} años</span><span>${esc(pesoNow)} kg</span><span>${esc(s.estatura)} cm</span><span>${esc(s.dias)} días/sem</span>
         </div>
-        <div class="sd-asig">Entrenador: <b>${esc(s.asignado||'Sin asignar')}</b></div>
+        <div class="sd-asig">Entrenador: <b>${esc(s.asignado||'Sin asignar')}</b>${s.nutriologo?` · Nutrición: <b>${esc(s.nutriologo)}</b>`:''}</div>
         <div class="sd-lim">${limChips}</div>
         ${(s.clasesGrupales&&s.clasesGrupales.length)?`<div class="sd-lim" style="margin-top:4px">${s.clasesGrupales.map(c=>`<span class="sd-lim-c" style="color:var(--n);border-color:color-mix(in srgb,var(--n) 30%,transparent);background:color-mix(in srgb,var(--n) 6%,transparent)">${esc(c.clase)} · ${c.dias.map(d=>sc(DIAS_NAMES[d])).join('/')}${c.entrenaMismoDia?' +gym':''}</span>`).join('')}</div>`:''}
         <div class="sd-acts">
@@ -7450,7 +7665,11 @@ function staffRenderContent(s){
         <div class="kpi" style="--kc:var(--p)"><div class="kpi-v">${ev.deltaPeso===null?'—':(ev.deltaPeso>0?'+':'')+ev.deltaPeso+' kg'}</div><div class="kpi-l">Cambio de peso</div></div>
       </div>
 
-      <div class="sd-note"><b>Nutrición calculada:</b> ${nut.kcal} kcal · P ${nut.prot} g · C ${nut.carbs} g · G ${nut.grasas} g · Agua ${nut.agua} L<br><span>BMR ${nut.bmr} × ${nut.factor} (${esc(nut.ajusteTxt)})</span></div>
+      ${bloqueAsignacionStaff(s)}
+
+      ${bloqueNutricionStaff(s)}
+
+      ${bloqueProgresionStaff(s)}
 
       <div class="sd-sec">Rutina semanal <small>Toca un día para abrirlo y editarlo</small></div>
       <div class="sd-body">${diasHTML}</div>
@@ -7482,6 +7701,16 @@ function bloqueRecordatorioFilosofia(){
   </div>`;
 }
 
+function diaIntercambiar(code,k1,k2){
+  if(!k2){ showToast('Elige con qué día intercambiar'); return; }
+  const s=getSocio(code); if(!s) return;
+  if(!s.rutina[k1]) s.rutina[k1]={tipo:'DESCANSO',color:'descanso',ejercicios:[]};
+  if(!s.rutina[k2]) s.rutina[k2]={tipo:'DESCANSO',color:'descanso',ejercicios:[]};
+  const tmp=s.rutina[k1]; s.rutina[k1]=s.rutina[k2]; s.rutina[k2]=tmp;
+  staffDirty.add(code);
+  staffRenderContent(s);
+  showToast('🔀 '+DIAS_NAMES[k1]+' ↔ '+DIAS_NAMES[k2]+' — presiona Guardar cambios para confirmarlo');
+}
 function staffUpd(code,k,ei,field,val){
   const s=getSocio(code); if(!s||!s.rutina[k]||!s.rutina[k].ejercicios[ei]) return; staffDirty.add(code);
   s.rutina[k].ejercicios[ei][field]=val;
@@ -7540,6 +7769,485 @@ function staffGuardar(code){
 }
 
 
+
+
+// ═════════════════════════════════════════
+// DIÁLOGOS PROPIOS — reemplazan confirm()/prompt() nativos, que el
+// navegador puede bloquear dentro de vistas empotradas (como una vista
+// previa). Con estos, los botones de confirmar/eliminar funcionan igual
+// en cualquier contexto.
+// ═════════════════════════════════════════
+let UIC_CB=null;
+function uiConfirm(msg,onYes,opts){
+  opts=opts||{};
+  document.getElementById('uic-msg').textContent=msg;
+  const yes=document.getElementById('uic-yes');
+  yes.textContent=opts.label||'Confirmar'; yes.className='sd-pri'+(opts.danger?' danger':''); yes.disabled=false; yes.style.opacity=1;
+  document.getElementById('uic-input-wrap').style.display='none';
+  UIC_CB=onYes;
+  document.getElementById('modal-uic').classList.add('open');
+}
+function uiPrompt(msg,expected,onYes,opts){
+  opts=opts||{};
+  document.getElementById('uic-msg').textContent=msg;
+  const yes=document.getElementById('uic-yes');
+  yes.textContent=opts.label||'Confirmar'; yes.className='sd-pri danger';
+  document.getElementById('uic-input-wrap').style.display='block';
+  const inp=document.getElementById('uic-input'); inp.value=''; inp.placeholder=expected;
+  yes.disabled=true; yes.style.opacity=.45;
+  inp.oninput=()=>{ const ok=inp.value.trim()===expected; yes.disabled=!ok; yes.style.opacity=ok?1:.45; };
+  UIC_CB=onYes;
+  document.getElementById('modal-uic').classList.add('open');
+  setTimeout(()=>inp.focus(),250);
+}
+function uiNo(){ document.getElementById('modal-uic').classList.remove('open'); UIC_CB=null; }
+function uiYes(){ const cb=UIC_CB; if(document.getElementById('uic-yes').disabled) return; document.getElementById('modal-uic').classList.remove('open'); UIC_CB=null; if(cb) cb(); }
+
+// ═════════════════════════════════════════
+// PROGRESIÓN POR BLOQUES (4-6 semanas)
+// 1) El entrenador envía la evaluación → 2) el socio la contesta en su app
+// 3) el sistema propone el siguiente bloque con sus datos reales + respuestas
+// 4) el entrenador revisa y aprueba → la rutina anterior queda en el historial
+// Todo funciona sin conexión (se sincroniza con la bandeja de pendientes).
+// ═════════════════════════════════════════
+const PQ_ZONAS={
+  pierna:{nm:'Pierna',enf:['cuadriceps','femoral','pantorrilla']}, gluteo:{nm:'Glúteo',enf:['gluteo']},
+  espalda:{nm:'Espalda',enf:['dorsal','espalda_media','trapecio']}, pecho:{nm:'Pecho',enf:['pecho','pecho_sup']},
+  hombro:{nm:'Hombro',enf:['deltoide','deltoide_lat','deltoide_post']}, brazos:{nm:'Brazos',enf:['biceps','triceps','braquial']},
+  core:{nm:'Abdomen y core',enf:['core','abdomen']}
+};
+const PQ_MOLESTIA_ENF={hombro:['pecho','pecho_sup','deltoide','deltoide_lat','triceps','manguito'],codo:['triceps','biceps','braquial'],lumbar:['femoral','espalda_media','gluteo'],cadera:['gluteo','femoral'],rodilla:['cuadriceps'],cuello:['trapecio']};
+const PQ_PREG=[
+  {id:'intensidad', k:'Intensidad', t:'¿Cómo sentiste tu rutina estas semanas?', o:[['facil','Muy fácil','Terminaba con mucha energía'],['adecuada','Adecuada','Me cansaba lo justo'],['retadora','Retadora','Me costaba, pero la completaba'],['pesada','Demasiado pesada','No lograba terminarla']]},
+  {id:'rir', k:'Reps en reserva', t:'Al terminar cada serie, ¿cuántas repeticiones más podías hacer?', s:'Piensa en la mayoría de tus ejercicios.', o:[['4','4 o más','Me sobraba bastante'],['2','2 o 3','Quedaba poco'],['0','0 o 1','Llegaba al límite'],['no','No completaba las repeticiones','Me quedaba corto']]},
+  {id:'asistencia', k:'Asistencia', t:'¿Cuántos días pudiste entrenar realmente?', o:[['todos','Todos los planeados',''],['casi','Casi todos','Faltaba uno por semana'],['mitad','Más o menos la mitad',''],['poco','Menos de la mitad','']]},
+  {id:'recuperacion', k:'Recuperación', t:'¿Cómo te recuperas entre sesiones?', o:[['bien','Muy bien','Llego con energía'],['normal','Normal','Algo de dolor muscular que se quita'],['cansado','Llego cansado','Me cuesta arrancar'],['dolor','Dolor que no se quita','Tarda más de 3 días']]},
+  {id:'molestia', k:'Molestias', t:'¿Tuviste alguna molestia en articulaciones?', s:'Puedes elegir varias.', multi:true, o:[['ninguna','Ninguna'],['hombro','Hombro'],['codo','Codo o muñeca'],['lumbar','Espalda baja'],['cadera','Cadera'],['rodilla','Rodilla'],['cuello','Cuello']]},
+  {id:'tecnica', k:'Técnica', t:'¿Cómo te sientes con la técnica de tus ejercicios?', o:[['segura','Segura en todos',''],['dudas','Con dudas en algunos',''],['correccion','Necesito que me corrijan','']]},
+  {id:'avance', k:'Avance', t:'¿Cuánto sientes que avanzas hacia tu objetivo?', o:[['mucho','Mucho',''],['algo','Algo',''],['igual','Sigo igual',''],['atras','Siento que retrocedo','']]},
+  {id:'enfoque', k:'Preferencia', t:'Para tu siguiente bloque prefieres…', o:[['cargas','Mismos ejercicios, más peso','Ver mi avance fácilmente'],['variedad','Más variedad','Cambiar algunos ejercicios'],['tiempo','Sesiones más cortas','Tengo menos tiempo'],['zona','Enfocar una zona','Elige cuál abajo']]},
+  {id:'disponibilidad', k:'Disponibilidad', t:'¿Cambió tu disponibilidad para entrenar?', o:[['igual','Igual que antes',''],['mas','Puedo más días',''],['menos','Puedo menos días','']]},
+  {id:'quitar', k:'Quitar', t:'¿Algún ejercicio que no te gustó o no pudiste hacer?', s:'Opcional. Lo cambiamos por uno similar.', ejercicios:true, opcional:true},
+  {id:'comentario', k:'Comentario', t:'¿Algo más que tu entrenador deba saber?', s:'Opcional.', texto:true, opcional:true}
+];
+const PQ_MOL_NM={hombro:'hombro',codo:'codo o muñeca',lumbar:'espalda baja',cadera:'cadera',rodilla:'rodilla',cuello:'cuello'};
+
+// ── Datos del bloque ──
+function pqBloque(s){
+  const b=s.bloque||{};
+  const primera=comoArray(s.logs&&s.logs.sesiones).map(x=>x&&x.fecha).filter(Boolean).sort()[0];
+  return {n:+b.n||1, desde:b.desde||s.fechaRegistro||primera||fechaISO(new Date()), semanas:+b.semanas||4};
+}
+function pqSemanaActual(s){ const d=diasDesde(pqBloque(s).desde)||0; return Math.floor(Math.max(0,d)/7)+1; }
+function pqEstado(s){ return (s.progresion&&s.progresion.estado)||''; }
+function pqTocaProgresar(s){ return s.status==='activo' && pqSemanaActual(s)>=pqBloque(s).semanas; }
+function pqNecesitaAccion(s){ const e=pqEstado(s); return e==='respondido'||e==='propuesta'||(pqTocaProgresar(s)&&(!e||e==='aprobado')); }
+function pqStatsBloque(s){
+  const b=pqBloque(s);
+  const ses=comoArray(s.logs&&s.logs.sesiones).filter(x=>x && String(x.fecha||'')>=b.desde);
+  const semTrans=Math.max(1,Math.min(b.semanas,Math.ceil(((diasDesde(b.desde)||0)+1)/7)));
+  const meta=Math.max(1,(parseInt(s.dias)||3)*semTrans);
+  return {sesiones:ses.length, adherencia:Math.min(100,Math.round(ses.length/meta*100)), ses};
+}
+function pqDatosEj(s,st,nm){
+  const reg=[]; st.ses.forEach(x=>comoArray(x.detalle).forEach(d=>{ if(d && d.n===nm) reg.push(d); }));
+  const conKg=reg.filter(d=>!d.alt && +d.kg>0);
+  const ult=conKg.slice(-2).map(d=>+d.kg);
+  const compl=reg.length ? reg.reduce((a,d)=>a+Math.min(1,(+d.s||0)/Math.max(1,+d.p||1)),0)/reg.length : null;
+  return {veces:reg.length, kg:ult.length?Math.max(...ult):null, compl};
+}
+function pqParseKg(p){ const m=String(p||'').match(/(\d+(?:[.,]\d+)?)\s*kg/i); return m?parseFloat(m[1].replace(',','.')):null; }
+function pqRedondear(kg){ return kg>=20 ? Math.round(kg/2.5)*2.5 : kg>=5 ? Math.round(kg) : Math.round(kg*2)/2; }
+function pqFmtKg(n){ return (Math.round(n*10)/10)+' kg'; }
+function pqSubirReps(txt,suave){
+  const t=String(txt||''); if(!/\d/.test(t)) return null;
+  const tiempo=/seg|min|\d\s*s\b/i.test(t);
+  const inc=tiempo?(suave?5:10):(suave?1:2), tope=tiempo?90:30;
+  return t.replace(/(\d+)(\s*-\s*(\d+))?/, (m,a,r,b)=>{ const na=Math.min(tope,+a+inc); return b ? na+'-'+Math.min(tope,+b+inc) : String(na); });
+}
+function pqAlternativa(e,de,molestias,usados,rnd){
+  const ok=x=>x && x.nm && !usados.has(String(x.nm).toLowerCase()) && !molestias.some(m=>(x.ev||[]).includes(m)) && !(de.kb && x.id && x.id===de.kb.id) && x.nm!==e.nm;
+  const porId=id=>KB_EJERCICIOS.find(x=>x.id===id);
+  let lista=[];
+  if(de.kb){ const mapa=de.kb.alt||{}; lista=lista.concat((mapa[de.enf]||mapa[Object.keys(mapa)[0]]||[]).map(porId)); }
+  lista=lista.concat(comoArray(e.alternativas).map(a=>a&&(kbBuscar(a.nm)||{nm:a.nm,ms:a.ms,enf:de.enf})));
+  if(de.enf) lista=lista.concat(KB_EJERCICIOS.filter(x=>x.enf===de.enf));
+  const vistos=new Set(); lista=lista.filter(x=>{ if(!ok(x)) return false; const k=String(x.nm).toLowerCase(); if(vistos.has(k)) return false; vistos.add(k); return true; });
+  if(!lista.length) return null;
+  return lista[Math.floor(rnd()*Math.min(3,lista.length))];
+}
+
+// ── Motor de progresión: rutina actual + registros del bloque + respuestas ──
+function pqMotor(s,r){
+  r=r||{};
+  const sinEval=!Object.keys(r).length;
+  const st=pqStatsBloque(s), b=pqBloque(s);
+  const obj=s.objetivo||'', letra=objLetra(obj), R=letra==='R';
+  const suave=obj==='REHABILITACIÓN GIMNASIA'||obj==='FLEXIBILIDAD';
+  const res=[];
+  let paso={facil:7.5,adecuada:5,retadora:2.5,pesada:0}[r.intensidad]; if(paso===undefined) paso=5;
+  if(r.rir==='4') paso+=2.5; else if(r.rir==='0') paso-=2.5; else if(r.rir==='no') paso=0;
+  paso=Math.max(0,Math.min(10,paso));
+  if(sinEval) res.push('Propuesta hecha solo con sus registros (el socio no contestó la evaluación).');
+  if(r.asistencia==='poco' || st.adherencia<40){ paso=0; res.push(`Asistencia baja (${st.adherencia}% del bloque): se mantienen las cargas para consolidar.`); }
+  else if(r.asistencia==='mitad' || st.adherencia<65){ paso=Math.min(paso,2.5); res.push(`Asistencia media (${st.adherencia}%): progresión ligera.`); }
+  else res.push(`Asistencia del bloque: ${st.adherencia}% (${st.sesiones} sesiones).`);
+  let menosSerieTodo=false, menosSerieAcc=false;
+  if(r.recuperacion==='dolor'){ paso=0; menosSerieTodo=true; res.push('No se recupera bien: bloque de descarga (−1 serie, sin subir peso).'); }
+  else if(r.recuperacion==='cansado'){ paso=Math.min(paso,5); menosSerieAcc=true; res.push('Llega cansado: −1 serie en ejercicios accesorios.'); }
+  if(r.enfoque==='tiempo'){ menosSerieAcc=true; res.push('Quiere sesiones más cortas: −1 serie en accesorios.'); }
+  if(paso>0 && !suave) res.push(`Subida de peso base: +${R?paso/2:paso}%${R?' (objetivo de resistencia: se progresa más suave)':''}.`);
+  const molestias=comoArray(r.molestia).filter(x=>x && x!=='ninguna');
+  if(molestias.length) res.push('Molestias en '+molestias.map(m=>PQ_MOL_NM[m]||m).join(', ')+': esos ejercicios no suben peso y se cambian si hay una opción más amigable.');
+  if(r.tecnica==='correccion') res.push('Pidió corrección de técnica: los ejercicios compuestos mantienen el peso. Revisa su técnica en piso.');
+  else if(r.tecnica==='dudas') res.push('Tiene dudas de técnica: progresión moderada en compuestos.');
+  const zonaEnf = r.enfoque==='zona' && PQ_ZONAS[r.zona] ? PQ_ZONAS[r.zona].enf : [];
+  if(zonaEnf.length) res.push('Enfoque en '+PQ_ZONAS[r.zona].nm.toLowerCase()+': +1 serie en esos ejercicios.');
+  if(r.enfoque==='variedad') res.push('Pidió variedad: se cambia un accesorio por día.');
+  if(suave) res.push(obj==='FLEXIBILIDAD'?'Flexibilidad: se progresa tiempo y repeticiones, no peso.':'Rehabilitación: solo sube repeticiones/tiempo. El avance de fase se decide en el protocolo.');
+  if((r.avance==='igual'||r.avance==='atras') && paso>0) res.push('Siente poco avance: considera también cambiar el estímulo (método, tempo o ángulo).');
+  if(r.disponibilidad==='mas'||r.disponibilidad==='menos') res.push('⚠ Cambió su disponibilidad ('+(r.disponibilidad==='mas'?'puede más días':'puede menos días')+'): ajusta los días a mano.');
+  if(r.comentario) res.push('Comentario del socio: “'+limpiarTexto(r.comentario)+'”');
+
+  const rnd=prng(s.code+'|'+b.n+'|'+(r.enfoque||''));
+  const quitar=comoArray(r.quitar);
+  const rutina=JSON.parse(JSON.stringify(s.rutina||{}));
+  const cambios=[];
+  DIAS_ORDER.forEach(k=>{
+    const d=rutina[k]; if(!d || !Array.isArray(d.ejercicios)) return;
+    const usados=new Set(d.ejercicios.map(e=>String(e.nm||'').toLowerCase()));
+    let variedadHecha=false;
+    d.ejercicios.forEach((e,ei)=>{
+      const antes={nm:e.nm||'', series:e.series, reps:e.reps||'', peso:e.peso||''};
+      const mot=[];
+      const de=datosEj(e), compuesto=de.tipo==='c';
+      const esCardio=/cardio/i.test(de.enf||'') || /cardio|caminad|bici|el[ií]ptica|trote|correr|remo erg/i.test(e.nm||'');
+      const tocaMolestia=molestias.some(m=>(de.kb&&(de.kb.ev||[]).includes(m)) || (PQ_MOLESTIA_ENF[m]||[]).includes(de.enf));
+      // 1) Cambio de ejercicio
+      let razon=null;
+      if(quitar.includes(e.nm)) razon='no le gustó o no pudo hacerlo';
+      else if(tocaMolestia && de.kb) razon='molestia en la zona';
+      else if(r.enfoque==='variedad' && !compuesto && ei>0 && !variedadHecha && !esCardio) razon='más variedad';
+      let cambiado=false;
+      if(razon){
+        const alt=pqAlternativa(e,de,molestias,usados,rnd);
+        if(alt){
+          usados.add(String(alt.nm).toLowerCase());
+          e.alternativas=[{nm:antes.nm, ms:e.ms||'', nota:'Ejercicio del bloque anterior'}].concat(comoArray(e.alternativas).filter(a=>a && a.nm!==alt.nm && a.nm!==antes.nm)).slice(0,4);
+          e.nm=alt.nm; if(alt.ms) e.ms=alt.ms; if(alt.enf) e.enf=alt.enf;
+          e.tip='Ejercicio nuevo: busca la misma sensación que tenías en '+antes.nm+'.';
+          if(!suave && !esCardio && pqParseKg(antes.peso)) e.peso='Ajustar: deja 2-3 reps en reserva';
+          mot.push('Cambio de ejercicio ('+razon+')'); cambiado=true;
+          if(razon==='más variedad') variedadHecha=true;
+        } else if(razon!=='más variedad') mot.push('Revisar: '+razon+' (no encontré alternativa segura)');
+      }
+      // 2) Series
+      const series=parseInt(e.series)||0;
+      if(series){
+        let dlt=0;
+        if(menosSerieTodo) dlt-=1; else if(menosSerieAcc && !compuesto) dlt-=1;
+        if(zonaEnf.includes(de.enf)) dlt+=1;
+        const ns=Math.max(2,Math.min(5,series+dlt));
+        if(ns!==series){ e.series=ns; mot.push(ns>series?'+1 serie (zona de enfoque)':'−1 serie'); }
+      }
+      // 3) Carga o repeticiones
+      if(!cambiado && !esCardio){
+        let p=paso;
+        if(tocaMolestia) p=0;
+        if(compuesto && r.tecnica==='correccion') p=0; else if(compuesto && r.tecnica==='dudas') p=Math.min(p,2.5);
+        const dat=pqDatosEj(s,st,e.nm);
+        if(dat.compl!==null && dat.compl<0.75 && p>0){ p=0; mot.push('No completó todas sus series: mismo peso'); }
+        if(R) p=p/2;
+        const kgPlan=pqParseKg(e.peso), base=dat.kg||kgPlan;
+        if(!suave && base){
+          if(p>0){
+            let nuevo=pqRedondear(base*(1+p/100));
+            if(nuevo<=base) nuevo=base+(base>=20?2.5:1);
+            e.peso=pqFmtKg(nuevo);
+            mot.push(`Peso ${pqFmtKg(base)} → ${pqFmtKg(nuevo)}${dat.kg&&dat.kg!==kgPlan?' (según lo que registró)':''}`);
+          } else if(dat.kg && dat.kg!==kgPlan){ e.peso=pqFmtKg(dat.kg); mot.push('Peso ajustado a lo que realmente levanta: '+pqFmtKg(dat.kg)); }
+          else if(tocaMolestia) mot.push('Mismo peso por la molestia');
+        } else if(p>0 || (suave && paso>0)){
+          const nr=pqSubirReps(e.reps,suave||R);
+          if(nr && nr!==e.reps){ mot.push('Repeticiones: '+e.reps+' → '+nr); e.reps=nr; }
+        }
+      }
+      if(mot.length) cambios.push({dia:k, antes, despues:{nm:e.nm, series:e.series, reps:e.reps||'', peso:e.peso||''}, motivo:mot.join(' · ')});
+    });
+  });
+  return {rutina, cambios, resumen:res, fecha:fechaISO(new Date()), deBloque:b.n, sesiones:st.sesiones, adherencia:st.adherencia, sinEvaluacion:sinEval};
+}
+
+// ── Acciones del entrenador / coordinador ──
+function pqStaffNombre(){ const e=document.getElementById('staff-nombre'); return (e&&e.textContent)||'Staff'; }
+function pqGuardarStaff(s,campos){
+  guardarLocal();
+  const o={}; campos.forEach(k=>{ o[k]=(s[k]===undefined?null:s[k]); });
+  fbEncolar('/socios/'+s.code,'update',o);
+}
+function pqRefrescarStaff(s){ staffRenderList(); staffRenderContent(s); setTimeout(()=>{ const el=document.getElementById('pg-sec'); if(el) el.scrollIntoView({behavior:'smooth',block:'start'}); },40); }
+function pqEnviar(code){
+  const s=getSocio(code); if(!s) return;
+  s.progresion={estado:'enviado', bloque:pqBloque(s).n, fechaEnvio:fechaISO(new Date()), por:pqStaffNombre()};
+  pqGuardarStaff(s,['progresion']); pqRefrescarStaff(s);
+  showToast('📋 Evaluación enviada — la verá al entrar a su app');
+}
+function pqCancelar(code){
+  const s=getSocio(code); if(!s) return;
+  uiConfirm('¿Cancelar la evaluación de progreso de este socio?',()=>{
+    delete s.progresion; pqGuardarStaff(s,['progresion']); pqRefrescarStaff(s);
+  },{label:'Sí, cancelar',danger:true});
+}
+function pqGenerar(code){
+  const s=getSocio(code); if(!s) return;
+  if(staffDirty.has(code)) uiConfirm('Tienes cambios sin guardar en la rutina; la propuesta partirá de la rutina con esos cambios. ¿Continuar?',()=>pqGenerarFinal(code),{label:'Continuar'});
+  else pqGenerarFinal(code);
+}
+function pqGenerarFinal(code){
+  const s=getSocio(code); if(!s) return;
+  const P=s.progresion||{};
+  const prop=pqMotor(s,P.respuestas||null);
+  s.progresion=Object.assign({},P,{estado:'propuesta', bloque:pqBloque(s).n, propuesta:prop});
+  pqGuardarStaff(s,['progresion']); pqRefrescarStaff(s);
+  showToast('✨ Propuesta lista: '+prop.cambios.length+' ajustes. Revísala antes de aprobar.');
+}
+function pqDescartar(code){
+  const s=getSocio(code); if(!s||!s.progresion) return;
+  const P=s.progresion;
+  if(P.respuestas){ s.progresion=Object.assign({},P,{estado:'respondido'}); delete s.progresion.propuesta; }
+  else delete s.progresion;
+  pqGuardarStaff(s,['progresion']); pqRefrescarStaff(s);
+}
+function pqAprobar(code){
+  const s=getSocio(code); const P=s&&s.progresion; const p=P&&P.propuesta; if(!p) return;
+  const semEl=document.getElementById('pq-sem-'+code);
+  const sem=Math.max(3,Math.min(8,parseInt(semEl&&semEl.value)||4));
+  const b=pqBloque(s);
+  uiConfirm(`¿Activar el bloque ${b.n+1} (${sem} semanas)?\nLa rutina actual se guarda en el historial y el socio verá la nueva al instante.`,
+    ()=>pqAprobarFinal(code,sem), {label:'Activar bloque '+(b.n+1)});
+}
+function pqAprobarFinal(code,sem){
+  const s=getSocio(code); const P=s&&s.progresion; const p=P&&P.propuesta; if(!p) return;
+  const b=pqBloque(s), hoy=fechaISO(new Date()), st=pqStatsBloque(s);
+  const hist=comoArray(s.historialRutinas);
+  hist.push({n:b.n, desde:b.desde, hasta:hoy, semanas:b.semanas, rutina:limpio(s.rutina), sesiones:st.sesiones, adherencia:st.adherencia, respuestas:P.respuestas||null});
+  s.historialRutinas=hist.slice(-12);
+  s.rutina=JSON.parse(JSON.stringify(p.rutina));
+  s.bloque={n:b.n+1, desde:hoy, semanas:sem};
+  s.progresion={estado:'aprobado', bloque:b.n+1, fecha:hoy, visto:false, resumen:(p.resumen||[]).filter(x=>!/^Comentario del socio/.test(x)).slice(0,6), nCambios:(p.cambios||[]).length, por:pqStaffNombre()};
+  staffDirty.delete(code);
+  pqGuardarStaff(s,['rutina','bloque','historialRutinas','progresion']);
+  pqRefrescarStaff(s);
+  showToast('🚀 Bloque '+(b.n+1)+' activado. Si quieres, afina ejercicios abajo y presiona GUARDAR.');
+}
+
+// ── Vista del entrenador ──
+function pqRespuestasHTML(r){
+  if(!r) return '';
+  const filas=PQ_PREG.map(q=>{
+    let v=r[q.id]; if(v==null || v==='' || (Array.isArray(v)&&!v.length)) return '';
+    let txt;
+    if(q.texto) return '';
+    if(q.ejercicios) txt=comoArray(v).join(', ');
+    else if(q.multi) txt=comoArray(v).map(x=>(q.o.find(o=>o[0]===x)||[x,x])[1]).join(', ');
+    else { txt=(q.o.find(o=>o[0]===v)||[v,v])[1]; if(q.id==='enfoque' && v==='zona' && PQ_ZONAS[r.zona]) txt+=': '+PQ_ZONAS[r.zona].nm; }
+    const alerta=(q.id==='recuperacion'&&v==='dolor')||(q.id==='molestia'&&comoArray(v).some(x=>x!=='ninguna'))||(q.id==='intensidad'&&v==='pesada')||(q.id==='tecnica'&&v==='correccion');
+    return `<div class="pg-r${alerta?' al':''}"><span>${esc(q.k)}</span><b>${esc(txt)}</b></div>`;
+  }).join('');
+  return `<div class="pg-resp">${filas}</div>${r.comentario?`<div class="pg-com">“${esc(r.comentario)}”</div>`:''}`;
+}
+function pqEjTxt(x){ return [x.series?x.series+'×':'', x.reps||'', x.peso?'· '+x.peso:''].join(' ').replace(/\s+/g,' ').trim(); }
+function pqPropuestaHTML(s,p){
+  const porDia={}; (p.cambios||[]).forEach(c=>{ (porDia[c.dia]=porDia[c.dia]||[]).push(c); });
+  const totalEj=DIAS_ORDER.reduce((a,k)=>a+comoArray(s.rutina&&s.rutina[k]&&s.rutina[k].ejercicios).length,0);
+  const dias=DIAS_ORDER.filter(k=>porDia[k]).map(k=>`
+    <div class="pg-dia">${esc(sc(DIAS_NAMES[k]).substring(0,3))} · ${esc(sc((p.rutina[k]&&p.rutina[k].tipo)||''))}</div>
+    ${porDia[k].map(c=>{
+      const nuevoNm=c.antes.nm!==c.despues.nm;
+      return `<div class="pg-ch"><div class="pg-ch-n">${nuevoNm?`<s>${esc(c.antes.nm)}</s> → `:''}<b>${esc(c.despues.nm)}</b></div>
+        <div class="pg-ch-v"><span>${esc(pqEjTxt(c.antes))}</span><i>→</i><b>${esc(pqEjTxt(c.despues))}</b></div>
+        <div class="pg-ch-m">${esc(c.motivo)}</div></div>`;
+    }).join('')}`).join('');
+  return `
+    <div class="pg-k">Propuesta para el bloque ${p.deBloque+1}</div>
+    <ul class="pg-ul">${(p.resumen||[]).map(x=>`<li>${esc(x)}</li>`).join('')}</ul>
+    <div class="pg-cnt"><b>${(p.cambios||[]).length}</b> ajustes en ${totalEj} ejercicios · el resto se mantiene igual</div>
+    ${dias||'<div class="pg-p">Sin cambios automáticos: mantiene la misma rutina. Puedes aprobarla y ajustarla a mano.</div>'}
+    <div class="pg-apr">
+      <label>Duración del nuevo bloque
+        <select class="sf-in" id="pq-sem-${esc(s.code)}">${[4,5,6].map(n=>`<option value="${n}" ${n===(pqBloque(s).semanas||4)?'selected':''}>${n} semanas</option>`).join('')}</select>
+      </label>
+      <button type="button" class="sd-pri" onclick="pqAprobar('${esc(s.code)}')">Aprobar y activar bloque ${p.deBloque+1}</button>
+      <div class="pg-acts"><button type="button" class="sd-b" onclick="pqGenerar('${esc(s.code)}')">Regenerar</button><button type="button" class="sd-b" onclick="pqDescartar('${esc(s.code)}')">Descartar</button></div>
+      <div class="pg-p sm">Después de aprobar puedes afinar cualquier ejercicio en la rutina de abajo y presionar Guardar.</div>
+    </div>`;
+}
+function pqRutinaMiniHTML(rut){
+  return DIAS_ORDER.map(k=>{ const d=rut&&rut[k]; const ej=comoArray(d&&d.ejercicios); if(!ej.length) return '';
+    return `<div class="pg-dia">${esc(sc(DIAS_NAMES[k]).substring(0,3))} · ${esc(sc(d.tipo||''))}</div>`+ej.map(e=>`<div class="pg-mini"><span>${esc(e.nm)}</span><b>${esc(pqEjTxt(e))}</b></div>`).join('');
+  }).join('');
+}
+function pqHistorialHTML(s){
+  const h=comoArray(s.historialRutinas).filter(Boolean);
+  if(!h.length) return '';
+  return `<div class="pg-hist-t">Bloques anteriores</div>`+h.slice().reverse().map(x=>`
+    <details class="pg-h"><summary><b>Bloque ${esc(x.n)}</b><span>${esc(fmtFecha(x.desde))} – ${esc(fmtFecha(x.hasta))} · ${esc(x.sesiones)} sesiones · ${esc(x.adherencia)}%</span></summary>
+      ${x.respuestas?pqRespuestasHTML(x.respuestas):''}
+      ${pqRutinaMiniHTML(x.rutina)}
+    </details>`).join('');
+}
+function bloqueProgresionStaff(s){
+  if(s.status==='pendiente') return '';
+  const b=pqBloque(s), sem=pqSemanaActual(s), est=pqEstado(s), st=pqStatsBloque(s), P=s.progresion||{}, c=esc(s.code);
+  const semTxt=sem>b.semanas?`bloque terminado (semana ${sem})`:`semana ${sem} de ${b.semanas}`;
+  let cuerpo='', hot=false;
+  if(!est || est==='aprobado'){
+    hot=sem>=b.semanas;
+    cuerpo=`${est==='aprobado'&&P.bloque===b.n?`<div class="pg-ok">✓ Bloque ${b.n} activo desde ${esc(fmtFecha(b.desde))}${P.por?' · aprobado por '+esc(P.por):''}</div>`:''}
+      <p class="pg-p">${hot?'<b>Toca progresar.</b> ':''}Envía la evaluación; cuando el socio la conteste te propongo su siguiente bloque con cargas más altas.</p>
+      <div class="pg-acts"><button type="button" class="sd-b p" onclick="pqEnviar('${c}')">📋 Enviar evaluación</button><button type="button" class="sd-b" onclick="pqGenerar('${c}')">Generar sin evaluación</button></div>`;
+  } else if(est==='enviado'){
+    cuerpo=`<div class="pg-wait">⏳ Evaluación enviada el ${esc(fmtFecha(P.fechaEnvio||fechaISO(new Date())))}. Esperando sus respuestas.</div>
+      <div class="pg-acts"><button type="button" class="sd-b" onclick="pqGenerar('${c}')">Generar sin esperar</button><button type="button" class="sd-b" onclick="pqCancelar('${c}')">Cancelar envío</button></div>`;
+  } else if(est==='respondido'){
+    hot=true;
+    cuerpo=`<div class="pg-k">Respuestas del socio · ${esc(fmtFecha(P.fechaResp||fechaISO(new Date())))}</div>${pqRespuestasHTML(P.respuestas)}
+      <button type="button" class="sd-pri" style="width:100%;margin-top:12px" onclick="pqGenerar('${c}')">✨ Generar propuesta de progresión</button>`;
+  } else if(est==='propuesta' && P.propuesta){
+    hot=true;
+    cuerpo=`${P.respuestas?`<details class="pg-h"><summary><b>Respuestas del socio</b><span>${esc(fmtFecha(P.fechaResp||''))}</span></summary>${pqRespuestasHTML(P.respuestas)}</details>`:''}${pqPropuestaHTML(s,P.propuesta)}`;
+  }
+  return `<div class="sd-sec" id="pg-sec">Progresión <small>Bloque ${b.n} · ${semTxt} · ${st.sesiones} sesiones (${st.adherencia}%)</small></div>
+    <div class="sd-body"><div class="pg-card${hot?' hot':''}">${cuerpo}</div>${pqHistorialHTML(s)}</div>`;
+}
+function pqBadgeLista(s){
+  const e=pqEstado(s);
+  if(e==='respondido') return ' · 📋 Evaluación contestada';
+  if(e==='propuesta') return ' · ✨ Propuesta por aprobar';
+  if(e==='enviado') return ' · ⏳ Evaluación enviada';
+  if(pqTocaProgresar(s)) return ' · 📈 Toca progresar';
+  return '';
+}
+
+// ── Vista del socio ──
+function pqCardSocio(s){
+  if(!s || s.status!=='activo') return '';
+  const e=pqEstado(s), P=s.progresion||{};
+  if(e==='enviado') return `<div class="pg-home"><div class="pg-home-k">📋 Evaluación de progreso</div>
+      <div class="pg-home-t">Terminaste tu bloque ${esc(pqBloque(s).n)}</div>
+      <div class="pg-home-m">Contesta ${PQ_PREG.length} preguntas rápidas y tu entrenador prepara tu siguiente nivel.</div>
+      <button type="button" class="btn-go" onclick="pqAbrir()">Responder · 2 min</button></div>`;
+  if(e==='respondido'||e==='propuesta') return `<div class="pg-home soft"><div class="pg-home-m">✓ Evaluación enviada. Tu entrenador está preparando tu nuevo bloque.</div></div>`;
+  if(e==='aprobado' && !P.visto) return `<div class="pg-home"><div class="pg-home-k">🚀 Nuevo bloque</div>
+      <div class="pg-home-t">Bloque ${esc(pqBloque(s).n)} activo</div>
+      <div class="pg-home-m">${esc(P.nCambios||0)} ajustes en tu rutina para seguir avanzando.</div>
+      <button type="button" class="btn-go" onclick="pqVerProgreso(true)">Ver qué cambió</button></div>`;
+  return '';
+}
+function pqPlanChip(s){
+  if(!s || s.status!=='activo') return '';
+  const b=pqBloque(s), sem=Math.min(pqSemanaActual(s),b.semanas);
+  return `<button type="button" class="pg-plan" onclick="pqVerProgreso()"><div><b>Bloque ${esc(b.n)}</b><span>Semana ${sem} de ${b.semanas}</span></div><em>Mi progresión ${ico('chev')}</em></button>`;
+}
+function pqVerProgreso(marcarVisto){
+  const s=activeSocio; if(!s) return;
+  const b=pqBloque(s), h=comoArray(s.historialRutinas).filter(Boolean), prev=h[h.length-1];
+  let comp='';
+  if(prev){
+    const ant={}; DIAS_ORDER.forEach(k=>comoArray(prev.rutina&&prev.rutina[k]&&prev.rutina[k].ejercicios).forEach(e=>{ if(e&&e.nm) ant[e.nm]=e; }));
+    comp=DIAS_ORDER.map(k=>{ const d=s.rutina[k]; const ej=comoArray(d&&d.ejercicios); if(!ej.length) return '';
+      return `<div class="pg-dia">${esc(sc(DIAS_NAMES[k]).substring(0,3))} · ${esc(sc(d.tipo||''))}</div>`+ej.map(e=>{
+        const a=ant[e.nm]; const ka=a&&pqParseKg(a.peso), kn=pqParseKg(e.peso);
+        let tag='';
+        if(!a) tag='<i class="pg-tag new">Nuevo</i>';
+        else if(ka&&kn&&kn>ka) tag=`<i class="pg-tag up">+${Math.round((kn-ka)*10)/10} kg</i>`;
+        else if(a && (String(a.reps)!==String(e.reps)||String(a.series)!==String(e.series))) tag='<i class="pg-tag">Ajustado</i>';
+        return `<div class="pg-mini"><span>${esc(e.nm)}${a&&pqEjTxt(a)!==pqEjTxt(e)?`<small>Antes: ${esc(pqEjTxt(a))}</small>`:''}</span><b>${esc(pqEjTxt(e))}${tag}</b></div>`;
+      }).join('');
+    }).join('');
+  }
+  const linea=h.map(x=>`<div class="pg-tl"><b>Bloque ${esc(x.n)}</b><span>${esc(fmtFecha(x.desde))} – ${esc(fmtFecha(x.hasta))} · ${esc(x.sesiones)} sesiones</span></div>`).join('')+
+    `<div class="pg-tl on"><b>Bloque ${esc(b.n)} · actual</b><span>Desde ${esc(fmtFecha(b.desde))} · semana ${Math.min(pqSemanaActual(s),b.semanas)} de ${b.semanas}</span></div>`;
+  document.getElementById('pg-body').innerHTML=`
+    <div class="pg-m-t">Tu progresión</div>
+    <div class="pg-tls">${linea}</div>
+    ${prev?`<div class="pg-k" style="margin-top:16px">Qué cambió respecto al bloque ${esc(prev.n)}</div>${comp}`
+      :`<div class="pg-p">Este es tu primer bloque. Al terminarlo, tu entrenador te enviará una evaluación y aquí verás cómo suben tus cargas.</div>`}
+    <button type="button" class="btn-go" style="width:100%;justify-content:center;margin-top:18px" onclick="pqCerrar()">Listo</button>`;
+  document.getElementById('modal-pg').classList.add('open');
+  if(marcarVisto && s.progresion && s.progresion.estado==='aprobado' && !s.progresion.visto){ s.progresion.visto=true; dbSave(s.code); refreshDash(); }
+}
+function pqCerrar(){ document.getElementById('modal-pg').classList.remove('open'); }
+
+// ── Cuestionario del socio ──
+let pqResp={}, pqPaso=0, pqNombres=[];
+function pqAbrir(){
+  const s=activeSocio; if(!s) return;
+  pqResp={}; pqPaso=0;
+  pqNombres=[...new Set(DIAS_ORDER.flatMap(k=>comoArray(s.rutina&&s.rutina[k]&&s.rutina[k].ejercicios).map(e=>e&&e.nm).filter(Boolean)))];
+  pqRender();
+  document.getElementById('modal-pg').classList.add('open');
+}
+function pqRespondida(q){
+  const v=pqResp[q.id];
+  if(q.opcional) return true;
+  if(q.multi) return comoArray(v).length>0;
+  if(q.id==='enfoque' && v==='zona') return !!pqResp.zona;
+  return !!v;
+}
+function pqRender(){
+  const q=PQ_PREG[pqPaso], tot=PQ_PREG.length, v=pqResp[q.id];
+  let cuerpo='';
+  if(q.ejercicios){
+    const sel=comoArray(v);
+    cuerpo=pqNombres.length?`<div class="chk-grid pg-chk">${pqNombres.map((n,i)=>`<div class="chk${sel.includes(n)?' ck':''}" onclick="pqToggleEj(${i})"><span class="chk-tick">✓</span>${esc(n)}</div>`).join('')}</div>`:'<div class="pg-p">Tu rutina no tiene ejercicios registrados.</div>';
+  } else if(q.texto){
+    cuerpo=`<textarea id="pq-txt" class="pg-txt" rows="4" maxlength="400" placeholder="Ej. me cuesta la sentadilla, cambié de horario…" oninput="pqResp.comentario=this.value">${esc(v||'')}</textarea>`;
+  } else if(q.multi){
+    const sel=comoArray(v);
+    cuerpo=`<div class="chk-grid pg-chk">${q.o.map(o=>`<div class="chk${sel.includes(o[0])?' ck':''}${o[0]==='ninguna'?' chk-none':''}" onclick="pqToggleMulti('${o[0]}')"><span class="chk-tick">✓</span>${esc(o[1])}</div>`).join('')}</div>`;
+  } else {
+    cuerpo=`<div class="pg-opts">${q.o.map(o=>`<div class="opt pg-opt${v===o[0]?' sel':''}" onclick="pqSel('${q.id}','${o[0]}')"><div class="ol">${esc(o[1])}</div>${o[2]?`<div class="os">${esc(o[2])}</div>`:''}</div>`).join('')}</div>`;
+    if(q.id==='enfoque' && v==='zona') cuerpo+=`<div class="pg-k" style="margin-top:14px">¿Qué zona?</div><div class="chk-grid pg-chk">${Object.entries(PQ_ZONAS).map(([id,z])=>`<div class="chk${pqResp.zona===id?' ck':''}" onclick="pqResp.zona='${id}';pqRender()"><span class="chk-tick">✓</span>${esc(z.nm)}</div>`).join('')}</div>`;
+  }
+  const ult=pqPaso===tot-1;
+  document.getElementById('pg-body').innerHTML=`
+    <div class="pg-q-top"><span>Pregunta ${pqPaso+1} de ${tot}</span><button type="button" class="pg-x" onclick="pqCerrar()" aria-label="Cerrar">✕</button></div>
+    <div class="pg-bar"><div style="width:${Math.round((pqPaso+1)/tot*100)}%"></div></div>
+    <div class="pg-q-t">${esc(q.t)}</div>${q.s?`<div class="pg-q-s">${esc(q.s)}</div>`:''}
+    ${cuerpo}
+    <div class="pg-q-nav">
+      ${pqPaso>0?`<button type="button" class="btn-go soft" onclick="pqPaso--;pqRender()">Atrás</button>`:'<span></span>'}
+      <button type="button" class="btn-go" id="pq-next" ${pqRespondida(q)?'':'disabled style="opacity:.45"'} onclick="${ult?'pqFinalizar()':'pqPaso++;pqRender()'}">${ult?'Enviar':(q.opcional&&!(comoArray(v).length||v)?'Omitir':'Siguiente')}</button>
+    </div>`;
+  const mb=document.querySelector('#modal-pg .mbox'); if(mb) mb.scrollTop=0;
+}
+function pqSel(id,val){
+  pqResp[id]=val; if(id==='enfoque' && val!=='zona') delete pqResp.zona;
+  pqRender();
+  if(!(id==='enfoque' && val==='zona') && pqPaso<PQ_PREG.length-1) setTimeout(()=>{ if(PQ_PREG[pqPaso].id===id){ pqPaso++; pqRender(); } },260);
+}
+function pqToggleMulti(val){
+  let sel=comoArray(pqResp.molestia);
+  if(val==='ninguna') sel=sel.includes('ninguna')?[]:['ninguna'];
+  else { sel=sel.filter(x=>x!=='ninguna'); sel=sel.includes(val)?sel.filter(x=>x!==val):sel.concat(val); }
+  pqResp.molestia=sel; pqRender();
+}
+function pqToggleEj(i){
+  const n=pqNombres[i]; let sel=comoArray(pqResp.quitar);
+  sel=sel.includes(n)?sel.filter(x=>x!==n):sel.concat(n);
+  pqResp.quitar=sel; pqRender();
+}
+function pqFinalizar(){
+  const s=activeSocio; if(!s) return;
+  const r=Object.assign({},pqResp); if(r.comentario) r.comentario=limpiarTexto(r.comentario).slice(0,400); else delete r.comentario;
+  if(!comoArray(r.quitar).length) delete r.quitar;
+  s.progresion=Object.assign({}, s.progresion||{}, {estado:'respondido', respuestas:r, fechaResp:fechaISO(new Date()), bloque:pqBloque(s).n});
+  dbSave(s.code);
+  pqCerrar(); refreshDash();
+  showToast('✓ ¡Gracias! Tu entrenador ya tiene tus respuestas');
+}
+
 // ═════════════════════════════════════════
 // RESUMEN DE COORDINACIÓN — KPIs, riesgo de abandono, carga por entrenador, exportación
 // ═════════════════════════════════════════
@@ -7578,6 +8286,31 @@ function calcResumen(){
   const topCambios=Object.entries(cambios).sort((a,b)=>b[1]-a[1]).slice(0,8);
   const topHoras=Object.entries(horas).sort((a,b)=>b[1]-a[1]).slice(0,3);
   return {socios,activos,pend,checkGym,checkFuera,checkSinUbic,sesSem,adhProm,riesgo,porEnt,plantilla,topCambios,topHoras};
+}
+function abrirLugares(){
+  if(staffRol!=='coordinador'){ showToast('Esta sección es solo para coordinación'); return; }
+  staffActivoId=null; staffRenderList();
+  const lugares=comoArray(DB.config&&DB.config.lugares).map(l=>{
+    const dist=haversine(l.lat,l.lng,GEO_CENTER.lat,GEO_CENTER.lng);
+    return Object.assign({},l,{esClub:dist<=GEO_RADIO_M});
+  }).sort((a,b)=>(b.visitas||0)-(a.visitas||0));
+  const club=lugares.filter(l=>l.esClub), otros=lugares.filter(l=>!l.esClub);
+  const fila=l=>`<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--b)">
+      <div style="min-width:0">
+        <div style="font-family:var(--fd);font-size:16px">${l.esClub?'🏋️ Club Campestre':'📍 '+l.lat.toFixed(3)+', '+l.lng.toFixed(3)}</div>
+        <div style="font-size:11.5px;color:var(--mu);margin-top:2px">Visto ${l.visitas} vez${l.visitas===1?'':'es'} · ${comoArray(l.dias).length||1} día${(comoArray(l.dias).length||1)===1?'':'s'} distinto${(comoArray(l.dias).length||1)===1?'':'s'} · ${esc(fmtFecha(l.primera))}${l.primera!==l.ultima?' – '+esc(fmtFecha(l.ultima)):''}</div>
+      </div>
+      ${l.esClub?'':`<a href="https://www.google.com/maps?q=${l.lat},${l.lng}" target="_blank" rel="noopener" class="sd-b" style="text-decoration:none;white-space:nowrap;flex:none">Ver mapa ↗</a>`}
+    </div>`;
+  document.getElementById('staff-content').innerHTML=`
+  <div style="padding:22px;max-width:700px">
+    <h2 style="font-family:var(--fd);font-size:30px;margin:0">Lugares visitados</h2>
+    <p style="font-size:12px;color:var(--mu);margin:6px 0 22px;line-height:1.6">De dónde abren tus socios la app (según el GPS de su dispositivo, cuando lo permiten). Si ves visitas repetidas en un lugar que no es el club, puede ser un gimnasio donde ya conocen la app — vale la pena ir a ofrecerla ahí.</p>
+    <h3 style="font-family:var(--fd);font-size:18px;margin:0 0 4px">Otros lugares ${otros.length?`(${otros.length})`:''}</h3>
+    ${otros.length?otros.map(fila).join(''):'<p style="font-size:13px;color:var(--mu)">Por ahora todos los accesos registrados fueron dentro del club.</p>'}
+    ${club.length?`<h3 style="font-family:var(--fd);font-size:18px;margin:26px 0 4px">Club Campestre</h3>${club.map(fila).join('')}`:''}
+    ${(!otros.length&&!club.length)?'<p style="font-size:13px;color:var(--mu)">Aún no hay suficientes check-ins con ubicación para armar este reporte.</p>':''}
+  </div>`;
 }
 function abrirResumen(){
   if(staffRol!=='coordinador'){ showToast('Esta sección es solo para coordinación'); return; }
@@ -7719,8 +8452,8 @@ function kbAgregarPrincipio(){
   kbGuardar('Principio agregado');
 }
 function kbEliminarPrincipio(id){
-  if(staffRol!=='coordinador'||!confirm('¿Quitar este principio?')) return;
-  delete kbExtra().principios[id]; kbGuardar('Principio eliminado');
+  if(staffRol!=='coordinador') return;
+  uiConfirm('¿Quitar este principio?',()=>{ delete kbExtra().principios[id]; kbGuardar('Principio eliminado'); },{label:'Quitar',danger:true});
 }
 // ── Notas / descripciones ──
 function kbFormNota(id){
@@ -7738,7 +8471,7 @@ function kbGuardarNota(){
   const id=kbV('kn-id')||kbNuevoId('n',t);
   kbExtra().notas[id]={t,x}; kbCerrar(); kbGuardar('Nota guardada');
 }
-function kbEliminarNota(id){ if(staffRol!=='coordinador'||!confirm('¿Eliminar esta nota?')) return; delete kbExtra().notas[id]; kbGuardar('Nota eliminada'); }
+function kbEliminarNota(id){ if(staffRol!=='coordinador') return; uiConfirm('¿Eliminar esta nota?',()=>{ delete kbExtra().notas[id]; kbGuardar('Nota eliminada'); },{label:'Eliminar',danger:true}); }
 // ── Métodos ──
 function kbFormMetodo(id){
   const m=id?kbExtra().metodos[id]:null;
@@ -7769,7 +8502,7 @@ function kbGuardarMetodo(){
     como, reps:limpiarTexto(kbV('km-reps')), series:parseInt(kbV('km-series'))||0};
   kbCerrar(); kbGuardar('Método guardado');
 }
-function kbEliminarMetodo(id){ if(staffRol!=='coordinador'||!confirm('¿Eliminar este método? Las rutinas que ya lo usan lo conservan.')) return; delete kbExtra().metodos[id]; kbGuardar('Método eliminado'); }
+function kbEliminarMetodo(id){ if(staffRol!=='coordinador') return; uiConfirm('¿Eliminar este método? Las rutinas que ya lo usan lo conservan.',()=>{ delete kbExtra().metodos[id]; kbGuardar('Método eliminado'); },{label:'Eliminar',danger:true}); }
 // ── Ejercicios ──
 function kbFormEjercicio(id){
   const e=id?kbExtra().ejercicios[id]:null;
@@ -7805,7 +8538,7 @@ function kbGuardarEjercicio(){
     ev:kbChips('','ke-ev'), aka:limpiarTexto(kbV('ke-aka')).split(',').map(x=>x.trim()).filter(Boolean)};
   kbCerrar(); kbGuardar('Ejercicio guardado');
 }
-function kbEliminarEjercicio(id){ if(staffRol!=='coordinador'||!confirm('¿Eliminar este ejercicio del catálogo? Las rutinas que ya lo tienen lo conservan.')) return; delete kbExtra().ejercicios[id]; kbGuardar('Ejercicio eliminado'); }
+function kbEliminarEjercicio(id){ if(staffRol!=='coordinador') return; uiConfirm('¿Eliminar este ejercicio del catálogo? Las rutinas que ya lo tienen lo conservan.',()=>{ delete kbExtra().ejercicios[id]; kbGuardar('Ejercicio eliminado'); },{label:'Eliminar',danger:true}); }
 
 // ── Ejercicios extra del catálogo propio dentro de la rutina de plantilla ──
 const KB_DIA_ENF=[
@@ -7935,10 +8668,11 @@ let filoDraft=null;
 function actualizarBotonMiFilosofia(){
   const bF=document.getElementById('btn-mi-filosofia');
   const bN=document.getElementById('btn-nuevo-ent');
-  if(bF) bF.style.display = staffActivoEntId ? 'inline-block' : 'none';
+  if(bF) bF.style.display = (staffActivoEntId && entHace(DB.entrenadores[staffActivoEntId],'entrenamiento')) ? 'inline-block' : 'none';
   if(bN) bN.style.display = staffRol==='coordinador' ? 'inline-block' : 'none';
   const bV=document.getElementById('btn-ver-ent'); if(bV) bV.style.display = staffRol==='coordinador' ? 'inline-block' : 'none';
   const bRes=document.getElementById('btn-resumen'); if(bRes) bRes.style.display = staffRol==='coordinador' ? 'inline-block' : 'none';
+  const bLu=document.getElementById('btn-lugares'); if(bLu) bLu.style.display = staffRol==='coordinador' ? 'inline-block' : 'none';
   const bFb=document.getElementById('btn-firebase'); if(bFb) bFb.style.display = staffRol==='coordinador' ? 'inline-block' : 'none';
   const bR=document.getElementById('btn-respaldo'); if(bR) bR.style.display = staffRol==='coordinador' ? 'inline-block' : 'none';
   const bX=document.getElementById('btn-reset'); if(bX) bX.style.display = (staffRol==='coordinador' && !fbListo) ? 'inline-block' : 'none';
@@ -8135,6 +8869,8 @@ function abrirNuevoEntrenador(){
   document.getElementById('ne-usuario').value='';
   document.getElementById('ne-pass').value='';
   document.getElementById('ne-err').style.display='none';
+  document.getElementById('ne-func-ent').classList.add('ck');
+  document.getElementById('ne-func-nut').classList.remove('ck');
   const cont=document.getElementById('ne-especialidades');
   cont.innerHTML = DEPORTES.map(d=>`<div class="chk" onclick="this.classList.toggle('ck')">${d.emoji} ${d.nm}</div>`).join('') +
     `<div class="chk" onclick="this.classList.toggle('ck')">🏋️ Fuerza</div><div class="chk" onclick="this.classList.toggle('ck')">🤸 Funcional</div><div class="chk" onclick="this.classList.toggle('ck')">🏥 Rehabilitación</div>`;
@@ -8145,17 +8881,21 @@ function crearNuevoEntrenador(){
   const nombre=limpiarTexto(document.getElementById('ne-nombre').value);
   const usuario=document.getElementById('ne-usuario').value.trim().toLowerCase().replace(/[^a-z0-9_]/g,'');
   const pass=document.getElementById('ne-pass').value;
-  if(!nombre||!usuario||!pass||STAFF_USERS[usuario]||(DB.entrenadores&&DB.entrenadores[usuario])){
+  const funciones=[document.getElementById('ne-func-ent').classList.contains('ck')?'entrenamiento':null, document.getElementById('ne-func-nut').classList.contains('ck')?'nutricion':null].filter(Boolean);
+  if(!nombre||!usuario||!pass||!funciones.length||STAFF_USERS[usuario]||(DB.entrenadores&&DB.entrenadores[usuario])){
     document.getElementById('ne-err').style.display='block'; return;
   }
   // Evitar duplicados accidentales: si ya existe alguien con ese nombre, confirmar antes de crear otro
   const yaExiste=Object.values(DB.entrenadores||{}).some(e=>e && e.nombre && e.nombre.trim().toLowerCase()===nombre.toLowerCase());
-  if(yaExiste && !confirm('Ya existe un entrenador llamado "'+nombre+'". ¿Seguro que quieres crear OTRA cuenta con el mismo nombre? (si el usuario anterior fue un error, ciérralo con 🗑 Eliminar en vez de crear uno nuevo)')) return;
+  if(yaExiste) uiConfirm('Ya existe un entrenador llamado "'+nombre+'". ¿Seguro que quieres crear OTRA cuenta con el mismo nombre? (si el usuario anterior fue un error, ciérralo con 🗑 Eliminar en vez de crear uno nuevo)',()=>crearNuevoEntrenadorFinal(usuario,pass,nombre,funciones),{label:'Crear de todas formas',danger:true});
+  else crearNuevoEntrenadorFinal(usuario,pass,nombre,funciones);
+}
+function crearNuevoEntrenadorFinal(usuario,pass,nombre,funciones){
   const especialidades=[...document.querySelectorAll('#ne-especialidades .chk.ck')].map(e=>e.textContent.trim());
-  DB.entrenadores[usuario]={ id:usuario, pass, rol:'entrenador', nombre, especialidades, filosofia:null };
+  DB.entrenadores[usuario]={ id:usuario, pass, rol:'entrenador', nombre, especialidades, funciones, filosofia:null };
   dbSaveEntrenador(usuario);
   cerrarModalNuevoEnt();
-  showToast('✓ Entrenador creado: usuario "'+usuario+'" — al iniciar sesión le pedirá su filosofía');
+  showToast('✓ '+(entTipoLabel(DB.entrenadores[usuario]))+' creado: usuario "'+usuario+'"'+(funciones.includes('entrenamiento')?' — al iniciar sesión le pedirá su filosofía':''));
   // Refrescar la vista si estamos parados en la lista de Entrenadores, para ver la tarjeta nueva de inmediato
   if(staffRol==='coordinador' && document.getElementById('staff-content')?.innerHTML.includes('Entrenadores')) abrirEntrenadores();
 }
@@ -8165,6 +8905,139 @@ function crearNuevoEntrenador(){
 // VER / EDITAR / ELIMINAR ENTRENADORES (coordinador)
 // ═════════════════════════════════════════
 function sociosDeEntrenador(id){ return Object.values(DB.socios||{}).filter(s=>s.entrenadorId===id); }
+
+// ═════════════════════════════════════════
+// NUTRICIÓN — nutriólogo asignado, ajuste de requerimientos y menú
+// ═════════════════════════════════════════
+function entFunciones(e){ const f=e&&e.funciones; return (Array.isArray(f)&&f.length)?f:['entrenamiento']; }
+function entHace(e,f){ return !!e && entFunciones(e).includes(f); }
+function entTipoLabel(e){
+  if(!e) return '';
+  if(e.rol==='coordinador') return 'Coordinador';
+  const f=entFunciones(e), ent=f.includes('entrenamiento'), nut=f.includes('nutricion');
+  return ent&&nut?'Entrenador · Nutrición':nut?'Nutriólogo':'Entrenador';
+}
+function staffNutricionistas(){ return Object.values(DB.entrenadores||{}).filter(e=>e && e.rol!=='coordinador' && entHace(e,'nutricion')); }
+function nutPuedeEditar(s){
+  if(staffRol==='coordinador') return true;
+  if(!staffActivoEntId) return false;
+  if(s.nutriologoId===staffActivoEntId) return true;
+  const propio=DB.entrenadores[staffActivoEntId];
+  return s.entrenadorId===staffActivoEntId && entHace(propio,'nutricion');
+}
+function bloqueAsignacionStaff(s){
+  if(staffRol!=='coordinador') return '';
+  const activosDe = id => Object.values(DB.socios||{}).filter(x=>x&&x.entrenadorId===id&&x.status==='activo').length;
+  const ents=Object.values(DB.entrenadores||{}).filter(e=>e&&e.rol!=='coordinador'&&entHace(e,'entrenamiento'));
+  const entPropio=s.entrenadorId?DB.entrenadores[s.entrenadorId]:null;
+  const entPropioNut=entPropio&&entHace(entPropio,'nutricion');
+  return `<div class="sd-sec">Asignación de staff <small>Decisión interna — el socio no la ve</small></div>
+    <div class="sd-body">
+      <div class="f-row">
+        <div class="f-grp"><label class="f-lbl">Entrenador</label>
+          <select class="ti" onchange="entAsignar('${esc(s.code)}',this.value)">
+            <option value="">Sin asignar</option>
+            ${ents.map(e=>`<option value="${esc(e.id)}" ${s.entrenadorId===e.id?'selected':''}>${esc(e.nombre)} · ${activosDe(e.id)} activo${activosDe(e.id)===1?'':'s'}</option>`).join('')}
+          </select>
+        </div>
+        <div class="f-grp"><label class="f-lbl">Nutriólogo</label>
+          <select class="ti" onchange="nutAsignar('${esc(s.code)}',this.value)">
+            <option value="">${entPropioNut?'Su entrenador ('+esc(entPropio.nombre)+')':'Sin asignar'}</option>
+            ${staffNutricionistas().filter(e=>e.id!==s.entrenadorId).map(e=>`<option value="${esc(e.id)}" ${s.nutriologoId===e.id?'selected':''}>${esc(e.nombre)}${entHace(e,'entrenamiento')?' (también entrena)':''}</option>`).join('')}
+          </select>
+        </div>
+      </div>
+      <div class="f-nota">Mover a un socio de entrenador solo cambia quién ve y edita su ficha — su rutina, historial y datos se quedan igual.</div>
+    </div>`;
+}
+function entAsignar(code,entId){
+  if(staffRol!=='coordinador') return;
+  const s=getSocio(code); if(!s) return;
+  if(entId && DB.entrenadores[entId]){ s.entrenadorId=entId; s.asignado=DB.entrenadores[entId].nombre; }
+  else { s.entrenadorId=''; s.asignado='Sin asignar'; }
+  pqGuardarStaff(s,['entrenadorId','asignado']);
+  staffRenderList(); staffRenderContent(s);
+  showToast(s.entrenadorId?'🏋️ Reasignado a '+s.asignado:'🏋️ Entrenador: sin asignar');
+}
+function bloqueNutricionStaff(s){
+  const nut=nutricionFinal(s), base=calcNutricion(s);
+  const nutriEnt=s.nutriologoId?DB.entrenadores[s.nutriologoId]:null;
+  const entPropio=s.entrenadorId?DB.entrenadores[s.entrenadorId]:null;
+  const entPropioNut=entPropio&&entHace(entPropio,'nutricion');
+  const asignadoTxt = nutriEnt?esc(nutriEnt.nombre)
+    : entPropioNut?esc(entPropio.nombre)+' <span style="color:var(--mu);font-weight:500">(su entrenador)</span>'
+    : '<span style="color:var(--mu)">Sin asignar</span>';
+  const menu=comoArray(s.nutricion&&s.nutricion.menu);
+  const puede=nutPuedeEditar(s);
+  return `<div class="sd-sec">Nutrición <small>Nutriólogo: ${asignadoTxt}</small></div>
+    <div class="sd-body">
+      <div class="sd-note"><b>${nut.manual?'Ajustado por '+esc(s.nutricion.por||'staff')+(s.nutricion.fecha?' · '+esc(fmtFecha(s.nutricion.fecha)):''):'Cálculo automático'}:</b> ${nut.kcal} kcal · P ${nut.prot} g · C ${nut.carbs} g · G ${nut.grasas} g · Agua ${nut.agua} L
+      ${nut.manual?`<br><span>Cálculo automático de referencia: ${base.kcal} kcal</span>`:`<br><span>BMR ${nut.bmr} × ${nut.factor} (${esc(nut.ajusteTxt)})</span>`}</div>
+      ${(nut.manual&&s.nutricion.nota)?`<div class="pg-com" style="margin-top:10px">"${esc(s.nutricion.nota)}"</div>`:''}
+      ${menu.length?`<div class="pg-k" style="margin:14px 0 6px">Menú sugerido</div>${menu.map(m=>`<div class="pg-mini"><span>${esc(m.nombre)}</span><b style="max-width:58%;text-align:right;font-weight:500;white-space:pre-line">${esc(m.detalle)}</b></div>`).join('')}`:''}
+      ${puede?`<div class="pg-acts" style="margin-top:14px">
+        <button type="button" class="sd-b p" onclick="nutAbrir('${esc(s.code)}')">🥗 ${nut.manual?'Editar nutrición':'Personalizar nutrición'}</button>
+        ${nut.manual?`<button type="button" class="sd-b" onclick="nutRestablecer('${esc(s.code)}')">Restablecer automático</button>`:''}
+      </div>`:''}
+    </div>`;
+}
+function nutAsignar(code,nutId){
+  if(staffRol!=='coordinador') return;
+  const s=getSocio(code); if(!s) return;
+  if(nutId && DB.entrenadores[nutId]){ s.nutriologoId=nutId; s.nutriologo=DB.entrenadores[nutId].nombre; }
+  else { s.nutriologoId=''; s.nutriologo=''; }
+  pqGuardarStaff(s,['nutriologoId','nutriologo']);
+  staffRenderList(); staffRenderContent(s);
+  showToast(s.nutriologo?'🥗 Nutrición asignada a '+s.nutriologo:'🥗 Nutrición: sin nutriólogo dedicado');
+}
+let nutMenuTemp=[];
+function nutAbrir(code){
+  const s=getSocio(code); if(!s||!nutPuedeEditar(s)){ showToast('No tienes permiso para editar la nutrición de este socio'); return; }
+  const base=calcNutricion(s), o=s.nutricion||{};
+  document.getElementById('nut-code').value=code;
+  document.getElementById('nut-titulo').textContent='Nutrición · '+tc(s.nombre);
+  document.getElementById('nut-kcal').value=o.override?o.kcal:base.kcal;
+  document.getElementById('nut-prot').value=o.override?o.prot:base.prot;
+  document.getElementById('nut-carbs').value=o.override?o.carbs:base.carbs;
+  document.getElementById('nut-grasas').value=o.override?o.grasas:base.grasas;
+  document.getElementById('nut-agua').value=o.override?o.agua:base.agua;
+  document.getElementById('nut-nota').value=o.nota||'';
+  nutMenuTemp=comoArray(o.menu).map(m=>({nombre:m.nombre||'',detalle:m.detalle||''}));
+  nutRenderMenu();
+  document.getElementById('modal-nutricion').classList.add('open');
+}
+function nutCerrar(){ document.getElementById('modal-nutricion').classList.remove('open'); }
+function nutRenderMenu(){
+  document.getElementById('nut-menu-list').innerHTML = nutMenuTemp.length ? nutMenuTemp.map((m,i)=>`
+    <div class="nut-comida">
+      <button type="button" class="nut-del" onclick="nutQuitarComida(${i})" aria-label="Quitar">✕</button>
+      <input type="text" class="ti" style="min-height:44px;padding:0 14px;margin-bottom:6px" value="${esc(m.nombre)}" placeholder="Ej. Desayuno · 8:00 am" oninput="nutMenuTemp[${i}].nombre=this.value">
+      <textarea class="ti" rows="2" placeholder="Ej. 3 claras + 1 huevo, avena con fruta, café solo" oninput="nutMenuTemp[${i}].detalle=this.value">${esc(m.detalle)}</textarea>
+    </div>`).join('') : '<div class="q-sub" style="margin-bottom:10px">Aún no agregas comidas — es opcional, puedes dejar solo los requerimientos.</div>';
+}
+function nutAgregarComida(){ nutMenuTemp.push({nombre:'',detalle:''}); nutRenderMenu(); }
+function nutQuitarComida(i){ nutMenuTemp.splice(i,1); nutRenderMenu(); }
+function nutGuardar(){
+  const code=document.getElementById('nut-code').value; const s=getSocio(code); if(!s||!nutPuedeEditar(s)) return;
+  const v=id=>document.getElementById(id).value;
+  const kcal=parseInt(v('nut-kcal')), prot=parseInt(v('nut-prot')), carbs=parseInt(v('nut-carbs')), grasas=parseInt(v('nut-grasas')), agua=parseFloat(v('nut-agua'));
+  if(!(kcal>=800&&kcal<=6000)){ showToast('Revisa las calorías (800 a 6000)'); return; }
+  if(!(prot>=0&&carbs>=0&&grasas>=0)){ showToast('Revisa los gramos de macros'); return; }
+  const menu=nutMenuTemp.filter(m=>m.nombre.trim()||m.detalle.trim()).map(m=>({nombre:limpiarTexto(m.nombre),detalle:limpiarTexto(m.detalle)}));
+  s.nutricion={ override:true, kcal,prot,carbs,grasas, agua: agua||calcNutricion(s).agua, nota:limpiarTexto(v('nut-nota')), menu, por:pqStaffNombre(), fecha:fechaISO(new Date()) };
+  pqGuardarStaff(s,['nutricion']);
+  nutCerrar(); staffRenderList(); staffRenderContent(s);
+  showToast('🥗 Nutrición actualizada — el socio la verá al instante');
+}
+function nutRestablecer(code){
+  const s=getSocio(code); if(!s||!nutPuedeEditar(s)) return;
+  uiConfirm('¿Restablecer al cálculo automático? Se perderá el ajuste y el menú personalizado.',()=>{
+    delete s.nutricion; pqGuardarStaff(s,['nutricion']);
+    staffRenderList(); staffRenderContent(s);
+    showToast('↺ Nutrición restablecida al cálculo automático');
+  },{label:'Restablecer',danger:true});
+}
+
 function abrirEntrenadores(){
   if(staffRol!=='coordinador'){ showToast('Solo el coordinador puede ver esta sección'); return; }
   staffActivoId=null; staffRenderList();
@@ -8180,7 +9053,7 @@ function abrirEntrenadores(){
       <div style="flex:1;min-width:220px">
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
           <div style="font-family:var(--fd);font-size:18px">${esc(t.nombre)}</div>
-          <span style="font-size:8.5px;letter-spacing:.02em;color:var(--mu);font-family:var(--fb);border:1px solid var(--b);border-radius:10px;padding:2px 7px">${esc(t.rol||'entrenador').toUpperCase()}</span>
+          <span style="font-size:8.5px;letter-spacing:.02em;color:var(--mu);font-family:var(--fb);border:1px solid var(--b);border-radius:10px;padding:2px 7px">${esc(entTipoLabel(t)).toUpperCase()}</span>
           <span style="font-size:8.5px;letter-spacing:.02em;color:var(--mu);font-family:var(--fb)">usuario: ${esc(t.id)}</span>
         </div>
         <div style="font-size:11.5px;margin:5px 0;${tieneFilo?'color:var(--v);font-style:italic':'color:var(--mu)'}">${tieneFilo?'"'+esc(t.filosofia.tagline)+'"':'Sin filosofía definida todavía'}</div>
@@ -8213,6 +9086,8 @@ function abrirEditarEntrenador(id){
   document.getElementById('ee-id').value=id;
   document.getElementById('ee-nombre').value=t.nombre||'';
   document.getElementById('ee-pass').value='';
+  document.getElementById('ee-func-ent').classList.toggle('ck', entHace(t,'entrenamiento'));
+  document.getElementById('ee-func-nut').classList.toggle('ck', entHace(t,'nutricion'));
   const cont=document.getElementById('ee-especialidades');
   const todas=[...DEPORTES.map(d=>d.emoji+' '+d.nm),'🏋️ Fuerza','🤸 Funcional','🏥 Rehabilitación'];
   const clavesLista=todas.map(normEsp);
@@ -8229,7 +9104,9 @@ function guardarEdicionEntrenador(){
   const t=DB.entrenadores[id]; if(!t) return;
   const nombre=limpiarTexto(document.getElementById('ee-nombre').value);
   if(!nombre){ showToast('El nombre no puede quedar vacío'); return; }
-  t.nombre=nombre;
+  const funciones=[document.getElementById('ee-func-ent').classList.contains('ck')?'entrenamiento':null, document.getElementById('ee-func-nut').classList.contains('ck')?'nutricion':null].filter(Boolean);
+  if(!funciones.length){ showToast('Elige al menos una función: entrenamiento o nutrición'); return; }
+  t.nombre=nombre; t.funciones=funciones;
   const pass=document.getElementById('ee-pass').value;
   if(pass.trim()) t.pass=pass.trim();
   const marcadas=[...document.querySelectorAll('#ee-especialidades .chk.ck')].map(e=>e.textContent.trim());
@@ -8248,8 +9125,13 @@ function confirmarEliminarEntrenador(id){
   const aviso=socios.length
     ? `Tiene ${socios.length} socio(s) asignado(s) — quedarán SIN entrenador asignado (sus rutinas no se borran). `
     : '';
-  if(!confirm(`¿Eliminar a ${t.nombre}? ${aviso}Escribe OK en el siguiente cuadro para confirmar.`)) return;
-  if(prompt('Para confirmar, escribe ELIMINAR')!=='ELIMINAR') return;
+  uiConfirm(`¿Eliminar a ${t.nombre}? ${aviso}`,
+    ()=>uiPrompt('Para confirmar, escribe ELIMINAR','ELIMINAR',()=>confirmarEliminarEntrenadorFinal(id),{label:'Eliminar'}),
+    {label:'Continuar',danger:true});
+}
+function confirmarEliminarEntrenadorFinal(id){
+  const t=DB.entrenadores[id]; if(!t) return;
+  const socios=sociosDeEntrenador(id);
   socios.forEach(s=>{ s.entrenadorId=''; s.asignado='Sin asignar'; dbSaveStaff(s.code); });
   delete DB.entrenadores[id];
   guardarLocal();
@@ -8327,6 +9209,25 @@ if('serviceWorker' in navigator){
 }
 </script>
 
+<!-- ═══ MODAL CONFIRMACIÓN (reemplaza confirm/prompt nativos) ═══ -->
+<div class="modal" id="modal-uic" onclick="if(event.target===this)uiNo()">
+  <div class="mbox" style="max-width:420px">
+    <div id="uic-msg" style="font-size:15px;line-height:1.6;color:var(--tx);margin-bottom:16px;white-space:pre-line"></div>
+    <div id="uic-input-wrap" style="display:none;margin-bottom:16px">
+      <input id="uic-input" class="sf-in" style="width:100%;box-sizing:border-box" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">
+    </div>
+    <div style="display:flex;gap:10px">
+      <button type="button" class="sd-b" style="flex:1" onclick="uiNo()">Cancelar</button>
+      <button type="button" class="sd-pri" id="uic-yes" style="flex:1" onclick="uiYes()">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAL PROGRESIÓN (evaluación y mi progresión) ═══ -->
+<div class="modal" id="modal-pg" onclick="if(event.target===this)pqCerrar()">
+  <div class="mbox"><div id="pg-body"></div></div>
+</div>
+
 <!-- ═══ MODAL MI FILOSOFÍA (entrenador) ═══ -->
 <div class="modal" id="modal-filosofia" onclick="if(event.target===this)cerrarModalFilosofia()">
   <div class="mbox" style="max-width:480px">
@@ -8351,7 +9252,12 @@ if('serviceWorker' in navigator){
     <div style="display:flex;flex-direction:column;gap:10px">
       <input type="text" class="ti" id="ee-nombre" placeholder="Nombre completo">
       <input type="text" class="ti" id="ee-pass" placeholder="Nueva contraseña (déjalo vacío para no cambiarla)">
-      <div class="q-sub" style="margin:2px 0 4px">Especialidades</div>
+      <div class="q-sub" style="margin:2px 0 4px">¿Qué da? (elige al menos una)</div>
+      <div class="chk-grid" style="grid-template-columns:1fr 1fr">
+        <div class="chk" id="ee-func-ent" onclick="this.classList.toggle('ck')">🏋️ Entrenamiento</div>
+        <div class="chk" id="ee-func-nut" onclick="this.classList.toggle('ck')">🥗 Nutrición</div>
+      </div>
+      <div class="q-sub" style="margin:8px 0 4px">Especialidades</div>
       <div class="chk-grid" id="ee-especialidades" style="max-height:160px;overflow-y:auto"></div>
       <input type="text" class="ti" id="ee-otras" placeholder="Otras especialidades, separadas por coma">
     </div>
@@ -8372,14 +9278,46 @@ if('serviceWorker' in navigator){
       <input type="text" class="ti" id="ne-nombre" placeholder="Nombre completo (ej. Ana López)">
       <input type="text" class="ti" id="ne-usuario" placeholder="Usuario (ej. entrenador4)">
       <input type="text" class="ti" id="ne-pass" placeholder="Contraseña">
-      <div class="q-sub" style="margin:2px 0 4px">Especialidades (opcional, elige las que apliquen)</div>
+      <div class="q-sub" style="margin:2px 0 4px">¿Qué va a dar de alta? (elige al menos una)</div>
+      <div class="chk-grid" style="grid-template-columns:1fr 1fr">
+        <div class="chk ck" id="ne-func-ent" onclick="this.classList.toggle('ck')">🏋️ Entrenamiento</div>
+        <div class="chk" id="ne-func-nut" onclick="this.classList.toggle('ck')">🥗 Nutrición</div>
+      </div>
+      <div class="q-sub" style="margin:8px 0 4px">Especialidades (opcional, elige las que apliquen)</div>
       <div class="chk-grid" id="ne-especialidades" style="max-height:160px;overflow-y:auto"></div>
     </div>
-    <div class="login-err" id="ne-err" style="display:none">❌ Completa nombre, usuario y contraseña. El usuario ya podría estar en uso.</div>
+    <div class="login-err" id="ne-err" style="display:none">❌ Completa nombre, usuario, contraseña y elige al menos una función. El usuario ya podría estar en uso.</div>
     <button class="btn-main" style="margin-top:16px" onclick="crearNuevoEntrenador()">Crear acceso ✓</button>
   </div>
 </div>
 
+
+<!-- ═══ MODAL NUTRICIÓN (nutriólogo/entrenador/coordinador) ═══ -->
+<div class="modal" id="modal-nutricion" onclick="if(event.target===this)nutCerrar()">
+  <div class="mbox" style="max-width:520px">
+    <div class="mx" onclick="nutCerrar()">✕</div>
+    <div class="m-tag" id="nut-titulo">Nutrición</div>
+    <div class="m-title" style="font-size:22px">Requerimientos y menú</div>
+    <input type="hidden" id="nut-code">
+    <div class="f-row3">
+      <div class="f-grp"><label class="f-lbl" for="nut-kcal">Kcal / día</label><input type="number" class="ti" id="nut-kcal" inputmode="numeric"></div>
+      <div class="f-grp"><label class="f-lbl" for="nut-prot">Proteína (g)</label><input type="number" class="ti" id="nut-prot" inputmode="numeric"></div>
+      <div class="f-grp"><label class="f-lbl" for="nut-carbs">Carbos (g)</label><input type="number" class="ti" id="nut-carbs" inputmode="numeric"></div>
+    </div>
+    <div class="f-row">
+      <div class="f-grp"><label class="f-lbl" for="nut-grasas">Grasas (g)</label><input type="number" class="ti" id="nut-grasas" inputmode="numeric"></div>
+      <div class="f-grp"><label class="f-lbl" for="nut-agua">Agua (L)</label><input type="number" class="ti" id="nut-agua" step="0.1" inputmode="decimal"></div>
+    </div>
+    <div class="f-grp"><label class="f-lbl" for="nut-nota">Indicaciones para el socio</label><textarea class="ti" id="nut-nota" rows="3" placeholder="Ej. Evita azúcares simples, toma agua antes de cada comida…"></textarea></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin:16px 0 8px">
+      <div class="q-sub" style="margin:0">Menú sugerido (opcional)</div>
+      <button type="button" class="sd-b" style="padding:6px 12px" onclick="nutAgregarComida()">+ Agregar comida</button>
+    </div>
+    <div id="nut-menu-list"></div>
+    <div class="f-nota">Esto reemplaza lo que ve el socio en su pestaña de Nutrición. Puedes restablecer el cálculo automático cuando quieras.</div>
+    <button class="btn-main" style="margin-top:14px" onclick="nutGuardar()">Guardar nutrición</button>
+  </div>
+</div>
 
 <!-- ═══ MODAL EDITAR SOCIO (coordinador) ═══ -->
 <div class="modal" id="modal-staff-menu" onclick="if(event.target===this)staffMenuCerrar()">
@@ -8410,7 +9348,10 @@ if('serviceWorker' in navigator){
       <div class="f-grp"><label class="f-lbl" for="es-dias">Frecuencia</label><select class="ti" id="es-dias"></select></div>
       <div class="f-grp"><label class="f-lbl" for="es-status">Estado</label><select class="ti" id="es-status"></select></div>
     </div>
-    <div class="f-grp"><label class="f-lbl" for="es-ent">Entrenador asignado</label><select class="ti" id="es-ent"></select></div>
+    <div class="f-row">
+      <div class="f-grp"><label class="f-lbl" for="es-ent">Entrenador asignado</label><select class="ti" id="es-ent"></select></div>
+      <div class="f-grp"><label class="f-lbl" for="es-nut">Nutriólogo asignado</label><select class="ti" id="es-nut"></select></div>
+    </div>
     <div class="f-grp"><label class="f-lbl" for="es-limit">Limitaciones (separadas por coma)</label><input type="text" class="ti" id="es-limit" placeholder="Ej. Rodilla / menisco, Hombro"></div>
     <div class="f-grp"><label class="f-lbl" for="es-nuevocode">Cambiar código de acceso (opcional)</label><input type="text" class="ti" id="es-nuevocode" maxlength="4" inputmode="numeric" placeholder="4 dígitos"></div>
     <div class="f-nota">Cambiar objetivo, nivel o frecuencia no reescribe la rutina: ajústala aparte en el panel si hace falta. El peso nuevo se guarda como pesaje de hoy.</div>
