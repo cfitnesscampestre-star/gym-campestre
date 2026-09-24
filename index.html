@@ -406,6 +406,7 @@ const KB_ENFOQUES = {cuadriceps:'Cuádriceps',gluteo:'Glúteo',femoral:'Femorale
   --scrim:rgba(10,16,22,.45);
   --fill-track:#E6EBEF;
   --mesh:linear-gradient(180deg,#F5F7F9 0%,#EDF0F3 100%);
+  --chart1:var(--v);--chart2:var(--v2);
 }
 html[data-theme="dark"]{
   color-scheme:dark;
@@ -426,7 +427,61 @@ html[data-theme="dark"]{
   --scrim:rgba(0,0,0,.66);
   --fill-track:#1B2530;
   --mesh:radial-gradient(60% 34% at 100% 0%,rgba(200,242,58,.07),transparent 70%),linear-gradient(180deg,#0B1015 0%,#090D11 100%);
+  --chart1:var(--v);--chart2:var(--v2);
 }
+html[data-theme="light2"]{
+  color-scheme:light;
+  --lime:#7C6CF5;
+  --v:#0B7A8A;--v2:#17A6B8;--n:#0B7A8A;--g:#A85F00;--r:#D4333F;--p:#6B4EE0;--heat:#F0651F;
+  --dk:#F6F3FC;--dk2:#FFFFFF;--dk3:#FDFBFF;
+  --tx:#191333;--mu:color-mix(in srgb,#191333 58%,transparent);
+  --gl:rgba(255,255,255,.62);--gl2:color-mix(in srgb,var(--lime) 26%,transparent);
+  --b:#E4DEF6;--b2:#D6CCF0;
+  --in-bg:#F5F1FC;--in-bg2:#EFE9FA;
+  --topbar:rgba(252,250,255,.86);
+  --btn-tx:#FFFFFF;
+  --grad:linear-gradient(120deg,#6D5EF5 0%,#A855F7 52%,#FF5A1F 100%);
+  --grad-txt:linear-gradient(120deg,#6D5EF5,#FF5A1F);
+  --hi:rgba(255,255,255,.9);
+  --shadow:0 1px 2px rgba(72,50,160,.05),0 10px 26px -12px rgba(72,50,160,.20);
+  --glow:0 10px 24px -8px rgba(109,94,245,.55);
+  --scrim:rgba(20,14,40,.5);
+  --fill-track:#EAE3FA;
+  --ring1:#FF5A1F;--ring2:#FFA24D;
+  --chart1:#FF5A1F;--chart2:#FFA24D;
+  --mesh:
+    radial-gradient(85% 60% at 12% -6%, rgba(139,126,255,.38), transparent 60%),
+    radial-gradient(75% 55% at 78% 2%, rgba(64,150,255,.48), transparent 58%),
+    radial-gradient(60% 45% at 100% 30%, rgba(94,180,255,.40), transparent 60%),
+    radial-gradient(100% 75% at 90% 108%, rgba(255,90,31,.62), transparent 62%),
+    linear-gradient(165deg,#F5F2FD 0%,#EAF1FE 38%,#F7ECFB 60%,#FBD9C2 100%);
+}
+html[data-theme="light2"] .today-k,
+html[data-theme="light2"] .det-dl,
+html[data-theme="light2"] .ej-ms{color:#6D5EF5;}
+html[data-theme="light2"] .today::before{background:radial-gradient(circle,rgba(255,90,31,.30),transparent 68%);}
+html[data-theme="light2"] .glass,html[data-theme="light2"] .card,html[data-theme="light2"] .kpi,html[data-theme="light2"] .macro-c,
+html[data-theme="light2"] .ej-card,html[data-theme="light2"] .day-row,html[data-theme="light2"] .opt,html[data-theme="light2"] .ic,
+html[data-theme="light2"] .login-card,html[data-theme="light2"] .pend-card,html[data-theme="light2"] .today,html[data-theme="light2"] .stat,
+html[data-theme="light2"] .hero-extras,html[data-theme="light2"] .chk{
+  -webkit-backdrop-filter:blur(26px) saturate(1.7);backdrop-filter:blur(26px) saturate(1.7);
+  border-color:rgba(255,255,255,.65);
+  box-shadow:0 1px 0 rgba(255,255,255,.7) inset,0 4px 10px -4px rgba(72,50,160,.28),0 22px 40px -16px rgba(60,40,140,.38);
+}
+html[data-theme="light2"] .tb,html[data-theme="light2"] .dash-tabs,html[data-theme="light2"] .det-foot{
+  -webkit-backdrop-filter:blur(28px) saturate(1.7);backdrop-filter:blur(28px) saturate(1.7);
+}
+html[data-theme="light2"] .ck.yes,html[data-theme="light2"] .set-d.ok{color:#FFFFFF;}
+html[data-theme="light2"] .ck:focus-visible,html[data-theme="light2"] .set-d:focus-visible{outline-color:#FF5A1F;}
+html[data-theme="light2"] .ck:hover,html[data-theme="light2"] .set-d:hover{border-color:#FF5A1F;}
+html[data-theme="light2"] .day-row.today .dn{color:#FFFFFF;text-shadow:0 1px 4px rgba(20,8,50,.55);}
+html[data-theme="light2"] .day-row.today .dl,html[data-theme="light2"] .day-row.today .ds{color:#FFFFFF;text-shadow:0 1px 4px rgba(20,8,50,.5);}
+html[data-theme="light2"] .hero-card{background:linear-gradient(135deg,#1C1140 0%,#2A1552 55%,#2E1030 100%);}
+html[data-theme="light2"] .hero-card::after{background:linear-gradient(115deg,transparent 28%,rgba(255,90,31,.88) 28% 39%,transparent 39% 52%,rgba(168,110,255,.62) 52% 58%,transparent 58%);}
+html[data-theme="light2"] .det-hero{background:linear-gradient(135deg,#1C1140 0%,#2A1552 55%,#2E1030 100%);}
+html[data-theme="light2"] .det-hero::after{background:linear-gradient(115deg,transparent 30%,rgba(255,90,31,.88) 30% 39%,transparent 39% 50%,rgba(168,110,255,.6) 50% 54%,transparent 54%);}
+html[data-theme="light2"] .wc-hero{background:linear-gradient(135deg,#1C1140 0%,#2A1552 55%,#2E1030 100%);}
+html[data-theme="light2"] .wc-hero::after{background:linear-gradient(115deg,transparent 30%,rgba(255,90,31,.88) 30% 39%,transparent 39% 50%,rgba(168,110,255,.6) 50% 54%,transparent 54%);}
 :root{
   --fd:'Kanit','Figtree',system-ui,sans-serif;
   --fb:'Figtree',system-ui,-apple-system,'Segoe UI',sans-serif;
@@ -489,7 +544,7 @@ input:focus-visible,textarea:focus-visible,select:focus-visible{outline:none;}
 .orbit{position:relative;width:min(78vw,340px);aspect-ratio:1;margin:0 auto;}
 .orbit>svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;}
 .o-ring{fill:none;stroke:var(--b2);stroke-width:1.2;}
-.o-arc{fill:none;stroke:url(#gRing);stroke-width:4;stroke-linecap:round;filter:drop-shadow(0 0 8px color-mix(in srgb,var(--v) 60%,transparent));}
+.o-arc{fill:none;stroke:url(#gRing);stroke-width:4;stroke-linecap:round;filter:drop-shadow(0 0 8px color-mix(in srgb,var(--ring1,var(--v)) 60%,transparent));}
 .o-spin{transform-origin:160px 160px;animation:spin 48s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg)}}
 .o-core{position:absolute;left:50%;top:50%;width:34%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:var(--grad);color:var(--btn-tx);display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 10px color-mix(in srgb,var(--v) 12%,transparent),0 0 60px 6px color-mix(in srgb,var(--v) 38%,transparent);}
@@ -643,7 +698,7 @@ select.ti{appearance:none;}
 .ring-wrap{position:relative;width:112px;height:112px;flex-shrink:0;}
 .ring{width:100%;height:100%;transform:rotate(-90deg);overflow:visible;}
 .ring-track{fill:none;stroke:var(--fill-track);stroke-width:10;}
-.ring-fill{fill:none;stroke:url(#gRing);stroke-width:10;stroke-linecap:round;stroke-dasharray:314.16;stroke-dashoffset:314.16;transition:stroke-dashoffset 1.3s cubic-bezier(.2,.8,.2,1);filter:drop-shadow(0 0 7px color-mix(in srgb,var(--v) 55%,transparent));}
+.ring-fill{fill:none;stroke:url(#gRing);stroke-width:10;stroke-linecap:round;stroke-dasharray:314.16;stroke-dashoffset:314.16;transition:stroke-dashoffset 1.3s cubic-bezier(.2,.8,.2,1);filter:drop-shadow(0 0 7px color-mix(in srgb,var(--ring1,var(--v)) 55%,transparent));}
 .ring-c{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;}
 .ring-c b{font-family:var(--fd);font-weight:800;font-size:30px;letter-spacing:-.04em;line-height:1;}
 .ring-c span{font-size:11.5px;font-weight:600;color:var(--mu);margin-top:3px;line-height:1.15;}
@@ -818,7 +873,7 @@ canvas.chart{width:100%;height:170px;display:block;}
 .m-ejimg-fig .pic{width:100%;height:100%;aspect-ratio:auto;border-radius:16px;background:transparent;}
 .m-ejimg-fig .pic img{object-fit:contain;}
 .m-ejimg-fig .pic:has(img) .pic-ph{display:none;}
-html[data-theme="light"] .m-ejimg-fig{background:linear-gradient(135deg,#111820 0%,#1B2733 60%,#0E141B 100%);}
+html[data-theme="light"] .m-ejimg-fig,html[data-theme="light2"] .m-ejimg-fig{background:linear-gradient(135deg,#111820 0%,#1B2733 60%,#0E141B 100%);}
 .m-ejimg-tip{position:absolute;left:8px;right:8px;bottom:8px;padding:6px 10px;border-radius:10px;background:rgba(0,0,0,.22);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);font-family:var(--fb);font-size:11px;line-height:1.35;color:rgba(255,255,255,.92);}
 .m-ejimg-cap{margin-top:6px;font-family:var(--fb);font-size:12px;color:var(--mu);}
 .m-pr{margin-top:10px;padding:11px 14px;background:color-mix(in srgb,var(--g) 12%,transparent);border:1px solid color-mix(in srgb,var(--g) 32%,transparent);border-radius:var(--r-md);font-size:13.5px;font-weight:600;color:var(--g);}
@@ -1564,7 +1619,7 @@ input[type=range]::-webkit-slider-thumb{background:var(--lime);border-color:var(
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
   <defs>
-    <linearGradient id="gRing" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--v)"/><stop offset="1" style="stop-color:var(--v2)"/></linearGradient>
+    <linearGradient id="gRing" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--ring1,var(--v))"/><stop offset="1" style="stop-color:var(--ring2,var(--v2))"/></linearGradient>
     <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9.5a1 1 0 0 0 1 1H10v-5.5h4v5.5h3.5a1 1 0 0 0 1-1V10"/></symbol>
     <symbol id="i-timer" viewBox="0 0 24 24"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 9.5v4l2.5 1.5M9.5 3h5"/></symbol>
     <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3.2 2.6 5.4 5.9.8-4.3 4.1 1 5.9L12 16.6 6.8 19.4l1-5.9L3.5 9.4l5.9-.8z"/></symbol>
@@ -4713,6 +4768,9 @@ function imgErr(el){
 function iconoTipo(t){ t=slugImg(t); if(/cardio|hiit|resist/.test(t)) return 'heart'; if(/movil|yoga|flex|estir|core/.test(t)) return 'stretch'; if(/descanso|recuper/.test(t)) return 'moon'; return 'dumbbell'; }
 function basesSesion(tipo){ const t=slugImg(tipo), p=t.split('-')[0]; return ['sesiones/'+t,'sesiones/'+p,'sesiones/general']; }
 function basesEjercicio(ej){ const n=slugImg(ej.nm), g=slugImg(ej.ms||''), g1=g.split('-')[0]; return ['ejercicios/'+n,'grupos/'+g,'grupos/'+g1]; }
+// Miniatura de la lista: si subes 'ejercicios/mini-<nombre>' la usa ahí; si no existe,
+// usa la misma foto grande del ejercicio (y si tampoco existe, la del grupo muscular).
+function basesEjercicioMini(ej){ const n=slugImg(ej.nm); return ['ejercicios/mini-'+n, ...basesEjercicio(ej)]; }
 // ── Recuadro de imagen del ejercicio (reemplaza el muñeco de silueta) ──
 // Busca en img/ejercicios/<nombre>.webp|jpg; si no existe aún esa foto, cae a la
 // foto del grupo muscular (img/grupos/...) y, si tampoco existe, muestra un ícono neutro.
@@ -4801,7 +4859,7 @@ function refreshDash(){
         <div class="app-sub">Tu mejor versión, cada día.</div>
       </div>
       <div class="app-act">
-        <button type="button" class="ib" onclick="setTema(temaActual()==='dark'?'light':'dark')" aria-label="Cambiar entre tema claro y oscuro">${ico(temaActual()==='dark'?'sun':'moon')}</button>
+        <button type="button" class="ib" onclick="temaToque()" aria-label="Cambiar tema. Toca para claro u oscuro; doble toque desde oscuro para el tema nuevo en prueba">${ico(temaActual()==='dark'?'sun':'moon')}</button>
         <button type="button" class="av" onclick="dashTab('perfil')" aria-label="Mi perfil">${esc(iniciales(s.nombre))}</button>
       </div>
     </div>
@@ -5381,8 +5439,8 @@ function renderCuerpo(){
     <div class="esp-lbl" style="margin:14px 0 8px">TUS MAPAS</div>
     <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center">
       <div style="flex:1;min-width:150px;max-width:220px;display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px 6px 12px;background:radial-gradient(circle at 50% 30%,color-mix(in srgb,var(--v) 10%,transparent),transparent 70%);border-radius:16px">
-        <div style="font-family:var(--fb);font-weight:700;font-size:11px;color:var(--v)">RENDIMIENTO</div>
-        ${radarChartSVG(rend,{size:170,color:'var(--v)',color2:'var(--v2)',glow:true})}
+        <div style="font-family:var(--fb);font-weight:700;font-size:11px;color:var(--chart1)">RENDIMIENTO</div>
+        ${radarChartSVG(rend,{size:170,color:'var(--chart1)',color2:'var(--chart2)',glow:true})}
         <div style="font-size:10px;color:var(--mu);font-family:var(--fb);text-align:center;line-height:1.5">PRs, asistencia, cardio y nivel. No depende de tu foto.</div>
       </div>
       <div style="flex:1;min-width:150px;max-width:220px;display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px 6px 12px;background:radial-gradient(circle at 50% 30%,color-mix(in srgb,var(--p) 10%,transparent),transparent 70%);border-radius:16px">
@@ -5461,7 +5519,7 @@ function drawPesoChart(pesos){
   cv.width=W*dpr; cv.height=H*dpr;
   const ctx=cv.getContext('2d'); ctx.scale(dpr,dpr);
   ctx.clearRect(0,0,W,H);
-  const ACC=(getComputedStyle(document.documentElement).getPropertyValue('--v')||'#1e7a4b').trim();
+  const ACC=(getComputedStyle(document.documentElement).getPropertyValue('--chart1')||'#1e7a4b').trim();
   const TXC=(getComputedStyle(document.documentElement).getPropertyValue('--tx')||'#173527').trim();
   const txA=a=>{const x=TXC.replace('#','');const r=parseInt(x.substr(0,2),16),g=parseInt(x.substr(2,2),16),b=parseInt(x.substr(4,2),16);return `rgba(${r},${g},${b},${a})`};
   const accA=a=>{const x=ACC.replace('#','');const r=parseInt(x.substr(0,2),16),g=parseInt(x.substr(2,2),16),b=parseInt(x.substr(4,2),16);return `rgba(${r},${g},${b},${a})`};
@@ -5591,14 +5649,15 @@ function renderNutricionTab(){
 // TEMA — claro / oscuro (se recuerda en el dispositivo)
 // ═════════════════════════════════════════
 const LS_TEMA='fitkiosk_theme';
-function temaActual(){ return document.documentElement.getAttribute('data-theme')==='dark'?'dark':'light'; }
+function temaActual(){ const t=document.documentElement.getAttribute('data-theme'); return (t==='dark'||t==='light2')?t:'light'; }
 function pintarSelectorTema(){
   const t=temaActual();
   document.querySelectorAll('.theme-seg button,.seg2 button').forEach(b=>b.setAttribute('aria-pressed', String(b.dataset.t===t)));
-  const m=document.querySelector('meta[name="theme-color"]'); if(m) m.setAttribute('content', t==='dark'?'#0A0E13':'#EEF1F4');
+  const m=document.querySelector('meta[name="theme-color"]');
+  if(m) m.setAttribute('content', t==='dark'?'#0A0E13':(t==='light2'?'#F3EEFC':'#EEF1F4'));
 }
 function setTema(t){
-  if(t!=='light'&&t!=='dark') return;
+  if(t!=='light'&&t!=='dark'&&t!=='light2') return;
   document.documentElement.setAttribute('data-theme',t);
   try{ localStorage.setItem(LS_TEMA,t); }catch(e){}
   pintarSelectorTema();
@@ -5609,9 +5668,26 @@ function setTema(t){
     dashTab(on);
   }
 }
+// Botón rápido (sol/luna) de la pantalla de inicio del socio:
+// oscuro -> 1 toque = claro (verde, el de siempre); 2 toques seguidos = tema nuevo (prueba).
+// desde cualquier tema claro, 1 toque siempre regresa a oscuro (sin cambios).
+let _temaTapT=0;
+function temaToque(){
+  const t=temaActual();
+  if(t!=='dark'){ setTema('dark'); return; }
+  const ahora=Date.now();
+  if(ahora-_temaTapT<380){
+    _temaTapT=0;
+    setTema('light2');
+  }else{
+    _temaTapT=ahora;
+    setTimeout(()=>{ if(_temaTapT===ahora) setTema('light'); },380);
+  }
+}
 (function initTema(){
   const html=`<div class="theme-seg" role="group" aria-label="Tema de color">
-    <button type="button" data-t="light" aria-label="Tema claro" onclick="setTema('light')"><svg class="ico" aria-hidden="true"><use href="#i-sun"/></svg></button>
+    <button type="button" data-t="light" aria-label="Tema claro (verde)" onclick="setTema('light')"><svg class="ico" aria-hidden="true"><use href="#i-sun"/></svg></button>
+    <button type="button" data-t="light2" aria-label="Tema claro nuevo (prueba)" onclick="setTema('light2')"><svg class="ico" aria-hidden="true"><use href="#i-spark"/></svg></button>
     <button type="button" data-t="dark" aria-label="Tema oscuro" onclick="setTema('dark')"><svg class="ico" aria-hidden="true"><use href="#i-moon"/></svg></button>
   </div>`;
   document.querySelectorAll('.theme-slot').forEach(el=>{ el.innerHTML=html; });
@@ -6699,7 +6775,7 @@ function drawSpark(id, valores){
   const W=cv.clientWidth||140, H=cv.clientHeight||44;
   cv.width=W*dpr; cv.height=H*dpr;
   const ctx=cv.getContext('2d'); ctx.scale(dpr,dpr);
-  const ACC=(getComputedStyle(document.documentElement).getPropertyValue('--v')||'#1e7a4b').trim();
+  const ACC=(getComputedStyle(document.documentElement).getPropertyValue('--chart1')||'#1e7a4b').trim();
   const xx=ACC.replace('#','');
   const rr=parseInt(xx.substr(0,2),16),gg=parseInt(xx.substr(2,2),16),bb=parseInt(xx.substr(4,2),16);
   let min=Math.min(...valores), max=Math.max(...valores);
@@ -6740,7 +6816,7 @@ function drawSerieEnCanvas(cv, serie, sufijo){
   cv.width=W*dpr; cv.height=H*dpr;
   const ctx=cv.getContext('2d'); ctx.scale(dpr,dpr);
   ctx.clearRect(0,0,W,H);
-  const ACC=(getComputedStyle(document.documentElement).getPropertyValue('--v')||'#1e7a4b').trim();
+  const ACC=(getComputedStyle(document.documentElement).getPropertyValue('--chart1')||'#1e7a4b').trim();
   const TXC=(getComputedStyle(document.documentElement).getPropertyValue('--tx')||'#173527').trim();
   const hx=s=>{const x=s.replace('#','');return [parseInt(x.substr(0,2),16),parseInt(x.substr(2,2),16),parseInt(x.substr(4,2),16)];};
   const [ar,ag,ab]=hx(ACC), [tr,tg,tb]=hx(TXC);
@@ -7060,7 +7136,7 @@ function openDay(key){
     ejs.forEach((ej,idx)=>{
       list.innerHTML+=`
         <div class="ej-card" id="ejc-${idx}" onclick="openModal(${idx})">
-          <div class="ej-pic">${pic(basesEjercicio(ej),'dumbbell','thumb')}<span class="ej-n">${ej.grupo?esc(ej.grupo):String(idx+1)}</span></div>
+          <div class="ej-pic">${pic(basesEjercicioMini(ej),'dumbbell','thumb')}<span class="ej-n">${ej.grupo?esc(ej.grupo):String(idx+1)}</span></div>
           <div class="ej-i">
             <div class="ej-nm" id="ejnm-${idx}">${esc(ej.nm)}</div>
             <div class="ej-dt">${ej.series} × ${esc(ej.reps)} · ${esc(esEjCardio(ej)?ej.peso:(pct1RM(ej.peso)?'Esfuerzo moderado — deja 2 reps en reserva':ej.peso))}${ej.descanso?' · '+esc(ej.descanso):''}</div>

@@ -6,6 +6,7 @@
 - La foto ya no se recorta (antes se cortaban los lados para rellenar el recuadro y a veces se colaba algo de otra parte de la foto, como pasó con una de las fotos de prueba); ahora se ve completa, sin cortes, dentro de un recuadro más alto (cuadrado).
 - En tema claro, el recuadro de la foto ya tiene su propio fondo oscuro (igual que las fotos del inicio), para que no se vea "flotando" sobre el blanco — en tema oscuro no hizo falta, ahí ya se veía bien.
 - La miniatura del ejercicio en la lista del día (antes de entrar a la ficha) también se ve completa ahora, sin recortarse.
+- Foto distinta para la miniatura (opcional): si quieres que la miniatura de la lista se vea diferente a la foto grande de la ficha, sube `img/ejercicios/mini-<nombre>.webp` — si no la subes, la miniatura usa la misma foto grande. Ver `img/ejercicios/LEEME.md`.
 - El texto justo debajo del nombre del ejercicio ya no repite "X reps — potencia" (esa parte ya se ve en cada fila de abajo); ahora solo dice series, esfuerzo/peso objetivo y descanso, para ahorrar espacio arriba.
 - Funciona igual en cualquier pantalla donde se abra un ejercicio — es un solo componente reutilizado en toda la app.
 - Usa el mismo banco de imágenes que ya existe en `img/` (el que jala las fotos del repositorio de GitHub): si aún no hay una foto propia de ese ejercicio, muestra automáticamente la foto del grupo muscular (`img/grupos/...`), y si tampoco existe, un ícono neutro — nunca queda un espacio roto.
