@@ -813,13 +813,11 @@ canvas.chart{width:100%;height:170px;display:block;}
 .cardio-log{display:flex;flex-direction:column;gap:10px;margin-bottom:6px;}
 .cardio-log label{display:flex;flex-direction:column;gap:5px;font-size:11px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.02em;}
 .set-d.cardio-ok{width:100%;height:46px;border-radius:999px;font-size:14px;font-weight:700;gap:6px;}
-.m-ejimg{display:flex;align-items:center;gap:12px;margin-top:10px;padding:2px 0;}
-.m-ejimg-fig{position:relative;width:88px;height:88px;flex-shrink:0;border-radius:16px;overflow:hidden;background:transparent;}
+.m-ejimg{margin-top:10px;}
+.m-ejimg-fig{position:relative;width:100%;aspect-ratio:16/10;border-radius:16px;overflow:hidden;background:transparent;}
 .m-ejimg-fig .pic{width:100%;height:100%;aspect-ratio:auto;border-radius:16px;background:transparent;}
-.m-ejimg-tip{position:absolute;left:4px;right:4px;bottom:4px;padding:3px 6px;border-radius:8px;background:rgba(0,0,0,.4);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);font-family:var(--fb);font-size:9.5px;line-height:1.3;color:rgba(255,255,255,.9);}
-.m-ejimg-cap{padding:0;font-family:var(--fb);min-width:0;}
-.m-ejimg-cap .t{font-weight:700;color:var(--tx);font-size:13.5px;margin-bottom:2px;}
-.m-ejimg-cap .d{color:var(--mu);font-size:12px;line-height:1.5;}
+.m-ejimg-tip{position:absolute;left:8px;right:8px;bottom:8px;padding:6px 10px;border-radius:10px;background:rgba(0,0,0,.45);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);font-family:var(--fb);font-size:11px;line-height:1.35;color:rgba(255,255,255,.92);}
+.m-ejimg-cap{margin-top:6px;font-family:var(--fb);font-size:12px;color:var(--mu);}
 .m-pr{margin-top:10px;padding:11px 14px;background:color-mix(in srgb,var(--g) 12%,transparent);border:1px solid color-mix(in srgb,var(--g) 32%,transparent);border-radius:var(--r-md);font-size:13.5px;font-weight:600;color:var(--g);}
 .m-rm{margin-top:10px;padding:11px 14px;background:color-mix(in srgb,var(--p) 8%,transparent);border:1px solid color-mix(in srgb,var(--p) 26%,transparent);border-radius:var(--r-md);font-size:12.5px;color:var(--mu);line-height:1.6;}
 .m-metodo{margin-top:10px;padding:13px 15px;border-radius:var(--r-md);background:color-mix(in srgb,var(--p) 10%,transparent);border-left:4px solid var(--p);font-size:14px;line-height:1.55}
@@ -4713,12 +4711,13 @@ function basesEjercicio(ej){ const n=slugImg(ej.nm), g=slugImg(ej.ms||''), g1=g.
 // ── Recuadro de imagen del ejercicio (reemplaza el muñeco de silueta) ──
 // Busca en img/ejercicios/<nombre>.webp|jpg; si no existe aún esa foto, cae a la
 // foto del grupo muscular (img/grupos/...) y, si tampoco existe, muestra un ícono neutro.
-// Miniatura pequeña, sin fondo propio (se ve el fondo del modal detrás), con el tip
-// del entrenador sobrepuesto como etiqueta discreta en la esquina de la foto.
+// Foto de ancho completo, sin fondo propio (se ve el fondo del modal detrás), con el tip
+// del entrenador sobrepuesto como etiqueta discreta abajo. Sin nombre del ejercicio junto
+// a la foto: ya está arriba, en el título de la ficha.
 // Funciona igual en cualquier pantalla que use este mismo bloque.
 function ejImagenHTML(ejMostrado, tipEsc){
   if(!ejMostrado) return '';
-  return `<div class="m-ejimg"><div class="m-ejimg-fig">${pic(basesEjercicio(ejMostrado),'dumbbell')}${tipEsc?`<div class="m-ejimg-tip" id="m-tip">${tipEsc}</div>`:''}</div><div class="m-ejimg-cap"><div class="t">${esc(ejMostrado.nm||'')}</div><div class="d">Así se ve este movimiento.</div></div></div>`;
+  return `<div class="m-ejimg"><div class="m-ejimg-fig">${pic(basesEjercicio(ejMostrado),'dumbbell')}${tipEsc?`<div class="m-ejimg-tip" id="m-tip">${tipEsc}</div>`:''}</div><div class="m-ejimg-cap">Así se ve este movimiento.</div></div>`;
 }
 
 function appHead(titulo,sub){
