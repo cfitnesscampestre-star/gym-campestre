@@ -1,3 +1,13 @@
+# Cambios — v7.5 · Foto del ejercicio en vez del muñeco de silueta
+
+## Recuadro de foto en la ficha del ejercicio
+- En la ficha de cada ejercicio (donde antes salía el muñeco de silueta señalando el músculo), ahora hay un recuadro de imagen que le muestra al socio cómo se hace el movimiento.
+- Funciona igual en cualquier pantalla donde se abra un ejercicio — es un solo componente reutilizado en toda la app.
+- Usa el mismo banco de imágenes que ya existe en `img/` (el que jala las fotos del repositorio de GitHub): si aún no hay una foto propia de ese ejercicio, muestra automáticamente la foto del grupo muscular (`img/grupos/...`), y si tampoco existe, un ícono neutro — nunca queda un espacio roto.
+- Para agregar la foto real de un ejercicio: sube el archivo a `img/ejercicios/` en el repo de GitHub, nombrado igual que el ejercicio (ver `img/FOTOS-DE-PRUEBA.md` para el detalle de nombres). En cuanto subes el archivo con el nombre correcto, aparece solo — no hay que tocar código.
+
+---
+
 # Cambios — v7.4 · Cardio por tiempo/FC y peso calculado con tu RM
 
 ## Ejercicios cardiovasculares (elíptica, remo, bici, caminadora...)

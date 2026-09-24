@@ -378,52 +378,6 @@ const KB_ENFOQUES = {cuadriceps:'Cuádriceps',gluteo:'Glúteo',femoral:'Femorale
   dorsal:'Dorsal',espalda_media:'Espalda media',deltoide:'Hombro (frontal)',deltoide_lat:'Hombro lateral',deltoide_post:'Hombro posterior',
   manguito:'Manguito rotador',trapecio:'Trapecio',biceps:'Bíceps',braquial:'Braquial',triceps:'Tríceps',core:'Core',abdomen:'Abdomen',cardio:'Cardio'};
 
-// ── Mapa de qué vista (frente/espalda) y dónde cae cada enfoque, sobre un mismo silueta genérica ──
-// Coordenadas sobre un lienzo 0 0 120 175 (mismo sistema que avatarSVG) — lado izquierdo (x<60) se refleja para el derecho.
-const MUSCLE_MAP = {
-  pecho:        {vista:'frente',  zonas:[{cx:44,cy:48,rx:11,ry:9}]},
-  pecho_sup:    {vista:'frente',  zonas:[{cx:44,cy:42,rx:10,ry:6}]},
-  deltoide:     {vista:'frente',  zonas:[{cx:38,cy:38,rx:7,ry:8}]},
-  deltoide_lat: {vista:'frente',  zonas:[{cx:36,cy:39,rx:6,ry:7}]},
-  deltoide_post:{vista:'espalda', zonas:[{cx:38,cy:39,rx:7,ry:8}]},
-  manguito:     {vista:'espalda', zonas:[{cx:40,cy:42,rx:5,ry:5}]},
-  trapecio:     {vista:'espalda', zonas:[{cx:60,cy:30,rx:13,ry:7}]},
-  dorsal:       {vista:'espalda', zonas:[{cx:60,cy:54,rx:16,ry:13}]},
-  espalda_media:{vista:'espalda', zonas:[{cx:60,cy:52,rx:13,ry:10}]},
-  biceps:       {vista:'frente',  zonas:[{cx:33,cy:62,rx:5,ry:11}]},
-  braquial:     {vista:'frente',  zonas:[{cx:32,cy:64,rx:4,ry:10}]},
-  triceps:      {vista:'espalda', zonas:[{cx:33,cy:62,rx:5,ry:11}]},
-  core:         {vista:'frente',  zonas:[{cx:60,cy:72,rx:11,ry:14}]},
-  abdomen:      {vista:'frente',  zonas:[{cx:60,cy:72,rx:10,ry:13}]},
-  cuadriceps:   {vista:'frente',  zonas:[{cx:52,cy:102,rx:8,ry:18},{cx:68,cy:102,rx:8,ry:18}]},
-  femoral:      {vista:'espalda', zonas:[{cx:52,cy:102,rx:8,ry:18},{cx:68,cy:102,rx:8,ry:18}]},
-  gluteo:       {vista:'espalda', zonas:[{cx:60,cy:86,rx:14,ry:9}]},
-  pantorrilla:  {vista:'espalda', zonas:[{cx:52,cy:140,rx:5,ry:13},{cx:68,cy:140,rx:5,ry:13}]},
-};
-// ── Silueta genérica (contorno neutro) + zona resaltada, para mostrar en qué músculo trabaja cada ejercicio ──
-function muscleMapSVG(enfKey){
-  const info = MUSCLE_MAP[enfKey];
-  if(!info) return '';
-  const zonasHTML = info.zonas.map(z=>`<ellipse cx="${z.cx}" cy="${z.cy}" rx="${z.rx}" ry="${z.ry}" fill="var(--r)" opacity=".55"/>`).join('');
-  return `
-  <div style="display:flex;align-items:center;gap:12px;padding:10px 4px 2px">
-    <svg viewBox="0 0 120 175" width="64" height="94" style="flex-shrink:0">
-      <g fill="none" stroke="var(--mu)" stroke-width="2.2" stroke-linecap="round" opacity=".55">
-        <circle cx="60" cy="14" r="9"/>
-        <path d="M41 34 C 25 46, 26.5 54, 49.5 74 C 48.5 80, 34 84, 34 88 L 86 88 C 86 84, 71.5 80, 70.5 74 C 93.5 54, 95 46, 79 34 Q 60 27 41 34 Z"/>
-        <line x1="38" y1="38" x2="31" y2="60" stroke-width="7"/><line x1="31" y1="60" x2="29" y2="84" stroke-width="5"/>
-        <line x1="82" y1="38" x2="89" y2="60" stroke-width="7"/><line x1="89" y1="60" x2="91" y2="84" stroke-width="5"/>
-        <line x1="53" y1="90" x2="52" y2="124" stroke-width="9.5"/><line x1="52" y1="124" x2="52" y2="158" stroke-width="6"/>
-        <line x1="67" y1="90" x2="68" y2="124" stroke-width="9.5"/><line x1="68" y1="124" x2="68" y2="158" stroke-width="6"/>
-      </g>
-      ${zonasHTML}
-    </svg>
-    <div style="font-size:11px;color:var(--mu);font-family:var(--fb);line-height:1.5">
-      <div style="font-weight:700;color:var(--tx);font-size:12px;margin-bottom:2px">${esc(KB_ENFOQUES[enfKey]||enfKey)}</div>
-      Vista ${info.vista==='frente'?'frontal':'posterior'} · así se ve el músculo que trabaja este ejercicio.
-    </div>
-  </div>`;
-}
 
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -860,6 +814,11 @@ canvas.chart{width:100%;height:170px;display:block;}
 .cardio-log label{display:flex;flex-direction:column;gap:5px;font-size:11px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.02em;}
 .set-d.cardio-ok{width:100%;height:46px;border-radius:999px;font-size:14px;font-weight:700;gap:6px;}
 .m-tip{padding:13px 15px;background:color-mix(in srgb,var(--n) 10%,transparent);border:1px solid color-mix(in srgb,var(--n) 28%,transparent);border-radius:var(--r-md);font-size:14px;color:var(--tx);line-height:1.55;}
+.m-ejimg{margin-top:10px;border-radius:var(--r-md);overflow:hidden;border:1px solid var(--b);}
+.m-ejimg .pic{width:100%;aspect-ratio:16/10;border-radius:0;}
+.m-ejimg-cap{padding:10px 14px 12px;font-family:var(--fb);background:var(--in-bg2);}
+.m-ejimg-cap .t{font-weight:700;color:var(--tx);font-size:13px;margin-bottom:2px;}
+.m-ejimg-cap .d{color:var(--mu);font-size:12px;line-height:1.5;}
 .m-pr{margin-top:10px;padding:11px 14px;background:color-mix(in srgb,var(--g) 12%,transparent);border:1px solid color-mix(in srgb,var(--g) 32%,transparent);border-radius:var(--r-md);font-size:13.5px;font-weight:600;color:var(--g);}
 .m-rm{margin-top:10px;padding:11px 14px;background:color-mix(in srgb,var(--p) 8%,transparent);border:1px solid color-mix(in srgb,var(--p) 26%,transparent);border-radius:var(--r-md);font-size:12.5px;color:var(--mu);line-height:1.6;}
 .m-metodo{margin-top:10px;padding:13px 15px;border-radius:var(--r-md);background:color-mix(in srgb,var(--p) 10%,transparent);border-left:4px solid var(--p);font-size:14px;line-height:1.55}
@@ -4751,6 +4710,14 @@ function imgErr(el){
 function iconoTipo(t){ t=slugImg(t); if(/cardio|hiit|resist/.test(t)) return 'heart'; if(/movil|yoga|flex|estir|core/.test(t)) return 'stretch'; if(/descanso|recuper/.test(t)) return 'moon'; return 'dumbbell'; }
 function basesSesion(tipo){ const t=slugImg(tipo), p=t.split('-')[0]; return ['sesiones/'+t,'sesiones/'+p,'sesiones/general']; }
 function basesEjercicio(ej){ const n=slugImg(ej.nm), g=slugImg(ej.ms||''), g1=g.split('-')[0]; return ['ejercicios/'+n,'grupos/'+g,'grupos/'+g1]; }
+// ── Recuadro de imagen del ejercicio (reemplaza el muñeco de silueta) ──
+// Busca en img/ejercicios/<nombre>.webp|jpg; si no existe aún esa foto, cae a la
+// foto del grupo muscular (img/grupos/...) y, si tampoco existe, muestra un ícono neutro.
+// Funciona igual en cualquier pantalla que use este mismo bloque.
+function ejImagenHTML(ejMostrado){
+  if(!ejMostrado) return '';
+  return `<div class="m-ejimg">${pic(basesEjercicio(ejMostrado),'dumbbell')}<div class="m-ejimg-cap"><div class="t">${esc(ejMostrado.nm||'')}</div><div class="d">Así se ve este movimiento.</div></div></div>`;
+}
 
 function appHead(titulo,sub){
   return `<div class="app-h"><div><div class="app-t">${titulo}</div>${sub?`<div class="app-sub">${sub}</div>`:''}</div></div>`;
@@ -7252,7 +7219,7 @@ function openModal(idx){
     ? `${ej.reps}${ej.peso?' · Meta FC: '+ej.peso:''}`
     : `${ej.series} series · ${ej.reps} · ${pct1RM(ej.peso)?'Esfuerzo moderado — deja 2 reps en reserva':ej.peso}${ej.descanso?' · descanso '+ej.descanso:''}`;
   document.getElementById('m-tip').textContent=(alt?'⇄ Opción en lugar de '+ej.nm+'. Busca la misma sensación: ':'💡 ')+(ej.tip||'Siente este músculo durante el movimiento.');
-  document.getElementById('m-musculo').innerHTML=muscleMapSVG((alt?alt.enf:ej.enf)||ej.enf||'');
+  document.getElementById('m-musculo').innerHTML=ejImagenHTML(alt||ej);
 
   const mm=document.getElementById('m-metodo');
   if(ej.metodo && KB_METODOS[ej.metodo.id]){
