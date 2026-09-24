@@ -482,6 +482,9 @@ html[data-theme="light2"] .det-hero{background:linear-gradient(135deg,#1C1140 0%
 html[data-theme="light2"] .det-hero::after{background:linear-gradient(115deg,transparent 30%,rgba(255,90,31,.88) 30% 39%,transparent 39% 50%,rgba(168,110,255,.6) 50% 54%,transparent 54%);}
 html[data-theme="light2"] .wc-hero{background:linear-gradient(135deg,#1C1140 0%,#2A1552 55%,#2E1030 100%);}
 html[data-theme="light2"] .wc-hero::after{background:linear-gradient(115deg,transparent 30%,rgba(255,90,31,.88) 30% 39%,transparent 39% 50%,rgba(168,110,255,.6) 50% 54%,transparent 54%);}
+html[data-theme="light2"] .hero-ov{background:linear-gradient(90deg,rgba(20,10,40,.5) 0%,rgba(20,10,40,.18) 60%,transparent 100%);}
+html[data-theme="light2"] .det-ov{background:linear-gradient(0deg,rgba(20,10,40,.62) 0%,rgba(20,10,40,.28) 50%,rgba(20,10,40,.08) 100%);}
+html[data-theme="light2"] .wc-ov{background:linear-gradient(0deg,rgba(20,10,40,.6) 0%,rgba(20,10,40,.28) 46%,rgba(20,10,40,.06) 75%,rgba(20,10,40,.16) 100%);}
 :root{
   --fd:'Kanit','Figtree',system-ui,sans-serif;
   --fb:'Figtree',system-ui,-apple-system,'Segoe UI',sans-serif;
@@ -855,6 +858,7 @@ canvas.chart{width:100%;height:170px;display:block;}
 .m-sub{font-size:14px;color:var(--mu);margin-bottom:18px;}
 .m-sets{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;}
 .set-r{display:grid;grid-template-columns:26px 1fr 104px 40px;align-items:center;gap:8px;padding:10px 12px;background:var(--gl);border:1px solid var(--b);border-radius:var(--r-md);}
+.set-r.iso{grid-template-columns:26px 1fr 40px;}
 .set-n{font-family:var(--fd);font-weight:800;font-size:20px;color:var(--mu);}
 .set-i{font-size:14px;font-weight:600;color:var(--tx);}
 .set-kg{width:100%;height:40px;padding:0 4px;background:var(--in-bg);border:1.5px solid var(--b);border-radius:12px;font-family:var(--fd);font-weight:800;font-size:16px;color:var(--tx);outline:none;text-align:center;caret-color:var(--v);}
@@ -6923,6 +6927,12 @@ function esEjCardio(e){
   const d=datosEj(e);
   return d.enf==='cardio' || /cardio|caminad|bici|el[ií]ptica|trote|correr|remo erg[oó]?metro/i.test(nm);
 }
+// Ejercicios isométricos (plancha, sostenes, etc.): se miden por tiempo/rondas, no por peso —
+// se detecta por el propio texto de "reps" ("45 seg — isométrico"), igual que se arma en generarSesion().
+function esEjIsometrico(e){
+  const reps=String(e.reps||'');
+  return /isom[eé]tric/i.test(reps) || /isom[eé]tric/i.test(e.nm||e.nombre||'');
+}
 function cargaLesion(ctx,d){
   return ctx.les.some(l=>(d.kb&&(d.kb.ev||[]).includes(l)) || (ZONA_LESION_ENF[l]||[]).includes(d.enf));
 }
@@ -7368,8 +7378,14 @@ function openModal(idx){
     return;
   }
   const n=parseInt(ej.series)||4;
-  if(head) head.style.display='';
-  document.getElementById('m-sets').innerHTML=Array.from({length:n},(_,i)=>`
+  const esIso=esEjIsometrico(ej);
+  if(head) head.style.display=esIso?'none':'';
+  document.getElementById('m-sets').innerHTML=Array.from({length:n},(_,i)=> esIso ? `
+    <div class="set-r iso">
+      <div class="set-n">${i+1}</div>
+      <div class="set-i">${esc(repsDeSerie(ej,i))}</div>
+      <div class="set-d ${saved[i]?.ok?'ok':''}" onclick="setOk(${idx},${i},this)">${saved[i]?.ok?'✓':''}</div>
+    </div>` : `
     <div class="set-r">
       <div class="set-n">${i+1}</div>
       <div class="set-i">${esc(repsDeSerie(ej,i))}</div>
