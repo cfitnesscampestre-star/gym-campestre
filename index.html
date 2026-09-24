@@ -814,8 +814,10 @@ canvas.chart{width:100%;height:170px;display:block;}
 .cardio-log label{display:flex;flex-direction:column;gap:5px;font-size:11px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.02em;}
 .set-d.cardio-ok{width:100%;height:46px;border-radius:999px;font-size:14px;font-weight:700;gap:6px;}
 .m-ejimg{margin-top:10px;}
-.m-ejimg-fig{position:relative;width:100%;aspect-ratio:4/5;border-radius:16px;overflow:hidden;background:transparent;}
+.m-ejimg-fig{position:relative;width:100%;aspect-ratio:1/1;border-radius:16px;overflow:hidden;background:transparent;}
 .m-ejimg-fig .pic{width:100%;height:100%;aspect-ratio:auto;border-radius:16px;background:transparent;}
+.m-ejimg-fig .pic img{object-fit:contain;}
+.m-ejimg-fig .pic:has(img) .pic-ph{display:none;}
 .m-ejimg-tip{position:absolute;left:8px;right:8px;bottom:8px;padding:6px 10px;border-radius:10px;background:rgba(0,0,0,.22);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);font-family:var(--fb);font-size:11px;line-height:1.35;color:rgba(255,255,255,.92);}
 .m-ejimg-cap{margin-top:6px;font-family:var(--fb);font-size:12px;color:var(--mu);}
 .m-pr{margin-top:10px;padding:11px 14px;background:color-mix(in srgb,var(--g) 12%,transparent);border:1px solid color-mix(in srgb,var(--g) 32%,transparent);border-radius:var(--r-md);font-size:13.5px;font-weight:600;color:var(--g);}
@@ -7218,7 +7220,7 @@ function openModal(idx){
   document.getElementById('m-title').textContent=nmHoy;
   document.getElementById('m-sub').textContent = esEjCardio(ej)
     ? `${ej.reps}${ej.peso?' · Meta FC: '+ej.peso:''}`
-    : `${ej.series} series · ${ej.reps} · ${pct1RM(ej.peso)?'Esfuerzo moderado — deja 2 reps en reserva':ej.peso}${ej.descanso?' · descanso '+ej.descanso:''}`;
+    : `${ej.series} series · ${pct1RM(ej.peso)?'Esfuerzo moderado — deja 2 reps en reserva':ej.peso}${ej.descanso?' · descanso '+ej.descanso:''}`;
   const tipTxt=(alt?'⇄ Opción en lugar de '+ej.nm+'. Busca la misma sensación: ':'💡 ')+(ej.tip||'Siente este músculo durante el movimiento.');
   document.getElementById('m-musculo').innerHTML=ejImagenHTML(alt||ej, esc(tipTxt));
 
