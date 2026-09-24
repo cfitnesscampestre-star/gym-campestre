@@ -2,7 +2,11 @@
 
 ## Recuadro de foto en la ficha del ejercicio
 - En la ficha de cada ejercicio (donde antes salía el muñeco de silueta señalando el músculo), ahora hay un recuadro de imagen que le muestra al socio cómo se hace el movimiento.
-- Foto de ancho completo, sin marco ni fondo propio — se ve el fondo del modal detrás, en vez de una tarjeta sólida. El tip del entrenador (el del foquito 💡) va sobrepuesto como etiqueta discreta en la parte de abajo de la foto, en vez de un bloque de color aparte arriba. Ya no repite el nombre del ejercicio junto a la foto (ese nombre ya está arriba, en el título de la ficha).
+- Foto de ancho completo, sin marco ni fondo propio — se ve el fondo del modal detrás, en vez de una tarjeta sólida. El tip del entrenador (el del foquito 💡) va sobrepuesto como etiqueta discreta y translúcida en la parte de abajo de la foto, en vez de un bloque de color aparte arriba. Ya no repite el nombre del ejercicio junto a la foto (ese nombre ya está arriba, en el título de la ficha).
+- La foto ya no se recorta (antes se cortaban los lados para rellenar el recuadro y a veces se colaba algo de otra parte de la foto, como pasó con una de las fotos de prueba); ahora se ve completa, sin cortes, dentro de un recuadro más alto (cuadrado).
+- En tema claro, el recuadro de la foto ya tiene su propio fondo oscuro (igual que las fotos del inicio), para que no se vea "flotando" sobre el blanco — en tema oscuro no hizo falta, ahí ya se veía bien.
+- La miniatura del ejercicio en la lista del día (antes de entrar a la ficha) también se ve completa ahora, sin recortarse.
+- El texto justo debajo del nombre del ejercicio ya no repite "X reps — potencia" (esa parte ya se ve en cada fila de abajo); ahora solo dice series, esfuerzo/peso objetivo y descanso, para ahorrar espacio arriba.
 - Funciona igual en cualquier pantalla donde se abra un ejercicio — es un solo componente reutilizado en toda la app.
 - Usa el mismo banco de imágenes que ya existe en `img/` (el que jala las fotos del repositorio de GitHub): si aún no hay una foto propia de ese ejercicio, muestra automáticamente la foto del grupo muscular (`img/grupos/...`), y si tampoco existe, un ícono neutro — nunca queda un espacio roto.
 - Para agregar la foto real de un ejercicio: sube el archivo a `img/ejercicios/` en el repo de GitHub, nombrado igual que el ejercicio (ver `img/ejercicios/LEEME.md` para el detalle de nombres). En cuanto subes el archivo con el nombre correcto, aparece solo — no hay que tocar código.
