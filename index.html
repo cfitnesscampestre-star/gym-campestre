@@ -1728,7 +1728,13 @@ input[type=range]::-webkit-slider-thumb{background:var(--lime);border-color:var(
   <div class="wc-hero">
     <div class="wc-pic" id="wc-hero-pic"></div>
     <div class="wc-ov"></div>
-    <div class="wc-top"><div class="ib-tag on-photo"><span class="dot-pulse"></span>Club Campestre Aguascalientes</div></div>
+    <div class="wc-top" style="position:relative">
+      <div style="display:flex;flex-direction:column;align-items:flex-start;gap:6px">
+        <div class="ib-tag on-photo"><span class="dot-pulse"></span>Club Campestre Aguascalientes</div>
+        <div class="ib-tag on-photo"><span id="inicio-socios">—</span> socios activos</div>
+      </div>
+      <div class="ib-tag on-photo" style="position:absolute;top:0;right:0"><span class="dot-pulse"></span><span id="inicio-fecha">—</span></div>
+    </div>
     <div class="wc-tx">
       <h1>Entrena con un plan<br>hecho para ti.</h1>
       <p>Tu rutina, tu evolución y tu nutrición en un solo lugar.</p>
@@ -1748,12 +1754,7 @@ input[type=range]::-webkit-slider-thumb{background:var(--lime);border-color:var(
       </div>
     </div>
     <div>
-      <div class="inicio-footer">
-        <div class="if-pill"><span class="dot-pulse"></span><span id="inicio-fecha">—</span></div>
-        <div class="if-pill"><span id="inicio-socios">—</span> socios registrados</div>
-        <div class="if-pill" id="inicio-fb-pill" style="display:none"></div>
-      </div>
-      <div class="staff-link" onclick="go('s-staff-login')">Acceso entrenador / coordinador <svg class="ico" aria-hidden="true"><use href="#i-arrow"/></svg></div>
+      <div class="staff-link" onclick="go('s-staff-login')" style="opacity:.55;font-size:11.5px">Acceso entrenador / director <svg class="ico" aria-hidden="true" style="width:13px;height:13px"><use href="#i-arrow"/></svg></div>
     </div>
   </div>
 </div>
@@ -2255,14 +2256,14 @@ input[type=range]::-webkit-slider-thumb{background:var(--lime);border-color:var(
     <div class="login-card" style="max-width:400px;border-color:color-mix(in srgb,var(--n) 20%,transparent);">
       <div class="lc-tag" style="color:var(--n)">Acceso staff</div>
       <div class="lc-title">Panel del<br>entrenador</div>
-      <div class="lc-sub">Solo para entrenadores y coordinadores.</div>
+      <div class="lc-sub">Solo para entrenadores y directores.</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px" id="staff-roles">
         <div onclick="staffSelRol(this,'entrenador')" class="opt sel" style="padding:10px;text-align:center;border-radius:9px;">
           <div class="ol" style="font-size:14px;">Entrenador</div>
           <div class="os">Mis socios</div>
         </div>
         <div onclick="staffSelRol(this,'coordinador')" class="opt" style="padding:10px;text-align:center;border-radius:9px;">
-          <div class="ol" style="font-size:14px;">Coordinador</div>
+          <div class="ol" style="font-size:14px;">Director</div>
           <div class="os">Todos los socios</div>
         </div>
       </div>
@@ -2304,7 +2305,6 @@ input[type=range]::-webkit-slider-thumb{background:var(--lime);border-color:var(
     </div>
     <div class="staff-meta">
       <span id="staff-role-badge" class="stf-chip" style="display:none"></span>
-      <span id="fb-status-badge" class="stf-chip" style="display:none"></span>
       <span id="staff-nombre" class="stf-name"></span>
     </div>
     <div class="staff-back" id="staff-back" onclick="staffVolverLista()" role="button" tabindex="0"><svg class="ico" style="transform:scaleX(-1)" aria-hidden="true"><use href="#i-arrow"/></svg>Volver a socios</div>
@@ -3209,7 +3209,7 @@ function seedEntrenadores(){
 }
 
 function resetDemo(){
-  if(staffRol!=='coordinador'){ showToast('Solo el coordinador puede reiniciar datos'); return; }
+  if(staffRol!=='coordinador'){ showToast('Solo el director puede reiniciar datos'); return; }
   if(fbListo){ showToast('⛔ Desactivado con Firebase conectado: son datos reales. Usa 💾 RESPALDO.'); return; }
   uiPrompt('Modo local: se borrarán socios, sesiones y registros de ESTE dispositivo. Escribe BORRAR para confirmar','BORRAR',()=>{
     localStorage.removeItem(LS_KEY);
@@ -3325,11 +3325,6 @@ window.addEventListener('load', ()=>{
     // Sin Firebase: ya tenemos la caché local cargada arriba
   } else {
     fbEscuchar();
-    // Mostrar badge de conexión en pantalla de inicio
-    setTimeout(()=>{
-      const pill=document.getElementById('inicio-fb-pill');
-      if(pill&&fbListo){ pill.style.display='flex'; pill.textContent='🔥 gym-campestre · Firebase'; }
-    }, 1200);
   }
   initGeofence();
   restaurarSesion();
@@ -3339,7 +3334,7 @@ window.addEventListener('load', ()=>{
   const n = new Date();
   const sem = Math.ceil((((n - new Date(n.getFullYear(),0,1)) / 86400000) + new Date(n.getFullYear(),0,1).getDay()+1)/7);
   document.getElementById('inicio-fecha').textContent = 'Semana '+sem+' · '+n.getFullYear();
-  document.getElementById('inicio-socios').textContent = Object.keys(DB.socios).length;
+  document.getElementById('inicio-socios').textContent = 100 + Object.keys(DB.socios).length;
 });
 
 // ═════════════════════════════════════════
@@ -3374,7 +3369,7 @@ function restaurarSesion(){
     staffRol=acc.rol;
     staffActivoEntId=entId;
     const badge=document.getElementById('staff-role-badge');
-    badge.style.display='inline-block'; badge.textContent=sc(acc.rol.toUpperCase());
+    badge.style.display='inline-block'; badge.textContent=sc((acc.rol==='coordinador'?'director':acc.rol).toUpperCase());
     document.getElementById('staff-nombre').textContent=acc.nombre;
     staffActivoId=null;
     staffRenderList();
@@ -3915,7 +3910,7 @@ async function generarRutina(){
     const mapaDiasBlock = bloqueMapaDias();
     const clasesBlock = bloqueClasesGrupales();
 
-    const prompt = `Eres el sistema de generación de rutinas del Coordinador de Fitness del Club Campestre Aguascalientes. Tu trabajo es generar rutinas que reflejen EXACTAMENTE la filosofía y metodología del entrenador a cargo — NO una plantilla genérica.
+    const prompt = `Eres el sistema de generación de rutinas del Director de Fitness del Club Campestre Aguascalientes. Tu trabajo es generar rutinas que reflejen EXACTAMENTE la filosofía y metodología del entrenador a cargo — NO una plantilla genérica.
 
 ═══════════════════════════════════════════
 FILOSOFÍA DEL ENTRENADOR (SEGUIR AL PIE DE LA LETRA)
@@ -7670,7 +7665,7 @@ function opcionesSel(arr,actual){
   return lista.map(v=>`<option value="${esc(v)}" ${v===actual?'selected':''}>${esc(sc(v))}</option>`).join('');
 }
 function abrirEditarSocio(code){
-  if(staffRol!=='coordinador'){ showToast('Solo el coordinador puede editar los datos del socio'); return; }
+  if(staffRol!=='coordinador'){ showToast('Solo el director puede editar los datos del socio'); return; }
   const s=getSocio(code); if(!s) return; asegurarLogs(s);
   document.getElementById('es-titulo').textContent=tc(s.nombre);
   document.getElementById('es-code').value=code;
@@ -7753,7 +7748,7 @@ function staffMostrarVacio(){
   document.getElementById('staff-content').innerHTML=`<div style="flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;color:var(--mu);padding:40px;text-align:center;"><div style="font-family:var(--fd);font-size:24px;">Selecciona un socio</div><div style="font-size:13px;line-height:1.6;">Elige un socio para editar su rutina,<br>ver su evolución y su plan de nutrición.</div></div>`;
 }
 function confirmarEliminarSocio(code){
-  if(staffRol!=='coordinador'){ showToast('Solo el coordinador puede eliminar socios'); return; }
+  if(staffRol!=='coordinador'){ showToast('Solo el director puede eliminar socios'); return; }
   const s=getSocio(code); if(!s) return;
   const nSes=comoArray(s.logs&&s.logs.sesiones).length;
   uiConfirm(`¿Eliminar a ${tc(s.nombre)}?\n\nSe borrará su rutina y todo su historial (${nSes} sesión(es), pesos y récords). No se puede deshacer.\n\nSi quieres conservar una copia, cancela y usa 💾 Respaldo.`,
@@ -7808,7 +7803,7 @@ function doStaffLogin(){
   staffActivoEntId=entId;
   const badge=document.getElementById('staff-role-badge');
   badge.style.display='inline-block';
-  badge.textContent=sc((entObj?entTipoLabel(entObj):acc.rol).toUpperCase());
+  badge.textContent=sc((entObj?entTipoLabel(entObj):(acc.rol==='coordinador'?'director':acc.rol)).toUpperCase());
   document.getElementById('staff-nombre').textContent=acc.nombre;
   staffActivoId=null;
   staffRenderList();
@@ -7833,7 +7828,7 @@ function fbAbrirSetup(){
 }
 function fbAccesoPermitido(){ return staffRol==='coordinador'; }
 function fbConectar(){
-  if(!fbAccesoPermitido()){ showToast('Solo coordinación puede configurar Firebase'); return; }
+  if(!fbAccesoPermitido()){ showToast('Solo dirección puede configurar Firebase'); return; }
   const raw=document.getElementById('fb-config-input').value.trim();
   let cfg;
   try{ cfg=JSON.parse(raw); }catch(e){ cfg=null; }
@@ -8663,7 +8658,7 @@ function calcResumen(){
   return {socios,activos,pend,checkGym,checkFuera,checkSinUbic,sesSem,adhProm,riesgo,porEnt,plantilla,topCambios,topHoras};
 }
 function abrirLugares(){
-  if(staffRol!=='coordinador'){ showToast('Esta sección es solo para coordinación'); return; }
+  if(staffRol!=='coordinador'){ showToast('Esta sección es solo para dirección'); return; }
   staffActivoId=null; staffRenderList();
   const lugares=comoArray(DB.config&&DB.config.lugares).map(l=>{
     const dist=haversine(l.lat,l.lng,GEO_CENTER.lat,GEO_CENTER.lng);
@@ -8688,7 +8683,7 @@ function abrirLugares(){
   </div>`;
 }
 function abrirResumen(){
-  if(staffRol!=='coordinador'){ showToast('Esta sección es solo para coordinación'); return; }
+  if(staffRol!=='coordinador'){ showToast('Esta sección es solo para dirección'); return; }
   staffActivoId=null; staffRenderList();
   const r=calcResumen();
   const kpi=(n,l,c)=>`<div style="padding:14px;border:1px solid var(--b);border-radius:10px;background:var(--gl)"><div style="font-family:var(--fd);font-size:30px;line-height:1;color:${c||'var(--tx)'}">${n}</div><div style="font-size:11px;color:var(--mu);margin-top:6px;line-height:1.35">${l}</div></div>`;
@@ -8749,7 +8744,7 @@ function exportarCSV(){
   showToast('⬇ CSV descargado ('+rows.length+' socios)');
 }
 function descargarRespaldo(){
-  if(staffRol!=='coordinador'){ showToast('Solo coordinación'); return; }
+  if(staffRol!=='coordinador'){ showToast('Solo dirección'); return; }
   const datos={exportado:new Date().toISOString(),socios:limpio(DB.socios),entrenadores:limpio(DB.entrenadores)};
   descargarArchivo('respaldo_gym_'+fechaISO(new Date())+'.json',JSON.stringify(datos,null,1),'application/json');
   showToast('💾 Respaldo descargado — guárdalo en un lugar seguro (contiene datos de salud)');
@@ -8954,9 +8949,9 @@ function abrirConocimiento(){
   document.getElementById('staff-content').innerHTML=`
   <div style="padding:22px;max-width:900px">
     <h2 style="font-family:var(--fd);font-size:30px;margin:0">Base de conocimiento</h2>
-    <p style="font-size:13px;color:var(--mu);margin:4px 0 16px;line-height:1.5">Lo que consulta el sistema al crear cada rutina, junto con la filosofía del entrenador elegido. ${KB_EJERCICIOS.length} ejercicios, ${Object.keys(KB_METODOS).length} métodos de intensidad, ${KB_CLASES_GRUPALES.length} clases grupales, ${KB_PRINCIPIOS.length} principios y ${notas.length} nota(s).${esCoord?' Como coordinador puedes agregar lo que falte.':''}</p>
+    <p style="font-size:13px;color:var(--mu);margin:4px 0 16px;line-height:1.5">Lo que consulta el sistema al crear cada rutina, junto con la filosofía del entrenador elegido. ${KB_EJERCICIOS.length} ejercicios, ${Object.keys(KB_METODOS).length} métodos de intensidad, ${KB_CLASES_GRUPALES.length} clases grupales, ${KB_PRINCIPIOS.length} principios y ${notas.length} nota(s).${esCoord?' Como director puedes agregar lo que falte.':''}</p>
 
-    <h3 class="kb-h">Lineamientos del coordinador</h3>
+    <h3 class="kb-h">Lineamientos del director</h3>
     <p class="kb-p">Reglas del club que la IA debe cumplir en todas las rutinas, por encima de la filosofía de cada entrenador.</p>
     ${esCoord
       ? `<textarea id="kb-lineamientos" rows="5" class="ti" style="padding:12px;resize:vertical" placeholder="Ej. Toda rutina de pierna lleva trabajo de glúteo medio.">${esc(DB.config&&DB.config.lineamientos&&DB.config.lineamientos.trim()||'')}</textarea>
@@ -9075,7 +9070,7 @@ let filoEditId=null; // a quién se le está editando la filosofía (coordinador
 function abrirMiFilosofia(idAjeno){
   const id = idAjeno || staffActivoEntId;
   if(!id){ showToast('Esta sección es solo para entrenadores con perfil propio'); return; }
-  if(idAjeno && staffRol!=='coordinador'){ showToast('Solo coordinación puede editar la filosofía de otro entrenador'); return; }
+  if(idAjeno && staffRol!=='coordinador'){ showToast('Solo dirección puede editar la filosofía de otro entrenador'); return; }
   filoEditId=id;
   const ent=getEntrenador(id);
   filoDraft = filoMezclar(filoBase(), ent&&ent.filosofia);
@@ -9239,7 +9234,7 @@ function guardarFilosofia(){
 // NUEVO ENTRENADOR — alta dinámica (coordinador)
 // ═════════════════════════════════════════
 function abrirNuevoEntrenador(){
-  if(staffRol!=='coordinador'){ showToast('Solo el coordinador puede dar de alta entrenadores'); return; }
+  if(staffRol!=='coordinador'){ showToast('Solo el director puede dar de alta entrenadores'); return; }
   document.getElementById('ne-nombre').value='';
   document.getElementById('ne-usuario').value='';
   document.getElementById('ne-pass').value='';
@@ -9288,7 +9283,7 @@ function entFunciones(e){ const f=e&&e.funciones; return (Array.isArray(f)&&f.le
 function entHace(e,f){ return !!e && entFunciones(e).includes(f); }
 function entTipoLabel(e){
   if(!e) return '';
-  if(e.rol==='coordinador') return 'Coordinador';
+  if(e.rol==='coordinador') return 'Director';
   const f=entFunciones(e), ent=f.includes('entrenamiento'), nut=f.includes('nutricion');
   return ent&&nut?'Entrenador · Nutrición':nut?'Nutriólogo':'Entrenador';
 }
@@ -9414,7 +9409,7 @@ function nutRestablecer(code){
 }
 
 function abrirEntrenadores(){
-  if(staffRol!=='coordinador'){ showToast('Solo el coordinador puede ver esta sección'); return; }
+  if(staffRol!=='coordinador'){ showToast('Solo el director puede ver esta sección'); return; }
   staffActivoId=null; staffRenderList();
   const lista=Object.values(DB.entrenadores||{}).filter(e=>e && e.rol!=='coordinador')
     .sort((a,b)=>(a.nombre||'').localeCompare(b.nombre||''));
@@ -9448,7 +9443,7 @@ function abrirEntrenadores(){
         <h2 style="font-family:var(--fd);font-size:30px;margin:0">Entrenadores</h2>
         <button class="tb-btn" onclick="abrirNuevoEntrenador()" style="padding:9px 14px;color:var(--v);border-color:color-mix(in srgb, var(--v) 30%, transparent)">➕ Nuevo entrenador</button>
       </div>
-      <p style="font-size:12px;color:var(--mu);margin:4px 0 18px">${lista.length} entrenador${lista.length===1?'':'es'}${coords.length?' · '+coords.length+' coordinador'+(coords.length===1?'':'es'):''}</p>
+      <p style="font-size:12px;color:var(--mu);margin:4px 0 18px">${lista.length} entrenador${lista.length===1?'':'es'}${coords.length?' · '+coords.length+' director'+(coords.length===1?'':'es'):''}</p>
       ${lista.length?lista.map(t=>tarjeta(t,false)).join(''):'<p style="font-size:12px;color:var(--mu)">Aún no hay entrenadores dados de alta.</p>'}
       ${coords.length?`<h3 style="font-family:var(--fd);font-size:16px;margin:22px 0 8px;color:var(--mu)">Coordinación</h3>${coords.map(t=>tarjeta(t,true)).join('')}`:''}
     </div>`;
