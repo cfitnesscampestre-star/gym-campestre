@@ -519,6 +519,8 @@ input:focus-visible,textarea:focus-visible,select:focus-visible{outline:none;}
 .lm img,.lm video{width:100%;height:100%;object-fit:cover;display:block;}
 .lm .ico{width:20px;height:20px;stroke-width:2.2;}
 .ln{font-family:var(--fd);font-weight:800;font-size:17px;letter-spacing:-.02em;color:var(--tx);white-space:nowrap;}
+.tb-stat{font-family:var(--fb);font-weight:700;font-size:10px;letter-spacing:.01em;color:var(--v);white-space:nowrap;display:flex;align-items:center;gap:4px;}
+.tb-stat::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--v2);flex-shrink:0;}
 .tb-r{display:flex;align-items:center;gap:8px;}
 .tb-actions{display:flex;align-items:center;gap:8px;}
 .tb-btn{display:inline-flex;align-items:center;gap:7px;min-height:38px;padding:0 15px;background:var(--gl);border:1px solid var(--b);border-radius:999px;font-size:13.5px;font-weight:600;color:var(--tx);cursor:pointer;transition:transform .15s,border-color .2s,background .2s;font-family:var(--fb);white-space:nowrap;}
@@ -1719,7 +1721,10 @@ input[type=range]::-webkit-slider-thumb{background:var(--lime);border-color:var(
 <div class="tb" id="global-tb">
   <div class="tb-logo">
     <div class="lm"><video src="video/logo-animado.mp4" autoplay muted loop playsinline disablepictureinpicture aria-label="Gimnasio CC"></video></div>
-    <div class="ln">Fitness <span class="ln-x">System </span>Pro</div>
+    <div style="display:flex;flex-direction:column;gap:1px;min-width:0">
+      <div class="ln">Fitness <span class="ln-x">System </span>Pro</div>
+      <div class="tb-stat"><span id="inicio-socios">—</span> socios activos</div>
+    </div>
   </div>
   <div class="tb-r">
     <div id="tb-actions" class="tb-actions"></div>
@@ -1735,7 +1740,6 @@ input[type=range]::-webkit-slider-thumb{background:var(--lime);border-color:var(
     <div class="wc-top" style="position:relative">
       <div style="display:flex;flex-direction:column;align-items:flex-start;gap:6px">
         <div class="ib-tag on-photo"><span class="dot-pulse"></span>Club Campestre Aguascalientes</div>
-        <div class="ib-tag on-photo"><span id="inicio-socios">—</span> socios activos</div>
       </div>
       <div class="ib-tag on-photo" style="position:absolute;top:0;right:0"><span class="dot-pulse"></span><span id="inicio-fecha">—</span></div>
     </div>
@@ -3402,7 +3406,7 @@ function updateTb(id){
     tba.innerHTML = `<div class="tb-btn" onclick="logoutSocio()"><svg class="ico" aria-hidden="true"><use href="#i-logout"/></svg>Salir</div>`;
   } else if(id==='s-inicio'||id==='s-login'){
     tba.innerHTML = `<div class="live-tag"><span class="dot-pulse"></span>Kiosco activo</div>`;
-    if(id==='s-inicio') document.getElementById('inicio-socios').textContent = Object.keys(DB.socios).length;
+    if(id==='s-inicio') document.getElementById('inicio-socios').textContent = 100 + Object.keys(DB.socios).length;
   } else { tba.innerHTML=''; }
 }
 function logoutSocio(){ av3dDestruir(); activeSocio=null; borrarSesion(); ['cd1','cd2','cd3','cd4'].forEach(i=>document.getElementById(i).value=''); go('s-inicio'); }
