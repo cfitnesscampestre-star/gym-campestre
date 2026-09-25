@@ -516,7 +516,7 @@ input:focus-visible,textarea:focus-visible,select:focus-visible{outline:none;}
 .tb{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:calc(10px + env(safe-area-inset-top,0px)) 16px 10px;background:var(--topbar);-webkit-backdrop-filter:blur(22px) saturate(1.4);backdrop-filter:blur(22px) saturate(1.4);border-bottom:1px solid var(--b);position:sticky;top:0;z-index:100;}
 .tb-logo{display:flex;align-items:center;gap:10px;min-width:0;}
 .lm{width:36px;height:36px;border-radius:12px;overflow:hidden;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:none;box-shadow:none;}
-.lm img{width:100%;height:100%;object-fit:cover;display:block;}
+.lm img,.lm video{width:100%;height:100%;object-fit:cover;display:block;}
 .lm .ico{width:20px;height:20px;stroke-width:2.2;}
 .ln{font-family:var(--fd);font-weight:800;font-size:17px;letter-spacing:-.02em;color:var(--tx);white-space:nowrap;}
 .tb-r{display:flex;align-items:center;gap:8px;}
@@ -648,6 +648,7 @@ select.ti{appearance:none;}
 .chk:hover{border-color:color-mix(in srgb,var(--v2) 45%,transparent);}
 .chk.ck{border-color:var(--v2);background:color-mix(in srgb,var(--v) 14%,var(--in-bg));color:var(--v);box-shadow:0 0 0 2px color-mix(in srgb,var(--v2) 35%,transparent);font-weight:700;}
 .chk .chk-tick{display:none;flex-shrink:0;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:var(--v2);color:var(--btn-tx);font-size:10px;line-height:1;}
+.chk .chk-lbl{flex:1;min-width:0;}
 .chk.ck .chk-tick{display:inline-flex;}
 .chk-box{width:20px;height:20px;flex-shrink:0;border:1.8px solid var(--b2);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:11px;transition:all .2s;color:transparent;}
 .chk.ck .chk-box{background:var(--v);border-color:var(--v);color:#fff;}
@@ -1713,7 +1714,7 @@ input[type=range]::-webkit-slider-thumb{background:var(--lime);border-color:var(
 <!-- ═══ TOPBAR GLOBAL ═══ -->
 <div class="tb" id="global-tb">
   <div class="tb-logo">
-    <div class="lm"><img src="icons/icon-192.png" alt="Gimnasio CC"></div>
+    <div class="lm"><video src="video/logo-animado.mp4" autoplay muted loop playsinline disablepictureinpicture aria-label="Gimnasio CC"></video></div>
     <div class="ln">Fitness <span class="ln-x">System </span>Pro</div>
   </div>
   <div class="tb-r">
@@ -1812,7 +1813,7 @@ input[type=range]::-webkit-slider-thumb{background:var(--lime);border-color:var(
         <div class="opt" onclick="qSelObjetivo(this,'RESISTENCIA')"><div class="oi"><svg class="ico" aria-hidden="true"><use href="#i-pulse"/></svg></div><div class="ol">Resistencia</div><div class="os">Cardio y aguante</div></div>
         <div class="opt" onclick="qSelObjetivo(this,'FLEXIBILIDAD')"><div class="oi"><svg class="ico" aria-hidden="true"><use href="#i-stretch"/></svg></div><div class="ol">Flexibilidad</div><div class="os">Movilidad y elasticidad</div></div>
         <div class="opt" onclick="qSelObjetivo(this,'RENDIMIENTO DEPORTIVO')"><div class="oi"><svg class="ico" aria-hidden="true"><use href="#i-trophy"/></svg></div><div class="ol">Rendimiento deportivo</div><div class="os">Para tu disciplina del club</div></div>
-        <div class="opt" onclick="qSelObjetivo(this,'REHABILITACIÓN GIMNASIA')"><div class="oi"><svg class="ico" aria-hidden="true"><use href="#i-medical"/></svg></div><div class="ol">Rehabilitación</div><div class="os">Recuperar una lesión</div></div>
+        <div class="opt" onclick="qSelObjetivo(this,'REHABILITACIÓN')"><div class="oi"><svg class="ico" aria-hidden="true"><use href="#i-medical"/></svg></div><div class="ol">Rehabilitación</div><div class="os">Recuperar una lesión</div></div>
       </div>
       <div class="nav-row"><div class="btn-prev" onclick="qPrev(2)">←</div><button class="btn-next" disabled id="qb2" onclick="qNext(2)">Continuar</button></div>
     </div>
@@ -1838,44 +1839,66 @@ input[type=range]::-webkit-slider-thumb{background:var(--lime);border-color:var(
       <div class="nav-row"><div class="btn-prev" onclick="mostrarSub('qq2b')">←</div><button class="btn-next" disabled id="qb2b2" onclick="qNext2b2()">Continuar</button></div>
     </div>
 
-    <!-- Q2c LESIÓN (solo rehabilitación) -->
+    <!-- Q2c LESIÓN (rehabilitación) -->
     <div class="q-sc" id="qq2c">
-      <div class="q-tag">Rehabilitación gimnasia</div>
+      <div class="q-tag">Rehabilitación</div>
       <div class="q-title">¿Qué zona<br>vas a recuperar?</div>
-      <div class="q-sub">Protocolo por fases para gimnastas. Guía de apoyo, no sustituye la valoración médica.</div>
+      <div class="q-sub">Protocolo por fases. Guía de apoyo, no sustituye la valoración médica.</div>
       <div class="opts" id="lesion-opts" style="grid-template-columns:1fr 1fr;max-height:none"></div>
       <div class="nav-row"><div class="btn-prev" onclick="qPrev2c()">←</div><button class="btn-next" disabled id="qb2c" onclick="qNext2c()">Continuar</button></div>
     </div>
 
-    <!-- G1 edad de la gimnasta -->
+    <!-- G1 edad -->
     <div class="q-sc" id="qqg1">
-      <div class="q-tag">Gimnasta · edad</div>
-      <div class="q-title">¿Qué edad<br>tiene la gimnasta?</div>
-      <div class="q-sub">El protocolo se adapta a la etapa de crecimiento. En 8-14 años son comunes las lesiones de placa de crecimiento.</div>
+      <div class="q-tag">Rehabilitación · edad</div>
+      <div class="q-title">¿Qué edad<br>tienes?</div>
+      <div class="q-sub">El protocolo se adapta a tu etapa. En crecimiento (8-14 años) hay cuidados extra en las placas de crecimiento.</div>
       <div class="slider-wrap">
-        <div class="s-val"><span id="gedad-v">10</span><span class="s-unit">años</span></div>
-        <input type="range" id="qr-gedad" min="6" max="17" value="10" oninput="document.getElementById('gedad-v').textContent=this.value">
-        <div class="s-labels"><span>6</span><span>9</span><span>12</span><span>15</span><span>17</span></div>
+        <div class="s-val"><span id="gedad-v">30</span><span class="s-unit">años</span></div>
+        <input type="range" id="qr-gedad" min="6" max="80" value="30" oninput="document.getElementById('gedad-v').textContent=this.value">
+        <div class="s-labels"><span>6</span><span>20</span><span>40</span><span>60</span><span>80</span></div>
       </div>
       <div class="nav-row"><div class="btn-prev" onclick="mostrarSub('qq2c')">←</div><button class="btn-next" onclick="gNext(1)">Continuar</button></div>
     </div>
 
+    <!-- G1b datos para el cálculo de nutrición -->
+    <div class="q-sc" id="qqg1b">
+      <div class="q-tag">Rehabilitación · datos</div>
+      <div class="q-title">Un par de datos<br>más</div>
+      <div class="q-sub">Para calcular tu plan de nutrición junto con la rehabilitación (Mifflin-St Jeor).</div>
+      <div class="opts s3" style="margin-bottom:14px">
+        <div class="opt" onclick="gSel(this,'genero','Masculino')"><div class="oi"><svg class="ico" aria-hidden="true"><use href="#i-mars"/></svg></div><div class="ol" style="font-size:14px">Masculino</div></div>
+        <div class="opt" onclick="gSel(this,'genero','Femenino')"><div class="oi"><svg class="ico" aria-hidden="true"><use href="#i-venus"/></svg></div><div class="ol" style="font-size:14px">Femenino</div></div>
+      </div>
+      <div class="slider-wrap">
+        <div class="s-val"><span id="gpeso-v">75</span><span class="s-unit">kg</span></div>
+        <input type="range" id="qr-gpeso" min="30" max="180" value="75" oninput="document.getElementById('gpeso-v').textContent=this.value">
+        <div class="s-labels"><span>30</span><span>65</span><span>100</span><span>140</span><span>180</span></div>
+      </div>
+      <div class="slider-wrap">
+        <div class="s-val"><span id="gest-v">170</span><span class="s-unit">cm</span></div>
+        <input type="range" id="qr-gest" min="100" max="210" value="170" oninput="document.getElementById('gest-v').textContent=this.value">
+        <div class="s-labels"><span>100</span><span>135</span><span>170</span><span>190</span><span>210</span></div>
+      </div>
+      <div class="nav-row"><div class="btn-prev" onclick="mostrarSub('qqg1')">←</div><button class="btn-next" disabled id="gb1b" onclick="gNext1b()">Continuar</button></div>
+    </div>
+
     <!-- G2 ¿desde cuándo? -->
     <div class="q-sc" id="qqg2">
-      <div class="q-tag">Gimnasta · inicio</div>
-      <div class="q-title">¿Desde cuándo<br>le duele?</div>
+      <div class="q-tag">Rehabilitación · inicio</div>
+      <div class="q-title">¿Desde cuándo<br>te duele?</div>
       <div class="q-sub">El tiempo de evolución ayuda a definir la intensidad del protocolo.</div>
       <div class="opts s3">
         <div class="opt" onclick="gSel(this,'inicioDolor','Reciente (menos de 1 semana)')"><div class="oi"><svg class="ico" aria-hidden="true"><use href="#i-spark"/></svg></div><div class="ol" style="font-size:15px">Reciente</div><div class="os">Menos de 1 semana</div></div>
         <div class="opt" onclick="gSel(this,'inicioDolor','Algunas semanas')"><div class="oi"><svg class="ico" aria-hidden="true"><use href="#i-calendar"/></svg></div><div class="ol" style="font-size:15px">Semanas</div><div class="os">2 a 6 semanas</div></div>
         <div class="opt" onclick="gSel(this,'inicioDolor','Desde hace meses')"><div class="oi"><svg class="ico" aria-hidden="true"><use href="#i-clock"/></svg></div><div class="ol" style="font-size:15px">Meses</div><div class="os">Dolor persistente</div></div>
       </div>
-      <div class="nav-row"><div class="btn-prev" onclick="mostrarSub('qqg1')">←</div><button class="btn-next" disabled id="gb2" onclick="gNext(2)">Continuar</button></div>
+      <div class="nav-row"><div class="btn-prev" onclick="mostrarSub('qqg1b')">←</div><button class="btn-next" disabled id="gb2" onclick="gNext(2)">Continuar</button></div>
     </div>
 
     <!-- G3 ¿cuándo aparece el dolor? -->
     <div class="q-sc" id="qqg3">
-      <div class="q-tag">Gimnasta · cuándo duele</div>
+      <div class="q-tag">Rehabilitación · cuándo duele</div>
       <div class="q-title">¿Cuándo<br>aparece el dolor?</div>
       <div class="q-sub">Marca todas las que apliquen. Nos dice qué movimientos evitar en las primeras fases.</div>
       <div id="gcuando-opts" style="display:flex;flex-direction:column;gap:8px;margin-bottom:8px"></div>
@@ -1884,7 +1907,7 @@ input[type=range]::-webkit-slider-thumb{background:var(--lime);border-color:var(
 
     <!-- G4 intensidad del dolor -->
     <div class="q-sc" id="qqg4">
-      <div class="q-tag">Gimnasta · intensidad</div>
+      <div class="q-tag">Rehabilitación · intensidad</div>
       <div class="q-title">¿Qué tan fuerte<br>es el dolor hoy?</div>
       <div class="q-sub">Del 1 (molestia leve) al 10 (muy intenso). Define en qué fase empezar.</div>
       <div class="slider-wrap">
@@ -1895,33 +1918,38 @@ input[type=range]::-webkit-slider-thumb{background:var(--lime);border-color:var(
       <div class="nav-row"><div class="btn-prev" onclick="mostrarSub('qqg3')">←</div><button class="btn-next" onclick="gNext(4)">Continuar</button></div>
     </div>
 
-    <!-- G5 días de clase de gimnasia -->
+    <!-- G5 días de entrenamiento -->
     <div class="q-sc" id="qqg5">
-      <div class="q-tag">Gimnasta · clases</div>
-      <div class="q-title">¿Qué días tiene<br>clase de gimnasia?</div>
-      <div class="q-sub">Marca sus días de entrenamiento. El plan te dirá qué trabajar los OTROS días sin afectar la zona.</div>
+      <div class="q-tag">Rehabilitación · entrenamiento</div>
+      <div class="q-title">¿Qué días<br>entrenas tu disciplina?</div>
+      <div class="q-sub">Marca tus días de entrenamiento. El plan te dirá qué trabajar los OTROS días sin afectar la zona.</div>
       <div id="gclases-opts" style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px"></div>
-      <div class="q-sub" style="margin-top:6px">¿La gimnasta sigue asistiendo a clase con la molestia?</div>
+      <div class="q-sub" style="margin-top:6px">¿Sigues entrenando con la molestia?</div>
       <div class="opts" style="grid-template-columns:1fr 1fr">
         <div class="opt" onclick="gSel(this,'sigueEntrenando','Sí, con adaptaciones')"><div class="ol" style="font-size:14px">Sí, adapta</div><div class="os">Entrena con cuidado</div></div>
         <div class="opt" onclick="gSel(this,'sigueEntrenando','No, está en pausa')"><div class="ol" style="font-size:14px">En pausa</div><div class="os">Descansa por ahora</div></div>
+      </div>
+      <div class="q-sub" style="margin-top:14px">En los días que no son de rehabilitación directa, ¿qué prefieres?</div>
+      <div class="opts" style="grid-template-columns:1fr 1fr">
+        <div class="opt" onclick="gSel(this,'soloTerapia','no')"><div class="ol" style="font-size:13px">Fortalecer también</div><div class="os">Zonas que no cargan la lesión (recomendado)</div></div>
+        <div class="opt" onclick="gSel(this,'soloTerapia','si')"><div class="ol" style="font-size:13px">Solo terapia</div><div class="os">Movilidad enfocada en la zona lesionada</div></div>
       </div>
       <div class="nav-row"><div class="btn-prev" onclick="mostrarSub('qqg4')">←</div><button class="btn-next" onclick="gNext(5)">Continuar</button></div>
     </div>
 
     <!-- G6 ¿tiene diagnóstico médico? -->
     <div class="q-sc" id="qqg6">
-      <div class="q-tag">Gimnasta · diagnóstico</div>
-      <div class="q-title">¿Ya tiene un<br>diagnóstico médico?</div>
-      <div class="q-sub">Esto es clave para su seguridad. Define si puede entrenar o si conviene enfocarse solo en recuperar.</div>
+      <div class="q-tag">Rehabilitación · diagnóstico</div>
+      <div class="q-title">¿Ya tienes un<br>diagnóstico médico?</div>
+      <div class="q-sub">Esto es clave para tu seguridad. Define si puedes entrenar o si conviene enfocarte solo en recuperar.</div>
       <div class="opts" style="grid-template-columns:1fr">
-        <div class="opt" onclick="gSelDiag(this,'si')"><div class="oi"><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg></div><div class="ol">Sí, ya la valoró un doctor</div><div class="os">Trabajamos sobre el diagnóstico</div></div>
-        <div class="opt" onclick="gSelDiag(this,'no')"><div class="oi"><svg class="ico" aria-hidden="true"><use href="#i-warn"/></svg></div><div class="ol">No, aún no la ve un doctor</div><div class="os">Priorizamos recuperar con seguridad</div></div>
+        <div class="opt" onclick="gSelDiag(this,'si')"><div class="oi"><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg></div><div class="ol">Sí, ya me valoró un doctor</div><div class="os">Trabajamos sobre el diagnóstico</div></div>
+        <div class="opt" onclick="gSelDiag(this,'no')"><div class="oi"><svg class="ico" aria-hidden="true"><use href="#i-warn"/></svg></div><div class="ol">No, aún no me ve un doctor</div><div class="os">Priorizamos recuperar con seguridad</div></div>
       </div>
       <div id="gdiag-detalle" style="display:none;margin-top:12px">
         <div class="q-sub" style="margin-bottom:8px">¿Qué indicó el médico? (opcional, ayuda a personalizar)</div>
         <textarea id="qi-gdiag" rows="3" placeholder="Ej: tendinitis rotuliana, reposo 2 semanas, puede fortalecer sin impacto..." style="width:100%;padding:12px;background:var(--in-bg);border:1px solid var(--b);border-radius:12px;font-family:var(--fb);font-size:13px;color:var(--tx);outline:none;resize:vertical"></textarea>
-        <div class="q-sub" style="margin:10px 0 8px">¿El médico autorizó que siga en clases?</div>
+        <div class="q-sub" style="margin:10px 0 8px">¿El médico autorizó que sigas entrenando?</div>
         <div class="opts" style="grid-template-columns:1fr 1fr">
           <div class="opt" onclick="gSel(this,'medicoAutoriza','Sí, autorizó clases')"><div class="ol" style="font-size:13px">Sí autorizó</div></div>
           <div class="opt" onclick="gSel(this,'medicoAutoriza','No, indicó pausa')"><div class="ol" style="font-size:13px">Indicó pausa</div></div>
@@ -1929,7 +1957,7 @@ input[type=range]::-webkit-slider-thumb{background:var(--lime);border-color:var(
       </div>
       <div id="gdiag-aviso" style="display:none;margin-top:12px;padding:12px 14px;background:color-mix(in srgb,var(--r) 6%,transparent);border:1px solid color-mix(in srgb,var(--r) 25%,transparent);border-radius:12px">
         <div style="font-size:11px;color:var(--r);font-family:var(--fb);line-height:1.7">
-          ⚠️ <b>Sin diagnóstico y con dolor, la recomendación es enfocarse SOLO en rehabilitación</b> y pausar las clases hasta que un médico o fisioterapeuta valore a la niña. Seguir entrenando con dolor sin saber la causa puede empeorar la lesión. El plan se generará en modo <b>rehabilitación total</b>.
+          ⚠️ <b>Sin diagnóstico y con dolor, la recomendación es enfocarse SOLO en rehabilitación</b> y pausar el entrenamiento hasta que un médico o fisioterapeuta te valore. Seguir entrenando con dolor sin saber la causa puede empeorar la lesión. El plan se generará en modo <b>rehabilitación total</b>.
         </div>
       </div>
       <div class="nav-row"><div class="btn-prev" onclick="mostrarSub('qqg5')">←</div><button class="btn-next" disabled id="gb6" onclick="gNext(6)">Generar plan</button></div>
@@ -3440,7 +3468,7 @@ function qNext(step){
   // Rama tras el objetivo
   if(step===2){
     if(qAnswers.objetivo==='RENDIMIENTO DEPORTIVO'){ abrirDisciplinas(); mostrarSub('qq2b'); return; }
-    if(qAnswers.objetivo==='REHABILITACIÓN GIMNASIA'){ abrirLesiones(); mostrarSub('qq2c'); return; }
+    if(qAnswers.objetivo==='REHABILITACIÓN'){ abrirLesiones(); mostrarSub('qq2c'); return; }
   }
   // Tras elegir cuántos días: pedir CUÁLES días y si toma clases grupales
   if(step===4){
@@ -3598,14 +3626,17 @@ const GIM_CUANDO_OPC = {
   muneca:['Al apoyar las manos (pino, rueda)','Al cargar peso en la muñeca','Al girar la muñeca','Al empujar o presionar','Con hormigueo en los dedos'],
   cadera:['Al abrir en split','En patadas altas','Al levantar la pierna','Con chasquido en la cadera','En la ingle profunda'],
   espalda:['Al hacer puente o arco','En hiperextensiones','Al inclinarse hacia atrás','Al levantarse','En movimientos de torsión'],
+  hombro:['Al levantar el brazo','Al cargar peso arriba de la cabeza','De noche, al acostarte de ese lado','Al empujar (press, lagartijas)','Con hormigueo en el brazo o la mano'],
+  cuello:['Al girar la cabeza','Después de estar mucho tiempo en el celular o la compu','Al cargar peso sobre los hombros','Con dolor de cabeza asociado','Al despertar'],
 };
 function abrirGimCuando(){
   const opts=GIM_CUANDO_OPC[qAnswers.lesionRehab]||['Al moverse','Al cargar peso','En reposo','Al entrenar'];
   const cont=document.getElementById('gcuando-opts');
-  cont.innerHTML=opts.map(o=>`<div class="chk" onclick="gChkCuando(this, this.textContent.trim())">${o}</div>`).join('');
+  cont.innerHTML=opts.map(o=>`<div class="chk" style="justify-content:flex-start;text-align:left;line-height:1.3" onclick="gChkCuando(this)"><span class="chk-tick">✓</span><span class="chk-lbl">${esc(o)}</span></div>`).join('');
   qAnswers.gimCuando=[];
 }
-function gChkCuando(el,txt){
+function gChkCuando(el){
+  const txt=el.querySelector('.chk-lbl').textContent.trim();
   el.classList.toggle('ck');
   if(el.classList.contains('ck')){ if(!qAnswers.gimCuando.includes(txt)) qAnswers.gimCuando.push(txt); }
   else qAnswers.gimCuando=qAnswers.gimCuando.filter(x=>x!==txt);
@@ -3627,8 +3658,17 @@ function gSel(el,key,val){
   if(key==='inicioDolor') qAnswers.gimInicioDolor=val;
   else if(key==='sigueEntrenando') qAnswers.gimSigue=val;
   else if(key==='medicoAutoriza') qAnswers.gimMedicoAutoriza=val;
+  else if(key==='genero') qAnswers.gimGenero=val;
+  else if(key==='soloTerapia') qAnswers.gimSoloTerapia=val;
   const g=el.closest('.q-sc').id;
   if(g==='qqg2') document.getElementById('gb2').disabled=false;
+  if(g==='qqg1b') document.getElementById('gb1b').disabled=false;
+}
+function gNext1b(){
+  if(!qAnswers.gimGenero) return;
+  qAnswers.gimPeso=parseInt(document.getElementById('qr-gpeso').value);
+  qAnswers.gimEstatura=parseInt(document.getElementById('qr-gest').value);
+  mostrarSub('qqg2');
 }
 function gSelDiag(el,val){
   el.parentElement.querySelectorAll('.opt').forEach(o=>o.classList.remove('sel'));
@@ -3640,7 +3680,7 @@ function gSelDiag(el,val){
   document.getElementById('gdiag-aviso').style.display = val==='no' ? 'block' : 'none';
 }
 function gNext(paso){
-  if(paso===1){ qAnswers.gimEdad=parseInt(document.getElementById('qr-gedad').value); mostrarSub('qqg2'); }
+  if(paso===1){ qAnswers.gimEdad=parseInt(document.getElementById('qr-gedad').value); mostrarSub('qqg1b'); }
   else if(paso===2){ if(!qAnswers.gimInicioDolor) return; mostrarSub('qqg3'); }
   else if(paso===3){ mostrarSub('qqg4'); }
   else if(paso===4){ qAnswers.gimDolor=parseInt(document.getElementById('qr-gdolor').value); mostrarSub('qqg5'); }
@@ -3651,10 +3691,10 @@ function gNext(paso){
     qAnswers.gimClases=(qAnswers.gimClases||[]);
     qAnswers.nivel='PRINCIPIANTE';
     qAnswers.edad=qAnswers.gimEdad;
-    qAnswers.genero='MUJER';
     qAnswers.dias=Math.min(6, Math.max(2, 7-qAnswers.gimClases.length));
-    qAnswers.peso=Math.round(3.5*qAnswers.gimEdad+10);
-    qAnswers.estatura=Math.round(6*qAnswers.gimEdad+80);
+    qAnswers.peso=qAnswers.gimPeso;
+    qAnswers.estatura=qAnswers.gimEstatura;
+    qAnswers.genero=qAnswers.gimGenero;
     qAnswers.cardio='NUNCA O CASI NUNCA';
     qNextToTrainer(generarRutinaGim,'qqg6');
   }
@@ -3821,7 +3861,7 @@ async function generarRutina(){
 
   // Rehabilitación, rendimiento deportivo y flexibilidad usan planes estructurados
   // (no dependen del modelo de IA para garantizar la base clínica/deportiva)
-  if(['REHABILITACIÓN GIMNASIA','RENDIMIENTO DEPORTIVO','FLEXIBILIDAD'].includes(qAnswers.objetivo)){
+  if(['REHABILITACIÓN','RENDIMIENTO DEPORTIVO','FLEXIBILIDAD'].includes(qAnswers.objetivo)){
     setTimeout(()=>mostrarPreview(buildFallback()), 600);
     return;
   }
@@ -4030,7 +4070,7 @@ function mostrarPreview(data){
 }
 
 function renderPreview(rutina){
-  const iconMap={'GANAR MÚSCULO':'💪','PERDER PESO':'🔥','FUERZA PURA':'⚡','RESISTENCIA':'🏃','FLEXIBILIDAD':'🧘','RENDIMIENTO DEPORTIVO':'🏅','REHABILITACIÓN GIMNASIA':'🏥'};
+  const iconMap={'GANAR MÚSCULO':'💪','PERDER PESO':'🔥','FUERZA PURA':'⚡','RESISTENCIA':'🏃','FLEXIBILIDAD':'🧘','RENDIMIENTO DEPORTIVO':'🏅','REHABILITACIÓN':'🏥'};
   document.getElementById('pv-icon').textContent=iconMap[qAnswers.objetivo]||'🏋️';
   document.getElementById('pv-nombre').textContent=qAnswers.nombre.toUpperCase();
   document.getElementById('pv-meta').textContent=`${rutina.perfil.nivel} · ${qAnswers.edad} años · ${qAnswers.peso} kg · ${qAnswers.dias} días/sem · ${rutina.perfil.split}`;
@@ -4159,8 +4199,8 @@ function confirmarRutina(){
     rutina:rutinaConvertida,
     logs:{ sesiones:[], pesoCorporal:[{fecha:fechaISO(new Date()),kg:qAnswers.peso}], prs:{}, asistencia:[], medidas:[], lesiones:[] }
   };
-  // Datos clínicos de gimnasta (si aplica)
-  if(qAnswers.objetivo==='REHABILITACIÓN GIMNASIA'){
+  // Datos clínicos de rehabilitación (si aplica)
+  if(qAnswers.objetivo==='REHABILITACIÓN'){
     nuevo.gimnasta={
       edad:qAnswers.gimEdad, inicioDolor:qAnswers.gimInicioDolor,
       cuando:[...(qAnswers.gimCuando||[])], dolorInicial:qAnswers.gimDolor,
@@ -4171,7 +4211,7 @@ function confirmarRutina(){
     };
   }
   // Si es rehabilitación, activar el protocolo por fases automáticamente
-  if(qAnswers.objetivo==='REHABILITACIÓN GIMNASIA' && qAnswers.lesionRehab){
+  if(qAnswers.objetivo==='REHABILITACIÓN' && qAnswers.lesionRehab){
     const faseIni = (window._rutinaTemp && window._rutinaTemp.perfil && /FASE 2/.test(window._rutinaTemp.perfil.fase)) ? 1 : 0;
     nuevo.logs.lesiones.push({protoId:qAnswers.lesionRehab, faseActual:faseIni, fechaInicio:fechaISO(new Date()),
       historial: qAnswers.gimDolor ? [{fecha:fechaISO(new Date()), dolor: qAnswers.gimDolor<=2?1:qAnswers.gimDolor<=5?2:3}] : []});
@@ -4181,7 +4221,7 @@ function confirmarRutina(){
 
   window._rutinaTemp=null;
   // limpiar quiz
-  Object.assign(qAnswers,{nombre:'',objetivo:'',nivel:'',zonas:[],limitaciones:[],cardio:'',disciplina:'',lesionRehab:'',entorno:'',gimCuando:[],gimClases:[],gimInicioDolor:'',gimSigue:'',gimDiagnostico:'',gimDiagTexto:'',gimMedicoAutoriza:'',entrenadorId:'',entrenadorNombre:'',diasSemana:[],tomaClases:'',clasesSel:[],clasesGrupales:[]});
+  Object.assign(qAnswers,{nombre:'',objetivo:'',nivel:'',zonas:[],limitaciones:[],cardio:'',disciplina:'',lesionRehab:'',entorno:'',gimCuando:[],gimClases:[],gimInicioDolor:'',gimSigue:'',gimDiagnostico:'',gimDiagTexto:'',gimMedicoAutoriza:'',gimGenero:'',gimPeso:0,gimEstatura:0,gimSoloTerapia:'',entrenadorId:'',entrenadorNombre:'',diasSemana:[],tomaClases:'',clasesSel:[],clasesGrupales:[]});
   document.getElementById('qi-nom').value='';
   document.querySelectorAll('.q-sc .opt').forEach(o=>o.classList.remove('sel'));
   document.querySelectorAll('.q-sc .chk').forEach(c=>c.classList.remove('ck'));
@@ -4199,7 +4239,7 @@ function buildFallback(){
   const joven=edad<=35;
 
   // ══ RAMA REHABILITACIÓN ══
-  if(objetivo==='REHABILITACIÓN GIMNASIA' && qAnswers.lesionRehab){
+  if(objetivo==='REHABILITACIÓN' && qAnswers.lesionRehab){
     return buildFallbackRehab(qAnswers.lesionRehab, dias);
   }
   // ══ RAMA RENDIMIENTO DEPORTIVO ══
@@ -4505,7 +4545,7 @@ function buildFallbackDeporte(discId, dias, nivel){
 
 // ══ BUILDER: REHABILITACIÓN (protocolo por fases como rutina) ══
 // ══ QUÉ PUEDE ENTRENAR CON SEGURIDAD SEGÚN LA LESIÓN ══
-// Para gimnastas: los otros días puede fortalecer zonas que NO cargan la lesión.
+// En rehabilitación: los otros días puede fortalecer zonas que NO cargan la lesión.
 const GIM_SEGURO = {
   osgood:{
     puede:['Core y abdomen (planchas, hollow)','Tren superior (brazos, hombros)','Flexibilidad de cadera y espalda','Equilibrio en un pie (sin dolor)'],
@@ -4568,9 +4608,29 @@ const GIM_SEGURO = {
       {nombre:'Fortalecimiento de tren superior',series:3,reps:'12 reps',musculo:'Brazos · Hombros',tip:'Trabaja arriba manteniendo la espalda neutra.'},
     ]
   },
+  hombro:{
+    puede:['Piernas completo','Core','Cardio de piernas','Movilidad de cuello y cadera'],
+    evitar:['Empujes por encima de la cabeza','Cargar peso con el brazo extendido','Colgarte de una barra','Dormir de ese lado con peso'],
+    banco:[
+      {nombre:'Sentadilla con peso corporal',series:3,reps:'12 reps',musculo:'Piernas',tip:'Fortalece piernas sin cargar el hombro.'},
+      {nombre:'Puente de glúteo',series:3,reps:'12 reps',musculo:'Glúteo',tip:'Trabaja cadera y piernas mientras el hombro descansa.'},
+      {nombre:'Plancha frontal',series:3,reps:'20-30 seg',musculo:'Core',tip:'Apoyo en antebrazos, no en la muñeca ni el hombro extendido.'},
+      {nombre:'Zancadas',series:3,reps:'10 por lado',musculo:'Piernas',tip:'Sin cargar mancuernas si eso irrita el hombro; usa solo tu peso.'},
+    ]
+  },
+  cuello:{
+    puede:['Piernas completo','Core anti-extensión','Cardio de piernas','Movilidad de cadera'],
+    evitar:['Carga por encima de la cabeza','Encogimientos de hombro con peso','Posturas prolongadas con el cuello adelantado','Impacto directo o contacto'],
+    banco:[
+      {nombre:'Sentadilla con peso corporal',series:3,reps:'12 reps',musculo:'Piernas',tip:'Fortalece piernas sin involucrar el cuello.'},
+      {nombre:'Puente de glúteo',series:3,reps:'12 reps',musculo:'Glúteo',tip:'Cadera fuerte sin tensionar el cuello.'},
+      {nombre:'Plancha frontal (cuello neutro)',series:3,reps:'20-30 seg',musculo:'Core',tip:'Mira al piso, cuello alineado con la columna, sin dejarlo caer.'},
+      {nombre:'Zancadas',series:3,reps:'10 por lado',musculo:'Piernas',tip:'Mantén la mirada al frente, sin adelantar la cabeza.'},
+    ]
+  },
 };
 
-// ══ GENERADOR DE PLAN DE REHABILITACIÓN PARA GIMNASTA ══
+// ══ GENERADOR DE PLAN DE REHABILITACIÓN (cualquier socio, no solo gimnastas) ══
 function generarRutinaGim(){
   go('s-loading');
   setTimeout(()=>{
@@ -4579,6 +4639,8 @@ function generarRutinaGim(){
     if(qAnswers.gimDolor<=2 && qAnswers.gimInicioDolor==='Desde hace meses') faseIdx=1;
     const fase=p.fases[faseIdx];
     const seguro=GIM_SEGURO[qAnswers.lesionRehab]||GIM_SEGURO.osgood;
+    const soloTerapia = qAnswers.gimSoloTerapia==='si';
+    const terapiaEj = p.fases[0].ejercicios; // Fase 1 (Calmar): la más suave, enfocada en la propia zona
     const colores={red:'red',gold:'gold',neon:'neon'};
     const diasNom=['LUNES','MARTES','MIÉRCOLES','JUEVES','VIERNES','SÁBADO','DOMINGO'];
     const diasKey=['lun','mar','mie','jue','vie','sab','dom'];
@@ -4606,25 +4668,29 @@ function generarRutinaGim(){
           toggle=false;
           return {dia:diasNom[i], tipo:p.zona+' · REHABILITACIÓN', color:colores[fase.color]||'red',
             ejercicios: fase.ejercicios.map(e=>({nombre:e.nm,series:e.series,reps:e.reps,peso:'Sin dolor',musculo:p.zona,
-              tip:e.tip+(tieneClase?' · (Hoy tocaba clase, pero está en pausa hasta la valoración médica.)':'')}))};
+              tip:e.tip+(tieneClase?' · (Hoy tocaba entrenamiento, pero está en pausa hasta la valoración médica.)':'')}))};
         } else {
           toggle=true;
-          return {dia:diasNom[i], tipo:'FORTALECIMIENTO SEGURO (suave)', color:'verde',
-            ejercicios: seguro.banco.map(e=>({...e, peso:'Muy ligero · sin dolor',
-              tip:e.tip+(tieneClase?' · (Día de clase en pausa por ahora.)':'')}))};
+          return soloTerapia
+            ? {dia:diasNom[i], tipo:'TERAPIA Y MOVILIDAD ('+p.zona+')', color:'neon',
+                ejercicios: terapiaEj.map(e=>({nombre:e.nm,series:e.series,reps:e.reps,peso:'Sin dolor',musculo:p.zona,
+                  tip:e.tip+(tieneClase?' · (Día de entrenamiento en pausa por ahora.)':'')}))}
+            : {dia:diasNom[i], tipo:'FORTALECIMIENTO SEGURO (suave)', color:'verde',
+                ejercicios: seguro.banco.map(e=>({...e, peso:'Muy ligero · sin dolor',
+                  tip:e.tip+(tieneClase?' · (Día de entrenamiento en pausa por ahora.)':'')}))};
         }
       });
     } else {
-      // Modo normal: alterna rehab + seguro, respeta clases
+      // Modo normal: alterna rehab + seguro, respeta días de entrenamiento
       let toggleRehab=true;
       semana=diasKey.map((k,i)=>{
         const tieneClase=clases.includes(k);
         if(tieneClase){
-          return {dia:diasNom[i], tipo:'CLASE DE GIMNASIA', color:'descanso',
-            ejercicios:[{nombre:'Día de clase de gimnasia',series:'—',reps:qAnswers.gimSigue==='No, está en pausa'?'En pausa por la lesión':'Con adaptaciones',peso:'',musculo:'',
+          return {dia:diasNom[i], tipo:'ENTRENAMIENTO REGULAR', color:'descanso',
+            ejercicios:[{nombre:'Día de tu disciplina',series:'—',reps:qAnswers.gimSigue==='No, está en pausa'?'En pausa por la lesión':'Con adaptaciones',peso:'',musculo:'',
               tip: qAnswers.gimSigue==='No, está en pausa'
-                ? 'Está en pausa. Cuando regrese, que evite: '+seguro.evitar.slice(0,3).join(', ')+'.'
-                : 'Puede asistir evitando lo que le duele: '+seguro.evitar.slice(0,3).join(', ')+'. Avisa a su entrenadora de la molestia.'}]};
+                ? 'Está en pausa. Cuando regreses, evita: '+seguro.evitar.slice(0,3).join(', ')+'.'
+                : 'Puedes asistir evitando lo que te duele: '+seguro.evitar.slice(0,3).join(', ')+'. Avisa a tu entrenador(a) de la molestia.'}]};
         }
         if(toggleRehab){
           toggleRehab=false;
@@ -4632,8 +4698,11 @@ function generarRutinaGim(){
             ejercicios: fase.ejercicios.map(e=>({nombre:e.nm,series:e.series,reps:e.reps,peso:'Sin dolor',musculo:p.zona,tip:e.tip}))};
         } else {
           toggleRehab=true;
-          return {dia:diasNom[i], tipo:'FORTALECIMIENTO SEGURO', color:'verde',
-            ejercicios: seguro.banco.map(e=>({...e, peso:'Ligero · sin dolor'}))};
+          return soloTerapia
+            ? {dia:diasNom[i], tipo:'TERAPIA Y MOVILIDAD ('+p.zona+')', color:'neon',
+                ejercicios: terapiaEj.map(e=>({nombre:e.nm,series:e.series,reps:e.reps,peso:'Sin dolor',musculo:p.zona,tip:e.tip}))}
+            : {dia:diasNom[i], tipo:'FORTALECIMIENTO SEGURO', color:'verde',
+                ejercicios: seguro.banco.map(e=>({...e, peso:'Ligero · sin dolor'}))};
         }
       });
       const hayRehab=semana.some(d=>d.tipo.includes('REHABILITACIÓN'));
@@ -4646,34 +4715,34 @@ function generarRutinaGim(){
     const cuandoTxt=qAnswers.gimCuando.length?qAnswers.gimCuando.join(', '):'No especificado';
     let nota;
     if(rehabTotal){
-      nota=`${p.emoji} ${p.nombre} · Gimnasta de ${qAnswers.gimEdad} años. Dolor ${qAnswers.gimDolor}/10, ${qAnswers.gimInicioDolor.toLowerCase()}. Le molesta: ${cuandoTxt}. `+
+      nota=`${p.emoji} ${p.nombre} · Socio de ${qAnswers.gimEdad} años. Dolor ${qAnswers.gimDolor}/10, ${qAnswers.gimInicioDolor.toLowerCase()}. Le molesta: ${cuandoTxt}. `+
         `🚫 MODO REHABILITACIÓN TOTAL: `+
         (medicoPausa
-          ? `el médico indicó pausar las clases. `
-          : `no hay diagnóstico médico y hay dolor, por lo que se pausan las clases de gimnasia hasta que un doctor o fisioterapeuta valore a la niña. Entrenar con dolor sin diagnóstico puede empeorar la lesión. `)+
+          ? `el médico indicó pausar el entrenamiento. `
+          : `no hay diagnóstico médico y hay dolor, por lo que se pausa el entrenamiento hasta que un doctor o fisioterapeuta lo valore. Entrenar con dolor sin diagnóstico puede empeorar la lesión. `)+
         `El plan se enfoca solo en recuperar la zona y en fortalecimiento muy suave de lo que NO duele. `+
         `✅ Puede trabajar: ${seguro.puede.join(', ')}. ⛔ Evita: ${seguro.evitar.join(', ')}. `+
-        `⚠️ Guía de apoyo, NO diagnóstico. En cuanto tengan el diagnóstico, actualiza el registro para reactivar el plan completo. Todo SIN dolor.`;
+        `⚠️ Guía de apoyo, NO diagnóstico. En cuanto tenga el diagnóstico, actualiza el registro para reactivar el plan completo. Todo SIN dolor.`;
     } else {
       const conDiag = qAnswers.gimDiagnostico==='si';
-      nota=`${p.emoji} ${p.nombre} · Gimnasta de ${qAnswers.gimEdad} años. Dolor ${qAnswers.gimDolor}/10, ${qAnswers.gimInicioDolor.toLowerCase()}. Le molesta: ${cuandoTxt}. `+
-        (conDiag && qAnswers.gimDiagTexto ? `📋 Diagnóstico médico: "${qAnswers.gimDiagTexto}". ` : conDiag ? `📋 Valorada por médico, autorizada para entrenar con cuidado. ` : ``)+
-        `Este plan alterna días de REHABILITACIÓN con días de FORTALECIMIENTO SEGURO (lo que SÍ puede entrenar sin afectar la lesión), respetando sus días de clase. `+
+      nota=`${p.emoji} ${p.nombre} · Socio de ${qAnswers.gimEdad} años. Dolor ${qAnswers.gimDolor}/10, ${qAnswers.gimInicioDolor.toLowerCase()}. Le molesta: ${cuandoTxt}. `+
+        (conDiag && qAnswers.gimDiagTexto ? `📋 Diagnóstico médico: "${qAnswers.gimDiagTexto}". ` : conDiag ? `📋 Valorado por médico, autorizado para entrenar con cuidado. ` : ``)+
+        `Este plan alterna días de REHABILITACIÓN con días de FORTALECIMIENTO SEGURO (lo que SÍ puede entrenar sin afectar la lesión), respetando sus días de entrenamiento habitual. `+
         `✅ Puede trabajar: ${seguro.puede.join(', ')}. ⛔ Debe evitar por ahora: ${seguro.evitar.join(', ')}. `+
         `⚠️ Guía de apoyo, NO diagnóstico médico. Todo SIN dolor. `+
-        (qAnswers.gimDolor>=6 ? 'Con este nivel de dolor, vigilen de cerca y consulten si no mejora.' : 'Si el dolor aumenta o no mejora en 2-3 semanas, acudan al médico.');
+        (qAnswers.gimDolor>=6 ? 'Con este nivel de dolor, vigila de cerca y consulta si no mejora.' : 'Si el dolor aumenta o no mejora en 2-3 semanas, acude al médico.');
     }
 
     const plan={
       perfil:{
-        nivel:'GIMNASTA · '+qAnswers.gimEdad+' años',
-        objetivo:'REHABILITACIÓN GIMNASIA · '+p.zona,
-        split:p.emoji+(rehabTotal?' Rehabilitación total':' Plan para gimnasta'),
+        nivel:qAnswers.gimEdad+' años',
+        objetivo:'REHABILITACIÓN · '+p.zona,
+        split:p.emoji+(rehabTotal?' Rehabilitación total':' Plan de rehabilitación'),
         fase:fase.f,
         nota
       },
       semana,
-      esRehab:true, protoId:p.id, esGim:true, rehabTotal,
+      esRehab:true, protoId:p.id, rehabTotal,
       gimSeguro:seguro
     };
     mostrarPreview(plan);
@@ -5901,7 +5970,7 @@ function avatarSVG(med, opts){
 
 // ═════════════════════════════════════════
 // MÓDULO DE REHABILITACIÓN — REHAB CENTER
-// Base clínica: gimnasia rítmica infantil
+// Base clínica de los protocolos de rehabilitación (aplicable a cualquier socio)
 // (pie/tobillo/rodilla/espalda baja/cadera/muñeca)
 // Predominio de lesiones por SOBREUSO.
 // Filosofía: fases (agudo→fuerza→retorno),
@@ -6072,7 +6141,7 @@ const REHAB_PROTOCOLOS = [
     id:'osgood', zona:'RODILLA', emoji:'🦵',
     nombre:'Dolor de rodilla anterior (Osgood-Schlatter)',
     subtitulo:'Dolor y bolita bajo la rótula, sobre la espinilla',
-    contexto:'Muy común en niñas 8-13 años en fase de crecimiento. El cuádriceps jala del tendón rotuliano sobre la placa de crecimiento. Se agrava con saltos, sentadillas profundas y arrodillarse.',
+    contexto:'Muy común en preadolescentes de 8-13 años en fase de crecimiento. El cuádriceps jala del tendón rotuliano sobre la placa de crecimiento. Se agrava con saltos, sentadillas profundas y arrodillarse.',
     banderas:['Dolor que cojea o despierta por la noche','Hinchazón marcada o enrojecimiento con calor','Dolor que no baja tras 2-3 semanas de manejo','Bloqueo o inestabilidad de la rodilla'],
     fases:[
       {
@@ -6082,6 +6151,7 @@ const REHAB_PROTOCOLOS = [
           {nm:'Isométrico de cuádriceps (pierna recta)',series:3,reps:'6 seg sostenido × 8',tip:'Sentada, pierna estirada: aprieta el muslo empujando la rodilla contra el suelo. Siente el cuádriceps firme SIN mover la articulación. Debe ser indoloro.'},
           {nm:'Elevación de pierna recta',series:3,reps:'8-12 reps lentas',tip:'Acostada, sube la pierna estirada 20-30 cm con el muslo apretado. Baja despacio. Si duele el frente de la rodilla, reduce el rango.'},
           {nm:'Estiramiento suave de cuádriceps',series:3,reps:'30 seg',tip:'De pie o acostada boca abajo, lleva el talón al glúteo sintiendo el estiramiento en el frente del muslo, no en la rodilla. Sin rebotes.'},
+          {nm:'Activación de glúteo medio (banda)',series:3,reps:'12 por lado',tip:'De lado con banda sobre las rodillas, abre la pierna de arriba sin rotar la cadera. Un glúteo fuerte descarga la rodilla.'},
         ]
       },
       {
@@ -6092,6 +6162,7 @@ const REHAB_PROTOCOLOS = [
           {nm:'Puente de glúteo',series:3,reps:'12-15 reps',tip:'Boca arriba, sube la cadera apretando los glúteos 2 seg arriba. Fortalece cadera para proteger la rodilla.'},
           {nm:'Step-up a escalón bajo',series:3,reps:'8 por pierna',tip:'Sube a un escalón bajo empujando con el talón, control total. Siente el glúteo y muslo de la pierna que sube.'},
           {nm:'Estiramiento de isquiotibiales',series:3,reps:'30 seg',tip:'Sentada, pierna estirada, lleva el pecho al muslo con espalda recta. Reduce tensión sobre la rodilla.'},
+          {nm:'Sentadilla búlgara asistida (rango parcial)',series:3,reps:'8 por lado',tip:'Pie trasero elevado, baja solo hasta donde no duela, apoyándote si necesitas. Fuerza unilateral progresiva.'},
         ]
       },
       {
@@ -6101,6 +6172,7 @@ const REHAB_PROTOCOLOS = [
           {nm:'Sentadilla completa controlada',series:3,reps:'12 reps',tip:'Progresa el rango solo si sigue indoloro. Técnica impecable antes que profundidad.'},
           {nm:'Saltos de bajo impacto (aterrizaje suave)',series:3,reps:'6-8 reps',tip:'Salto pequeño con aterrizaje amortiguado, rodillas flexionadas suaves. Introduce impacto poco a poco.'},
           {nm:'Zancadas controladas',series:3,reps:'8 por pierna',tip:'Paso largo con tronco erguido, rodilla delantera sobre el tobillo. Siente el glúteo trabajar.'},
+          {nm:'Aterrizaje controlado (drop landing)',series:3,reps:'6 reps',tip:'Baja de un escalón bajo y aterriza suave, absorbiendo con la rodilla flexionada. Prepara la rodilla para el impacto real.'},
         ]
       },
     ]
@@ -6108,8 +6180,8 @@ const REHAB_PROTOCOLOS = [
   {
     id:'tobillo', zona:'TOBILLO', emoji:'🦶',
     nombre:'Esguince / dolor de tobillo',
-    subtitulo:'La lesión más frecuente en gimnasia',
-    contexto:'Tobillo y pie concentran casi la mitad de las lesiones. Tras un esguince, la clave es recuperar movilidad, fuerza y sobre todo PROPIOCEPCIÓN (equilibrio) para evitar recaídas.',
+    subtitulo:'Una de las lesiones más comunes al entrenar',
+    contexto:'El tobillo es una de las zonas que más se lesiona al entrenar. Tras un esguince, la clave es recuperar movilidad, fuerza y sobre todo PROPIOCEPCIÓN (equilibrio) para evitar recaídas.',
     banderas:['No puede apoyar peso ni dar 4 pasos','Hinchazón inmediata y grande','Dolor sobre el hueso (no el ligamento)','Deformidad visible'],
     fases:[
       {
@@ -6119,6 +6191,7 @@ const REHAB_PROTOCOLOS = [
           {nm:'Movilidad: dibujar el abecedario',series:2,reps:'A-J con el pie',tip:'Sentada, dibuja letras en el aire con el dedo gordo. Movilidad suave del tobillo sin dolor.'},
           {nm:'Bombeo de tobillo (punta-talón)',series:3,reps:'15 reps',tip:'Estira la punta y súbela hacia ti, lento. Activa circulación y movilidad.'},
           {nm:'Isométrico de eversión (banda ligera)',series:3,reps:'6 seg × 8',tip:'Empuja el pie hacia afuera contra una banda o tu mano, sin mover. Reactiva los estabilizadores.'},
+          {nm:'Isométrico de inversión (banda ligera)',series:3,reps:'6 seg × 8',tip:'Empuja el pie hacia adentro contra la banda, sin mover. Complementa el trabajo de eversión.'},
         ]
       },
       {
@@ -6126,9 +6199,10 @@ const REHAB_PROTOCOLOS = [
         meta:'Fuerza en las 4 direcciones y reeducación del equilibrio. Aquí se previene la recaída.',
         ejercicios:[
           {nm:'Elevación de talones (gemelos)',series:3,reps:'12-15 reps',tip:'De pie, sube a puntas y baja despacio. Empieza con dos pies, progresa a uno.'},
-          {nm:'Equilibrio en un pie',series:3,reps:'20-30 seg',tip:'Párate en el pie lesionado. Cuando sea fácil, cierra los ojos. Reeduca la propiocepción, clave en gimnasia.'},
+          {nm:'Equilibrio en un pie',series:3,reps:'20-30 seg',tip:'Párate en el pie lesionado. Cuando sea fácil, cierra los ojos. Reeduca la propiocepción, clave para evitar recaídas.'},
           {nm:'Banda en 4 direcciones',series:2,reps:'12 cada dirección',tip:'Con banda elástica: empuja el pie adentro, afuera, arriba y abajo. Fortalece todo el tobillo.'},
           {nm:'Caminar en puntas y talones',series:3,reps:'10 m cada uno',tip:'Camina de puntas, luego de talones. Fuerza y control del pie completo.'},
+          {nm:'Sentadilla a una pierna asistida (mini)',series:3,reps:'8 por lado',tip:'Apoyándote en una pared o silla, baja un poco en una pierna. Fuerza y equilibrio del tobillo bajo carga.'},
         ]
       },
       {
@@ -6136,8 +6210,9 @@ const REHAB_PROTOCOLOS = [
         meta:'Saltos, giros y aterrizajes progresivos. Volver al tapiz solo con equilibrio y fuerza recuperados.',
         ejercicios:[
           {nm:'Saltos en un pie (control)',series:3,reps:'8 reps',tip:'Salta y aterriza en el mismo pie con estabilidad. Sin bamboleo del tobillo.'},
-          {nm:'Equilibrio en superficie inestable',series:3,reps:'30 seg',tip:'Párate en un cojín o colchoneta doblada. Simula la inestabilidad del aparato.'},
-          {nm:'Giros con aterrizaje controlado',series:3,reps:'6 reps',tip:'Media vuelta con aterrizaje firme. Reintroduce el gesto de gimnasia poco a poco.'},
+          {nm:'Equilibrio en superficie inestable',series:3,reps:'30 seg',tip:'Párate en un cojín o colchoneta doblada. Simula superficies inestables del día a día.'},
+          {nm:'Giros con aterrizaje controlado',series:3,reps:'6 reps',tip:'Media vuelta con aterrizaje firme. Reintroduce el gesto deportivo poco a poco.'},
+          {nm:'Desplazamiento lateral controlado',series:3,reps:'20 seg',tip:'Pasos laterales rápidos pero controlados. Prepara el tobillo para cambios de dirección.'},
         ]
       },
     ]
@@ -6146,7 +6221,7 @@ const REHAB_PROTOCOLOS = [
     id:'plantar', zona:'PIE', emoji:'👣',
     nombre:'Dolor en la planta del pie (fascitis / Sever)',
     subtitulo:'Dolor en talón o arco',
-    contexto:'El pie es la zona más lesionada en rítmica por trabajar descalzas o con puntas. En niñas suele ser Sever (dolor en el talón por la placa de crecimiento) o sobrecarga de la fascia plantar.',
+    contexto:'Es común por sobrecarga al caminar, correr o saltar. En preadolescentes suele ser Sever (dolor en el talón por la placa de crecimiento); en adultos, sobrecarga de la fascia plantar.',
     banderas:['Cojera marcada al caminar','Dolor intenso al primer paso de la mañana que no mejora','Hinchazón o enrojecimiento del talón','Dolor que persiste semanas'],
     fases:[
       {
@@ -6156,6 +6231,7 @@ const REHAB_PROTOCOLOS = [
           {nm:'Rodar pelota bajo el arco',series:3,reps:'1-2 min',tip:'Sentada, rueda una pelota pequeña bajo la planta. Masaje suave que relaja la fascia.'},
           {nm:'Estiramiento de gemelo y sóleo',series:3,reps:'30 seg',tip:'De pie frente a la pared, una pierna atrás estirada, siente el estiramiento en la pantorrilla. Repite con rodilla flexionada para el sóleo.'},
           {nm:'Estiramiento de fascia plantar',series:3,reps:'20 seg × 3',tip:'Sentada, jala los dedos del pie hacia ti sintiendo el estiramiento en el arco. Suave.'},
+          {nm:'Movilidad de tobillo en pared (dorsiflexión)',series:3,reps:'10 reps',tip:'De frente a la pared, lleva la rodilla hacia adelante sin despegar el talón. Libera tensión que sube desde el tobillo.'},
         ]
       },
       {
@@ -6165,6 +6241,7 @@ const REHAB_PROTOCOLOS = [
           {nm:'Agarrar toalla con los dedos',series:3,reps:'12 reps',tip:'Sentada, arruga una toalla en el piso usando solo los dedos del pie. Fortalece el arco.'},
           {nm:'Elevación de talones lenta',series:3,reps:'12 reps',tip:'Sube a puntas y baja en 3 segundos. Fortalece la pantorrilla que sostiene el arco.'},
           {nm:'Doming (arco corto)',series:3,reps:'10 × 5 seg',tip:'Sin doblar los dedos, "acorta" el pie levantando el arco. Activa la musculatura profunda.'},
+          {nm:'Elevación de talón a una pierna',series:3,reps:'10 por lado',tip:'Sube a punta apoyado en un solo pie. Fuerza específica que sostiene el arco al caminar y correr.'},
         ]
       },
       {
@@ -6172,7 +6249,8 @@ const REHAB_PROTOCOLOS = [
         meta:'Reintroducir saltos y trabajo de puntas gradualmente.',
         ejercicios:[
           {nm:'Saltos suaves en el sitio',series:3,reps:'10 reps',tip:'Saltos pequeños con aterrizaje amortiguado por el antepié. Progresa el volumen.'},
-          {nm:'Relevés (elevación a media punta)',series:3,reps:'10 reps',tip:'Gesto propio de rítmica: sube a media punta con control, baja lento. Sin dolor.'},
+          {nm:'Elevación a media punta',series:3,reps:'10 reps',tip:'Sube a media punta con control, baja lento. Sin dolor.'},
+          {nm:'Trote suave en superficie blanda',series:2,reps:'2-3 min',tip:'Pasto o tapete, ritmo cómodo. Reintroduce el impacto de forma progresiva antes de volver a piso duro.'},
         ]
       },
     ]
@@ -6181,7 +6259,7 @@ const REHAB_PROTOCOLOS = [
     id:'muneca', zona:'MUÑECA', emoji:'✋',
     nombre:'Dolor de muñeca',
     subtitulo:'Por carga y apoyos repetidos',
-    contexto:'Frecuente por apoyos y manejo de aparatos. En crecimiento hay que cuidar la placa de crecimiento del radio. La rehabilitación busca movilidad y fuerza de agarre sin cargar en extensión dolorosa.',
+    contexto:'Frecuente por apoyos repetidos (flexiones, planchas, levantamiento de peso). En crecimiento hay que cuidar la placa de crecimiento del radio. La rehabilitación busca movilidad y fuerza de agarre sin cargar en extensión dolorosa.',
     banderas:['Dolor sobre el hueso al presionar','Hinchazón o pérdida de fuerza notable','Hormigueo en los dedos','Dolor que persiste con el reposo'],
     fases:[
       {
@@ -6191,6 +6269,7 @@ const REHAB_PROTOCOLOS = [
           {nm:'Movilidad de muñeca (flexo-extensión)',series:3,reps:'10 reps',tip:'Antebrazo apoyado, mueve la muñeca arriba y abajo lento, en rango indoloro.'},
           {nm:'Círculos de muñeca',series:2,reps:'10 cada lado',tip:'Giros suaves en ambos sentidos. Mantén el movimiento libre.'},
           {nm:'Estiramiento suave de antebrazo',series:3,reps:'20 seg',tip:'Brazo estirado, con la otra mano lleva los dedos hacia atrás suave. Siente el antebrazo, sin dolor articular.'},
+          {nm:'Movilidad de dedos con banda',series:2,reps:'10 reps',tip:'Banda elástica alrededor de los dedos, ábrelos contra la resistencia. Complementa la movilidad de muñeca.'},
         ]
       },
       {
@@ -6200,6 +6279,7 @@ const REHAB_PROTOCOLOS = [
           {nm:'Apretar pelota blanda',series:3,reps:'12 reps',tip:'Aprieta una pelota de espuma 3 seg y suelta. Fuerza de agarre sin cargar la articulación.'},
           {nm:'Flexo-extensión con peso ligero',series:3,reps:'12 reps',tip:'Antebrazo apoyado, con una botellita de agua sube y baja la muñeca lento.'},
           {nm:'Desviación radial/cubital',series:2,reps:'10 cada lado',tip:'Muñeca en el borde de la mesa, muévela hacia el pulgar y hacia el meñique con poco peso.'},
+          {nm:'Plancha sobre puños (apoyo neutro)',series:3,reps:'15-20 seg',tip:'Apoya sobre los puños en vez de la palma abierta, muñeca en posición neutra. Alternativa de bajo estrés articular.'},
         ]
       },
       {
@@ -6207,7 +6287,8 @@ const REHAB_PROTOCOLOS = [
         meta:'Reintroducir apoyos progresivos y manejo de aparato.',
         ejercicios:[
           {nm:'Apoyo progresivo en pared',series:3,reps:'20 seg',tip:'Apoya las manos en la pared cargando poco peso. Progresa hacia apoyos más horizontales solo sin dolor.'},
-          {nm:'Manejo suave de aparato',series:2,reps:'2-3 min',tip:'Retoma pelota o mazas con movimientos suaves antes de volver a la carga completa.'},
+          {nm:'Retorno gradual a tu actividad',series:2,reps:'2-3 min',tip:'Retoma tu actividad con movimientos suaves antes de volver a la carga completa.'},
+          {nm:'Carga progresiva en press (rango parcial)',series:3,reps:'10 reps',tip:'Peso ligero, rango parcial sin dolor, progresando poco a poco hacia el rango completo.'},
         ]
       },
     ]
@@ -6226,6 +6307,7 @@ const REHAB_PROTOCOLOS = [
           {nm:'Estiramiento suave de flexor de cadera',series:3,reps:'30 seg',tip:'En posición de zancada baja, empuja la cadera adelante sintiendo el estiramiento en el frente de la cadera de atrás. Suave.'},
           {nm:'Movilidad de cadera (rodilla al pecho)',series:3,reps:'10 reps',tip:'Acostada, lleva la rodilla al pecho lento y suelta. Movilidad indolora.'},
           {nm:'Basculación pélvica',series:3,reps:'12 reps',tip:'Boca arriba, aplana la espalda baja apretando el abdomen. Enseña control del centro.'},
+          {nm:'Movilidad de cadera en figura 4',series:2,reps:'8 por lado',tip:'Acostada, cruza el tobillo sobre la rodilla contraria y mece suave. Moviliza rotación de cadera sin forzar.'},
         ]
       },
       {
@@ -6236,6 +6318,7 @@ const REHAB_PROTOCOLOS = [
           {nm:'Abducción de cadera acostada',series:3,reps:'12 reps',tip:'De lado, sube la pierna estirada con control. Fortalece el lateral de la cadera.'},
           {nm:'Puente de glúteo a una pierna',series:3,reps:'8 por lado',tip:'Puente apoyando solo un pie. Fuerza y estabilidad de cadera.'},
           {nm:'Plancha frontal',series:3,reps:'20-30 seg',tip:'Core firme, cuerpo en línea. Un centro fuerte protege la cadera en los splits.'},
+          {nm:'Peso muerto rumano a una pierna (asistido)',series:3,reps:'8 por lado',tip:'Apoyándote si necesitas, bisagra de cadera en una pierna. Fuerza de cadena posterior que estabiliza la cadera.'},
         ]
       },
       {
@@ -6244,7 +6327,8 @@ const REHAB_PROTOCOLOS = [
         ejercicios:[
           {nm:'Split progresivo activo',series:3,reps:'20-30 seg',tip:'Baja al split solo hasta donde tengas control, sin dolor. Usa la fuerza, no el peso del cuerpo.'},
           {nm:'Patadas controladas al frente',series:3,reps:'8 por pierna',tip:'Patada alta con control, sin latigazo. La altura llega con fuerza, no forzando.'},
-          {nm:'Développé lento',series:2,reps:'6 por pierna',tip:'Gesto de rítmica: extiende la pierna al frente/lado con control total desde la cadera.'},
+          {nm:'Extensión de pierna controlada',series:2,reps:'6 por pierna',tip:'Extiende la pierna al frente/lado con control total desde la cadera.'},
+          {nm:'Zancada lateral controlada',series:3,reps:'8 por lado',tip:'Paso amplio hacia el lado, cadera atrás, rodilla sobre el pie. Reintroduce movimiento multidireccional de cadera.'},
         ]
       },
     ]
@@ -6253,7 +6337,7 @@ const REHAB_PROTOCOLOS = [
     id:'espalda', zona:'ESPALDA BAJA', emoji:'🤸',
     nombre:'Dolor de espalda baja',
     subtitulo:'Por hiperextensiones repetidas',
-    contexto:'Los puentes, arcos y extensiones de rítmica cargan la zona lumbar. El dolor suele ser por sobreuso de los extensores y falta de control del core. Requiere fortalecer el centro y cuidar la técnica de extensión.',
+    contexto:'Las hiperextensiones repetidas (peso muerto, buenas mañanas, arcos de espalda) cargan la zona lumbar. El dolor suele ser por sobreuso de los extensores y falta de control del core. Requiere fortalecer el centro y cuidar la técnica de extensión.',
     banderas:['Dolor que baja por la pierna (ciática)','Hormigueo o debilidad en las piernas','Dolor tras una caída o golpe','Dolor nocturno que no cede con reposo'],
     fases:[
       {
@@ -6282,6 +6366,83 @@ const REHAB_PROTOCOLOS = [
           {nm:'Extensión lumbar controlada',series:3,reps:'10 reps',tip:'Boca abajo, eleva el pecho poco a poco usando la espalda alta, sin forzar la lumbar.'},
           {nm:'Puente progresivo',series:3,reps:'20 seg',tip:'Retoma el puente solo si no hay dolor. Reparte el arco en toda la columna, no solo la lumbar.'},
           {nm:'Extensiones de pie (arco activo)',series:2,reps:'8 reps',tip:'Arco de pie controlado, abriendo pecho, con el core activo protegiendo la zona baja.'},
+          {nm:'Peso muerto rumano ligero',series:3,reps:'10 reps',tip:'Bisagra de cadera con espalda neutra y poco peso, solo si no hay dolor. Reintroduce el patrón de carga de forma controlada.'},
+        ]
+      },
+    ]
+  },
+  {
+    id:'hombro', zona:'HOMBRO', emoji:'💪',
+    nombre:'Dolor de hombro (manguito rotador / pinzamiento)',
+    subtitulo:'Dolor al levantar el brazo o cargar peso arriba',
+    contexto:'Muy común por sobrecarga en press, jalones y trabajo por encima de la cabeza. Suele ser tendinopatía del manguito rotador o pinzamiento subacromial: los tendones se irritan al perder el control de la escápula y la cabeza del húmero se descentra en el movimiento. La clave es recuperar movilidad indolora, luego reeducar el control escapular antes de volver a cargar por encima de la cabeza.',
+    banderas:['Dolor nocturno que no te deja dormir de ese lado','Debilidad marcada para levantar el brazo (no solo dolor)','Hormigueo o pérdida de fuerza en la mano','Dolor tras un golpe directo o caída con el brazo extendido'],
+    fases:[
+      {
+        f:'FASE 1 · CALMAR (agudo)', color:'red', dias:'7-14 días',
+        meta:'Bajar la irritación y mantener movilidad indolora, sin cargar por encima de la cabeza.',
+        ejercicios:[
+          {nm:'Péndulos de Codman',series:3,reps:'20-30 seg',tip:'Inclinado hacia adelante, deja el brazo colgar y hazlo oscilar suave en círculos pequeños. Moviliza sin activar el manguito.'},
+          {nm:'Rotación externa con toalla (isométrico)',series:3,reps:'6 seg × 8',tip:'Codo pegado al cuerpo a 90°, empuja hacia afuera contra tu otra mano o una toalla, sin mover el brazo. Activa el manguito sin dolor.'},
+          {nm:'Deslizamiento escapular en pared',series:3,reps:'10 reps',tip:'Antebrazos en la pared, desliza los brazos arriba solo hasta donde no duela. Reeduca el ritmo escapulohumeral.'},
+          {nm:'Movilidad de cuello y trapecio',series:2,reps:'8 por lado',tip:'Inclina la cabeza suave a cada lado. El trapecio suele compensar y tensarse cuando el hombro duele.'},
+        ]
+      },
+      {
+        f:'FASE 2 · FORTALECER', color:'gold', dias:'2-4 semanas',
+        meta:'Fuerza del manguito rotador y control escapular en rangos medios, siempre indoloro.',
+        ejercicios:[
+          {nm:'Rotación externa con banda (codo fijo)',series:3,reps:'12-15 reps',tip:'Codo pegado al cuerpo a 90°, banda elástica, rota el antebrazo hacia afuera con control. Ejercicio clave del manguito rotador.'},
+          {nm:'Remo con banda a la cara',series:3,reps:'12 reps',tip:'Jala la banda hacia la cara separando los codos, apretando omóplatos. Fortalece los estabilizadores de la escápula.'},
+          {nm:'Elevación lateral hasta 90°',series:3,reps:'10-12 reps',tip:'Sube el brazo hacia el lado solo hasta la altura del hombro, con poco peso. No subas más si sientes pinzamiento.'},
+          {nm:'Plancha con protracción escapular',series:2,reps:'8 reps',tip:'En plancha, empuja el piso separando los omóplatos. Activa el serrato, clave para estabilizar el hombro.'},
+        ]
+      },
+      {
+        f:'FASE 3 · RETORNO', color:'neon', dias:'según tolerancia',
+        meta:'Reintroducir carga por encima de la cabeza de forma progresiva y sin dolor.',
+        ejercicios:[
+          {nm:'Press militar parcial con banda',series:3,reps:'10 reps',tip:'Empuja hacia arriba solo en el rango indoloro, progresando poco a poco hacia arriba completo.'},
+          {nm:'Jalón al pecho controlado',series:3,reps:'10-12 reps',tip:'Técnica limpia, sin encoger los hombros. Reintroduce el jalón antes de volver a cargas pesadas.'},
+          {nm:'Press con mancuerna ligera',series:3,reps:'8-10 reps',tip:'Progresa la carga solo si el rango completo sigue indoloro. Técnica antes que peso.'},
+        ]
+      },
+    ]
+  },
+  {
+    id:'cuello', zona:'CUELLO', emoji:'🦒',
+    nombre:'Dolor de cuello / cervical',
+    subtitulo:'Tensión, rigidez o dolor al girar la cabeza',
+    contexto:'Frecuente por posturas sostenidas (celular, escritorio), sobrecarga en press y jalones con mala alineación, o tensión que sube desde los trapecios. Rara vez es algo estructural grave: casi siempre es rigidez muscular y falta de control postural. El objetivo es recuperar movilidad libre de dolor y luego fortalecer los estabilizadores profundos del cuello.',
+    banderas:['Dolor que baja por el brazo con hormigueo o debilidad','Dolor tras un golpe, caída o accidente','Dolor de cabeza intenso junto con rigidez de nuca y fiebre','Mareo o pérdida de equilibrio al mover el cuello'],
+    fases:[
+      {
+        f:'FASE 1 · CALMAR (agudo)', color:'red', dias:'5-10 días',
+        meta:'Bajar la tensión y recuperar movilidad suave, sin forzar rangos dolorosos.',
+        ejercicios:[
+          {nm:'Retracción cervical (doble mentón)',series:3,reps:'10 reps',tip:'Lleva la barbilla hacia atrás como haciendo doble mentón, sin inclinar la cabeza. Descomprime la parte alta del cuello.'},
+          {nm:'Rotación suave de cuello',series:2,reps:'8 por lado',tip:'Gira la cabeza lento hacia cada lado hasta donde sea cómodo. Sin forzar el rango.'},
+          {nm:'Inclinación lateral suave',series:2,reps:'8 por lado',tip:'Lleva la oreja hacia el hombro sin subir el hombro. Estiramiento suave del lateral del cuello.'},
+          {nm:'Relajación de trapecio (auto-masaje)',series:1,reps:'1-2 min',tip:'Con los dedos, masajea suavemente la parte alta del trapecio de ambos lados. Baja la tensión acumulada.'},
+        ]
+      },
+      {
+        f:'FASE 2 · FORTALECER', color:'gold', dias:'2-3 semanas',
+        meta:'Fuerza de los flexores profundos del cuello y control postural de la escápula.',
+        ejercicios:[
+          {nm:'Flexión cráneo-cervical isométrica',series:3,reps:'6 seg × 8',tip:'Acostada, doble mentón suave sin despegar la cabeza del piso. Activa los músculos profundos que estabilizan el cuello.'},
+          {nm:'Remo con banda (postura)',series:3,reps:'12 reps',tip:'Aprieta omóplatos al jalar. Un tren superior con buena postura descarga el cuello.'},
+          {nm:'Plancha con doble mentón activo',series:3,reps:'20-30 seg',tip:'Mantén el cuello en posición neutra, sin dejar caer la cabeza. Enseña el control postural bajo carga.'},
+          {nm:'Estiramiento de trapecio y elevador de escápula',series:2,reps:'20-30 seg por lado',tip:'Suave, sin rebotes. Libera la tensión que suele acumularse por compensación.'},
+        ]
+      },
+      {
+        f:'FASE 3 · RETORNO', color:'neon', dias:'según tolerancia',
+        meta:'Reintroducir carga sobre hombros y tren superior con buena alineación cervical.',
+        ejercicios:[
+          {nm:'Press por encima de la cabeza controlado',series:3,reps:'10 reps',tip:'Sin adelantar la cabeza al empujar. Progresa peso solo si la técnica y el rango siguen indoloros.'},
+          {nm:'Peso muerto o carga con técnica revisada',series:3,reps:'8-10 reps',tip:'Cuello alineado con la columna, sin mirar arriba ni abajo. Reintroduce cargas con buena postura.'},
+          {nm:'Movilidad activa completa',series:2,reps:'10 reps por dirección',tip:'Rango completo e indoloro en todas direcciones antes de volver a tu entrenamiento normal.'},
         ]
       },
     ]
@@ -6429,7 +6590,7 @@ function renderRehabTab(){
     <div style="padding:12px 14px;border-radius:12px;margin-bottom:16px;background:color-mix(in srgb,var(--n) 5%,transparent);border:1px solid color-mix(in srgb,var(--n) 15%,transparent)">
       <div style="font-family:var(--fd);font-size:18px;color:var(--n)">🏥 CENTRO DE REHABILITACIÓN</div>
       <div style="font-size:12px;color:var(--mu);font-family:var(--fb);line-height:1.6;margin-top:4px">
-        Protocolos de recuperación por fases para las lesiones más comunes en gimnasia. Diseñados con la metodología del club: isométricos primero, progresión fuerza → retorno, y el dolor como semáforo.
+        Protocolos de recuperación por fases para las lesiones más comunes al entrenar. Diseñados con la metodología del club: isométricos primero, progresión fuerza → retorno, y el dolor como semáforo.
       </div>
     </div>
 
@@ -6893,7 +7054,7 @@ function ctxDesdePerfil(p, filo){
     equipo:(f.seleccion&&f.seleccion.libreVsMaquina)||3, sustit:(f.horaPico&&f.horaPico.sustitucion)||'maquina',
     restStyle:(f.exerciseStyle&&f.exerciseStyle.restStyle)||'fijo',
     sinMetodos: p.objetivo==='FLEXIBILIDAD',
-    soloSuaves: p.objetivo==='REHABILITACIÓN GIMNASIA',
+    soloSuaves: p.objetivo==='REHABILITACIÓN',
   };
 }
 function metodosPermitidos(ctx){
@@ -7503,7 +7664,7 @@ function finalizarSesionConfirmada(reemplazar){
 // ═════════════════════════════════════════
 // SOCIOS — editar datos y eliminar (solo coordinador)
 // ═════════════════════════════════════════
-const OBJETIVOS_LISTA=['GANAR MÚSCULO','PERDER PESO','FUERZA PURA','RESISTENCIA','FLEXIBILIDAD','RENDIMIENTO DEPORTIVO','REHABILITACIÓN GIMNASIA'];
+const OBJETIVOS_LISTA=['GANAR MÚSCULO','PERDER PESO','FUERZA PURA','RESISTENCIA','FLEXIBILIDAD','RENDIMIENTO DEPORTIVO','REHABILITACIÓN'];
 function opcionesSel(arr,actual){
   const lista=arr.includes(actual)||!actual?arr:[actual,...arr];
   return lista.map(v=>`<option value="${esc(v)}" ${v===actual?'selected':''}>${esc(sc(v))}</option>`).join('');
@@ -8097,7 +8258,7 @@ function pqMotor(s,r){
   const sinEval=!Object.keys(r).length;
   const st=pqStatsBloque(s), b=pqBloque(s);
   const obj=s.objetivo||'', letra=objLetra(obj), R=letra==='R';
-  const suave=obj==='REHABILITACIÓN GIMNASIA'||obj==='FLEXIBILIDAD';
+  const suave=obj==='REHABILITACIÓN'||obj==='FLEXIBILIDAD';
   const res=[];
   let paso={facil:7.5,adecuada:5,retadora:2.5,pesada:0}[r.intensidad]; if(paso===undefined) paso=5;
   if(r.rir==='4') paso+=2.5; else if(r.rir==='0') paso-=2.5; else if(r.rir==='no') paso=0;
