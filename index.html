@@ -7960,7 +7960,7 @@ function staffRenderContent(s){
       <div class="ej-ed">
         <div class="ej-ed-top">
           <span class="ej-ed-n">${ei+1}</span>
-          <input class="sf-in" value="${esc(e.nm||'')}" placeholder="Nombre del ejercicio" list="kb-nombres" ${fld(s.code,k,ei,'nm')}>
+          <input class="sf-in" value="${esc(e.nm||'')}" placeholder="Nombre del ejercicio" list="kb-nombres" onchange="staffUpdNombreEj('${s.code}','${k}',${ei},this.value)">
           <button type="button" class="ej-ed-x" onclick="staffDelEj('${s.code}','${k}',${ei})" aria-label="Quitar ejercicio">✕</button>
         </div>
         ${esEjCardio(e)?'<div class="ej-ed-cardio-tag">💓 Aeróbico — tiempo y frecuencia cardíaca en vez de series/peso</div>':''}
@@ -8043,6 +8043,8 @@ function staffRenderContent(s){
         <div class="kpi" style="--kc:var(--p)"><div class="kpi-v">${ev.deltaPeso===null?'—':(ev.deltaPeso>0?'+':'')+ev.deltaPeso+' kg'}</div><div class="kpi-l">Cambio de peso</div></div>
       </div>
 
+      ${bloqueAnalisisStaff(s)}
+
       ${bloqueAsignacionStaff(s)}
 
       ${bloqueNutricionStaff(s)}
@@ -8092,6 +8094,14 @@ function diaIntercambiar(code,k1,k2){
 function staffUpd(code,k,ei,field,val){
   const s=getSocio(code); if(!s||!s.rutina[k]||!s.rutina[k].ejercicios[ei]) return; staffDirty.add(code);
   s.rutina[k].ejercicios[ei][field]=val;
+}
+// El nombre decide si el ejercicio se trata como cardio (tiempo/FC) o fuerza (series/peso/reps).
+// A diferencia de staffUpd, aquí SÍ se vuelve a pintar la ficha para que esos campos cambien
+// en cuanto el director escribe o elige un ejercicio de cardio del catálogo — antes se quedaban
+// pegados en los campos de fuerza hasta cerrar y volver a abrir al socio.
+function staffUpdNombreEj(code,k,ei,val){
+  staffUpd(code,k,ei,'nm',val);
+  const s=getSocio(code); if(s) staffRenderContent(s);
 }
 function staffUpdTipo(code,k,val){
   const s=getSocio(code); if(!s||!s.rutina[k]) return; staffDirty.add(code);
@@ -8473,6 +8483,47 @@ function pqHistorialHTML(s){
       ${x.respuestas?pqRespuestasHTML(x.respuestas):''}
       ${pqRutinaMiniHTML(x.rutina)}
     </details>`).join('');
+}
+function bloqueAnalisisStaff(s){
+  const sesiones=comoArray(s.logs&&s.logs.sesiones).slice().sort((a,b)=>String(a.fecha||'').localeCompare(String(b.fecha||'')));
+  if(!sesiones.length) return `<div class="sd-sec">Análisis de entrenamiento</div><div class="sd-body"><p class="pg-p">Aún no hay sesiones registradas — en cuanto entrene, aquí verás su racha, volumen y si está subiendo peso.</p></div>`;
+
+  const ultFecha=sesiones[sesiones.length-1].fecha;
+  const diasSin=diasDesde(ultFecha);
+
+  // Volumen por semana (lunes a domingo) para comparar la última semana con carga vs la anterior
+  function semanaDe(f){ const d=new Date(f+'T00:00:00'); const dow=(d.getDay()+6)%7; d.setDate(d.getDate()-dow); return fechaISO(d); }
+  const volPorSemana={};
+  sesiones.forEach(x=>{ const sem=semanaDe(x.fecha); volPorSemana[sem]=(volPorSemana[sem]||0)+(x.volumen||0); });
+  const semanasOrd=Object.keys(volPorSemana).sort();
+  const volUlt=volPorSemana[semanasOrd[semanasOrd.length-1]]||0;
+  const volAnt=semanasOrd.length>1?volPorSemana[semanasOrd[semanasOrd.length-2]]:null;
+  const flechaVol= volAnt==null?'':(volUlt>volAnt*1.05?' ↑':volUlt<volAnt*0.95?' ↓':' →');
+
+  // Progresión de carga por ejercicio, a partir del detalle guardado en cada sesión
+  const porEj={};
+  sesiones.forEach(x=>{ (x.detalle||[]).forEach(d=>{ if(d.kg){ (porEj[d.n]=porEj[d.n]||[]).push(d.kg); } }); });
+  const subiendo=[], estancados=[];
+  Object.entries(porEj).forEach(([nm,arr])=>{
+    if(arr.length<2) return;
+    const last=arr[arr.length-1], prev=arr[arr.length-2];
+    if(last>prev) subiendo.push(nm);
+    else if(arr.length>=3 && arr.slice(-3).every(k=>k===last)) estancados.push(nm);
+  });
+
+  const chip=(nm,warn)=>`<span class="stf-chip${warn?' warn':''}" style="margin:3px 6px 0 0">${esc(nm)}</span>`;
+
+  return `<div class="sd-sec">Análisis de entrenamiento <small>a partir de sus sesiones registradas, día a día</small></div>
+    <div class="sd-body">
+      <div class="sd-kpis" style="grid-template-columns:repeat(3,1fr)">
+        <div class="kpi" style="--kc:${diasSin>7?'var(--r)':'var(--v)'}"><div class="kpi-v">${diasSin===null?'—':diasSin}</div><div class="kpi-l">${diasSin===1?'día sin entrenar':'días sin entrenar'}</div></div>
+        <div class="kpi" style="--kc:var(--n)"><div class="kpi-v">${Math.round(volUlt).toLocaleString()}${flechaVol}</div><div class="kpi-l">kg de volumen, esta semana</div></div>
+        <div class="kpi" style="--kc:var(--g)"><div class="kpi-v">${subiendo.length}</div><div class="kpi-l">ejercicios subiendo carga</div></div>
+      </div>
+      ${estancados.length?`<p class="pg-p" style="margin-top:12px"><b>⚠ Sin subir peso en sus últimas 3 sesiones:</b></p><div>${estancados.map(nm=>chip(nm,true)).join('')}</div>`:''}
+      ${subiendo.length?`<p class="pg-p" style="margin-top:12px"><b>↑ Progresando en carga:</b></p><div>${subiendo.map(nm=>chip(nm)).join('')}</div>`:''}
+      ${(!estancados.length&&!subiendo.length)?'<p class="pg-p" style="margin-top:12px">Aún no hay suficientes sesiones con peso registrado por ejercicio para ver tendencia.</p>':''}
+    </div>`;
 }
 function bloqueProgresionStaff(s){
   if(s.status==='pendiente') return '';
