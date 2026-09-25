@@ -7911,7 +7911,10 @@ function staffRenderList(){
   cont.innerHTML = list.length ? list.map(s=>{
     const ini=tc(s.nombre).split(' ').filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase();
     const pend=s.status==='pendiente';
-    return `<div class="sl-item${staffActivoId===s.code?' sel':''}" onclick="staffOpenSocio('${esc(s.code)}')" role="button" tabindex="0">
+    const sem=semaforoSocio(s);
+    const semColor=sem==='r'?'var(--r)':sem==='y'?'var(--g)':sem==='g'?'var(--v)':'';
+    const semStyle=sem?` style="border-color:${semColor};box-shadow:0 0 0 1px ${semColor},0 8px 18px -10px ${semColor}"`:'';
+    return `<div class="sl-item${staffActivoId===s.code?' sel':''}"${semStyle} onclick="staffOpenSocio('${esc(s.code)}')" role="button" tabindex="0">
       <div class="sl-ini">${esc(ini)}</div>
       <div class="sl-tx"><div class="sl-nm">${esc(tc(s.nombre))}</div><div class="sl-sub">${esc(s.id)} · ${esc(sc(s.objetivo))}${esc(pqBadgeLista(s))}</div></div>
       <span class="sl-st ${pend?'pend':'ok'}">${pend?'Pendiente':'Activo'}</span>
@@ -8484,23 +8487,22 @@ function pqHistorialHTML(s){
       ${pqRutinaMiniHTML(x.rutina)}
     </details>`).join('');
 }
-function bloqueAnalisisStaff(s){
+// Datos crudos de análisis (racha, volumen semanal, progresión de carga por ejercicio),
+// compartidos entre la ficha del socio (bloqueAnalisisStaff) y el semáforo de la lista (semaforoSocio).
+function analisisSocio(s){
   const sesiones=comoArray(s.logs&&s.logs.sesiones).slice().sort((a,b)=>String(a.fecha||'').localeCompare(String(b.fecha||'')));
-  if(!sesiones.length) return `<div class="sd-sec">Análisis de entrenamiento</div><div class="sd-body"><p class="pg-p">Aún no hay sesiones registradas — en cuanto entrene, aquí verás su racha, volumen y si está subiendo peso.</p></div>`;
+  if(!sesiones.length) return {sesiones:[], diasSin:null, volUlt:0, volAnt:null, subiendo:[], estancados:[]};
 
   const ultFecha=sesiones[sesiones.length-1].fecha;
   const diasSin=diasDesde(ultFecha);
 
-  // Volumen por semana (lunes a domingo) para comparar la última semana con carga vs la anterior
   function semanaDe(f){ const d=new Date(f+'T00:00:00'); const dow=(d.getDay()+6)%7; d.setDate(d.getDate()-dow); return fechaISO(d); }
   const volPorSemana={};
   sesiones.forEach(x=>{ const sem=semanaDe(x.fecha); volPorSemana[sem]=(volPorSemana[sem]||0)+(x.volumen||0); });
   const semanasOrd=Object.keys(volPorSemana).sort();
   const volUlt=volPorSemana[semanasOrd[semanasOrd.length-1]]||0;
   const volAnt=semanasOrd.length>1?volPorSemana[semanasOrd[semanasOrd.length-2]]:null;
-  const flechaVol= volAnt==null?'':(volUlt>volAnt*1.05?' ↑':volUlt<volAnt*0.95?' ↓':' →');
 
-  // Progresión de carga por ejercicio, a partir del detalle guardado en cada sesión
   const porEj={};
   sesiones.forEach(x=>{ (x.detalle||[]).forEach(d=>{ if(d.kg){ (porEj[d.n]=porEj[d.n]||[]).push(d.kg); } }); });
   const subiendo=[], estancados=[];
@@ -8510,6 +8512,23 @@ function bloqueAnalisisStaff(s){
     if(last>prev) subiendo.push(nm);
     else if(arr.length>=3 && arr.slice(-3).every(k=>k===last)) estancados.push(nm);
   });
+
+  return {sesiones, diasSin, volUlt, volAnt, subiendo, estancados};
+}
+// Semáforo para la lista de socios: 'r' foco urgente, 'y' atención, 'g' va bien, null sin evaluar (pendiente de aprobar).
+function semaforoSocio(s){
+  if(s.status==='pendiente') return null;
+  const a=analisisSocio(s);
+  if(a.diasSin===null || a.diasSin>7) return 'r';
+  const ev=calcEvolucion(s);
+  if(a.diasSin>=3 || ev.estaSemana<s.dias || a.estancados.length>=2) return 'y';
+  return 'g';
+}
+function bloqueAnalisisStaff(s){
+  const a=analisisSocio(s);
+  if(!a.sesiones.length) return `<div class="sd-sec">Análisis de entrenamiento</div><div class="sd-body"><p class="pg-p">Aún no hay sesiones registradas — en cuanto entrene, aquí verás su racha, volumen y si está subiendo peso.</p></div>`;
+  const {diasSin,volUlt,volAnt,subiendo,estancados}=a;
+  const flechaVol= volAnt==null?'':(volUlt>volAnt*1.05?' ↑':volUlt<volAnt*0.95?' ↓':' →');
 
   const chip=(nm,warn)=>`<span class="stf-chip${warn?' warn':''}" style="margin:3px 6px 0 0">${esc(nm)}</span>`;
 
