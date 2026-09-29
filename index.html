@@ -357,6 +357,9 @@ const KB_CLASES_GRUPALES = [
   {id:'acond_am', nm:'Acondicionamiento físico (adulto mayor)', tipo:'bajo_impacto', impacto:'bajo',
    enfoque:['core'],
    desc:'Movilidad articular, fuerza ligera con bandas/peso corporal y trabajo de equilibrio, ritmo controlado. Impacto y fatiga bajos — pensada para no interferir con otras sesiones de la semana.'},
+  {id:'fit_mom', nm:'Fit Mom', tipo:'fuerza-resistencia', impacto:'medio', nivel:'intermedio',
+   enfoque:['gluteo','core','cuadriceps','femoral'],
+   desc:'Clase enfocada en mamás en etapa fitness, nivel intermedio. Circuitos con peso corporal, mancuernas y bandas centrados en glúteo, abdomen y pierna; intensidad moderada-alta con fatiga acumulada en tren inferior y core.'},
 ];
 const KB_CLASES_IDX = {};
 KB_CLASES_GRUPALES.forEach(c=>{ KB_CLASES_IDX[c.nm]=c; KB_CLASES_IDX[c.id]=c; });
@@ -3519,7 +3522,7 @@ function qNext4b(){
 }
 
 // ── Q4c: clases grupales además del gym ──
-const CLASES_GRUPALES_OPC=['Entrenamiento funcional','Body Pump','Body Combat','Body Balance','Yoga','Spinning','RPM','TRX','Bootcamp','Acondicionamiento físico (adulto mayor)'];
+const CLASES_GRUPALES_OPC=['Entrenamiento funcional','Body Pump','Body Combat','Body Balance','Yoga','Spinning','RPM','TRX','Bootcamp','Fit Mom','Acondicionamiento físico (adulto mayor)'];
 function qSelTomaClases(el,val){
   el.parentElement.querySelectorAll('.opt').forEach(o=>o.classList.remove('sel'));
   el.classList.add('sel');
