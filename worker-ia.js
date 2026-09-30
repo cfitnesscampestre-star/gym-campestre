@@ -10,7 +10,7 @@
    4. Copia la URL del worker en index.html → const AI_ENDPOINT = '...'
    ════════════════════════════════════════════════════════ */
 const ORIGENES_PERMITIDOS = [
-  'https://TU-USUARIO.github.io',   // ← cambia por el dominio real de la app
+  'https://cfitnesscampestre-star.github.io',   // dominio real de tu app en GitHub Pages
 ];
 
 export default {

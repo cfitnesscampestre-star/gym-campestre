@@ -4277,6 +4277,12 @@ function buildFallback(){
   deriv.soloClase.forEach(d=>{ mapaDias[d]={tipo:'Descanso (clase: '+deriv.infoClasePorDia[d].clase+')', color:'descanso'}; });
   const split=DIAS_ORDER.map(d=> mapaDias[d] ? [DIAS_NAMES[d],mapaDias[d].tipo,mapaDias[d].color,mapaDias[d].complemento] : [DIAS_NAMES[d],'Descanso','descanso',null]);
   const lesRodilla=lesiones.includes('Rodilla'), lesHombro=lesiones.includes('Hombro'), lesLumbar=lesiones.includes('lumbar')||lesiones.includes('Espalda');
+  // Semilla de variedad: sin esto, "Torso A" de CUALQUIER socio siempre elegía la opción 0 de cada
+  // lista de ejercicios alternativos (ver elegir() más abajo), así que dos socios con el mismo split
+  // terminaban con exactamente los mismos ejercicios, solo con reps/series distintas por nivel.
+  // Con esta semilla (nueva en cada generación), el punto de partida de la rotación cambia por socio,
+  // y sigue siendo consistente entre los días de su propia semana (Torso A distinto de Torso B).
+  const varSeed = Math.floor(Math.random()*997);
 
   function ejs(tipo){
     if(tipo.includes('Descanso')) return [];
@@ -4288,7 +4294,7 @@ function buildFallback(){
     // Variante A/B/C del mismo tipo de sesión (ej. "Full Body A" vs "Full Body B") → usamos un
     // ejercicio distinto por hueco muscular en cada una, para que la semana no se sienta repetida.
     const variante = {A:0,B:1,C:2}[(tipo.trim().match(/([ABC])$/)||[])[1]] ?? 0;
-    function elegir(v,i){ return v[i % v.length]; }
+    function elegir(v,i){ return v[(i+varSeed) % v.length]; }
 
     if(t.includes('full body')||t.includes('funcional')){
       if(lesRodilla) add('Prensa de Piernas (rango parcial)',3,repsBase,'Moderado — 50% 1RM','Cuádriceps · Glúteo','Rango donde no haya molestia: siente el muslo cargando, nunca la rodilla.');
@@ -4326,22 +4332,27 @@ function buildFallback(){
       else { const op=elegir([
           [['Press Banca Plano','Baja sintiendo el estiramiento del pecho; sube dirigiendo la contracción al centro del pectoral.'],['Press Militar Mancuernas','Core firme; siente el hombro empujando sin encoger el cuello.']],
           [['Press Inclinado Mancuernas','Siente el estímulo bajo la clavícula; contrae arriba 1 seg.'],['Elevaciones Laterales','Lidera con el codo hasta la altura del hombro; siente el costado.']],
-        ],variante); op.forEach(([nm,tip])=>add(nm,3,repsBase,'Moderado — 55-60% 1RM',nm.includes('Press Banca')||nm.includes('Inclinado')?'Pecho Mayor':'Deltoides',tip)); }
+          [['Press con Máquina Convergente','Al empujar, junta el movimiento hacia el centro sintiendo el pectoral cerrar.'],['Press Arnold','Rota la muñeca al subir; siente el hombro trabajar en todo el recorrido.']],
+        ],variante); op.forEach(([nm,tip])=>add(nm,3,repsBase,'Moderado — 55-60% 1RM',nm.includes('Press Banca')||nm.includes('Inclinado')||nm.includes('Convergente')?'Pecho Mayor':'Deltoides',tip)); }
       { const op=elegir([
           ['Jalón al Pecho','Lleva los codos hacia las caderas sintiendo el dorsal justo debajo de la axila. Varía el ángulo del tronco para sentir distinta zona.'],
           ['Remo con Barra','Torso a 45°; al jalar al ombligo siente cómo se juntan las escápulas.'],
+          ['Jalón Tras Nuca en Polea','Codos hacia abajo y atrás; siente el dorsal ancho abrirse en la parte alta de la espalda.'],
         ],variante); add(op[0],4,repsBase,'Moderado — 60% 1RM','Dorsal Ancho',op[1]); }
       { const op=elegir([
           ['Remo con Mancuerna','Codo a la cadera; siente cómo se junta la escápula al centro.'],
           ['Remo en Polea Baja','Codos a las caderas sintiendo el dorsal bajo la axila y el cierre de escápulas.'],
+          ['Remo en Máquina con Apoyo','El pecho apoyado protege la lumbar; siente el cierre de escápulas en cada jalón.'],
         ],variante); add(op[0],3,repsBase,'Moderado — 55% 1RM','Dorsal · Romboides',op[1]); }
       { const op=elegir([
           ['Curl de Bíceps','Codos fijos; siente el pico de contracción arriba sin balanceo.'],
           ['Curl Martillo','Pulgar arriba; siente el costado externo del brazo.'],
+          ['Curl Barra Z','Codos fijos al costado; pico de contracción arriba sin balancear el torso.'],
         ],variante); add(op[0],3,'12 reps — hipertrofia','Moderado — 50% 1RM',op[0].includes('Martillo')?'Braquial':'Bíceps',op[1]); }
       { const op=elegir([
           ['Extensión de Tríceps Polea','Codos al costado; siente la extensión completa como si empujaras el suelo.'],
           ['Fondos en Banco','Codos cerca del cuerpo; baja hasta sentir el estiramiento del tríceps.'],
+          ['Press Francés','Codos apuntando al techo, fijos; siente el tríceps estirarse detrás de la cabeza.'],
         ],variante); add(op[0],3,'12 reps — hipertrofia','Moderado — 50% 1RM','Tríceps',op[1]); }
     }
     else if(t.includes('pierna')){
@@ -4355,10 +4366,12 @@ function buildFallback(){
       { const op=elegir([
           ['Curl Femoral','Sube en 3 segundos sintiendo la parte trasera del muslo contraerse.'],
           ['Peso Muerto Rumano','Siente el estiramiento del femoral al bajar con espalda neutra; sube con la cadera.'],
+          ['Buenos Días con Barra','Cadera atrás con rodilla suave; siente el femoral estirarse antes de volver.'],
         ],variante); add(op[0],3,'12 reps — hipertrofia','Moderado — 55% 1RM','Femorales',op[1]); }
       { const op=elegir([
           ['Hip Thrust','Aprieta glúteo 2 seg arriba; la fuerza nace de la cadera.'],
           ['Puente de Glúteo a una Pierna','Aprieta glúteo arriba, una pierna a la vez; evita que la cadera rote.'],
+          ['Patada de Glúteo en Polea','Empuja hacia atrás y arriba sintiendo el glúteo apretar al final del recorrido.'],
         ],variante); add(op[0],3,repsBase,'Moderado — 60% 1RM','Glúteo Mayor',op[1]); }
       add('Elevación de Talones',3,'20 reps — resistencia','Moderado','Pantorrillas','Rango completo: estiramiento abajo, pausa arriba sintiendo el gemelo.');
     }
