@@ -1645,6 +1645,61 @@ select.ti{padding-right:34px;background-image:linear-gradient(45deg,transparent 
 .dia-b{padding:2px 12px 12px;}
 .ej-ed{background:var(--in-bg2);border-radius:18px;padding:12px;margin-bottom:10px;}
 .ej-ed-top{display:grid;grid-template-columns:28px 1fr 40px;gap:8px;align-items:center;}
+/* ── Panel del staff: pestañas, editor rápido y selector de ejercicios ── */
+.sd-tabs{display:flex;gap:8px;padding:12px 16px 4px;overflow-x:auto;scrollbar-width:none;}
+.sd-tabs::-webkit-scrollbar{display:none;}
+.sd-tabs .tb{position:relative;flex:1 0 auto;display:flex;align-items:center;justify-content:center;gap:7px;height:46px;padding:0 18px;border-radius:999px;border:1.5px solid var(--b2);background:var(--gl);color:var(--mu);font-size:15px;font-weight:700;cursor:pointer;white-space:nowrap;}
+.sd-tabs .tb .ico{width:18px;height:18px;}
+.sd-tabs .tb.on{background:var(--grad);color:var(--btn-tx);border-color:transparent;box-shadow:var(--glow);}
+.sd-tabs .tb i{position:absolute;top:6px;right:10px;width:9px;height:9px;border-radius:50%;background:var(--r);}
+.sd-pane{display:none;}
+.sd-pane.on{display:block;animation:fi .18s ease;}
+.sd-asig-d{margin-top:12px;}
+.sd-asig-d>summary{list-style:none;cursor:pointer;font-size:14px;color:var(--mu);display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-height:34px;}
+.sd-asig-d>summary::-webkit-details-marker{display:none;}
+.sd-asig-d>summary b{color:var(--tx);}
+.sd-asig-d>summary em{font-style:normal;font-weight:700;color:var(--p);margin-left:auto;}
+.sd-asig-d[open]>summary em{opacity:.6;}
+.sd-asig-d .sd-sec{margin:12px 0 10px;font-size:16px;}
+.sd-asig-d .sd-body{padding:0;}
+.rt-bar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;}
+.ej-ed-top{grid-template-columns:28px 1fr auto 40px;}
+.ej-ed-nm{min-width:0;text-align:left;min-height:48px;padding:6px 12px;border-radius:14px;border:1.5px solid var(--b);background:var(--in-bg);color:var(--tx);cursor:pointer;display:flex;flex-direction:column;justify-content:center;}
+.ej-ed-nm b{font-size:15px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ej-ed-nm small{font-size:12px;color:var(--mu);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ej-ed-nm.vacio b{color:var(--p);}
+.ej-ed-mv{display:flex;flex-direction:column;gap:2px;}
+.ej-ed-mv button{width:34px;height:22px;border-radius:8px;border:1px solid var(--b);background:var(--gl);color:var(--mu);font-size:11px;cursor:pointer;line-height:1;}
+.ej-warn{display:inline-block;margin-top:8px;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:700;color:var(--r);background:color-mix(in srgb,var(--r) 10%,transparent);border:1px solid color-mix(in srgb,var(--r) 30%,transparent);}
+.ej-g{margin-top:12px;}
+.ej-gl{font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--mu);margin-bottom:6px;display:flex;align-items:center;gap:8px;}
+.ej-gl small{font-weight:500;text-transform:none;letter-spacing:0;font-size:12px;}
+.ch-row{display:flex;flex-wrap:wrap;gap:6px;}
+.ch{min-width:44px;height:40px;padding:0 13px;border-radius:999px;border:1.5px solid var(--b2);background:var(--gl);color:var(--tx);font-size:14px;font-weight:700;cursor:pointer;}
+.ch.on{background:var(--grad);color:var(--btn-tx);border-color:transparent;box-shadow:var(--glow);}
+.ej-g .sf-in{margin-top:8px;}
+.ej-2c{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;}
+.ej-2c .sf-in{margin-top:0;}
+.ej-met-como{font-size:13px;color:var(--mu);margin-top:6px;line-height:1.45;}
+#modal-ejpick .mbox{max-width:680px;}
+.ep-ctx{font-size:13px;color:var(--mu);margin:-6px 0 12px;line-height:1.45;}
+.ep-rowc{display:flex;gap:6px;overflow-x:auto;padding:8px 0 2px;scrollbar-width:none;}
+.ep-rowc::-webkit-scrollbar{display:none;}
+.ep-rowc .ch{flex:0 0 auto;height:36px;font-size:13px;}
+.ep-it{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;border-radius:16px;background:var(--in-bg2);border:1px solid var(--b);margin-top:8px;cursor:pointer;}
+.ep-it:active{border-color:var(--v2);}
+.ep-it b{display:block;font-size:15px;}
+.ep-it span{display:block;font-size:12.5px;color:var(--mu);margin-top:2px;}
+.ep-it em{font-style:normal;font-size:12px;font-weight:700;color:var(--mu);text-align:right;flex:0 0 auto;}
+.ep-it.mal b{color:var(--mu);}
+.ep-it em.w{color:var(--r);}
+.ep-new{width:100%;margin-top:12px;min-height:50px;border-radius:999px;border:1.5px dashed var(--p);background:color-mix(in srgb,var(--p) 8%,transparent);color:var(--p);font-size:15px;font-weight:700;cursor:pointer;padding:0 16px;}
+.ep-vacio{font-size:14px;color:var(--mu);padding:14px 4px;line-height:1.5;}
+.pg-chs{display:flex;gap:8px;overflow-x:auto;padding:2px 0 12px;scrollbar-width:none;}
+.pg-chs::-webkit-scrollbar{display:none;}
+.pg-chs .ch{flex:0 0 auto;height:44px;padding:0 18px;}
+.pg-logro{display:inline-block;margin-left:6px;font-size:12px;font-weight:700;color:var(--v);}
+
 .ej-ed-n{width:28px;height:28px;border-radius:10px;background:var(--gl2);color:var(--v);display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-weight:800;font-size:14px;}
 .ej-ed-x{width:40px;height:40px;border-radius:50%;border:1px solid var(--b);background:var(--gl);color:var(--mu);font-size:15px;cursor:pointer;}
 .ej-ed-x:hover{color:var(--r);border-color:var(--r);}
@@ -8603,6 +8658,7 @@ function staffFilterSocios(v){ staffSearchVal=v; staffRenderList(); }
 function staffOpenSocio(code){
   staffActivoId=code; staffRenderList();
   const s=getSocio(code);
+  if(s && staffTabCode!==code){ staffTabCode=code; staffTab=(s.status==='pendiente')?'rutina':'evolucion'; staffProgSel='actual'; }
   if(!s){ showToast('⚠ No se encontró ese socio en la base de datos (code: '+code+')'); return; }
   try{
     staffRenderContent(s); staffVista('detalle');
@@ -8627,51 +8683,20 @@ function staffRenderContent(s){
   const limChips=s.limitaciones?.length
     ? s.limitaciones.map(l=>`<span class="sd-lim-c">${esc(l)}</span>`).join('')
     : '<span class="sd-lim-ok">✓ Sin limitaciones</span>';
-  const fld=(code,k,ei,campo,extra)=>`onchange="staffUpd('${code}','${k}',${ei},'${campo}',${extra||'this.value'})"`;
-
   const diasHTML = DIAS_ORDER.map(k=>{
     if(!s.rutina[k]) s.rutina[k]={tipo:'DESCANSO',color:'descanso',ejercicios:[]};
     const d=s.rutina[k];
     if(!Array.isArray(d.ejercicios)) d.ejercicios=[];
-    const ejRows=d.ejercicios.map((e,ei)=>`
-      <div class="ej-ed">
-        <div class="ej-ed-top">
-          <span class="ej-ed-n">${ei+1}</span>
-          <input class="sf-in" value="${esc(e.nm||'')}" placeholder="Nombre del ejercicio" list="kb-nombres" onchange="staffUpdNombreEj('${s.code}','${k}',${ei},this.value)">
-          <button type="button" class="ej-ed-x" onclick="staffDelEj('${s.code}','${k}',${ei})" aria-label="Quitar ejercicio">✕</button>
-        </div>
-        ${esEjCardio(e)?'<div class="ej-ed-cardio-tag">💓 Aeróbico continuo — minutos fijos del plan; la FC objetivo se calcula con la edad y el objetivo del socio</div>':(esEjRondas(e)?'<div class="ej-ed-cardio-tag">💓 Por rondas — repeticiones (o segundos) y FC al terminar cada ronda en lugar de peso</div>':(esEjIsometrico(e)?'<div class="ej-ed-cardio-tag">⏱ Isométrico — se mide por tiempo: rondas × segundos por ronda</div>':''))}
-        <div class="ej-ed-r3">
-          <label>${esEjCardio(e)?'Bloques':(esEjIsometrico(e)?'Rondas':'Series')}<input class="sf-in" inputmode="numeric" value="${esc(e.series??'')}" ${fld(s.code,k,ei,'series')}></label>
-          <label>${esEjCardio(e)?'Tiempo':(esEjIsometrico(e)?'Tiempo por ronda':'Repeticiones')}<input class="sf-in" placeholder="${esEjCardio(e)?'Ej. 20 min — zona 2':(esEjIsometrico(e)?'Ej. 30 seg — isométrico':'')}" value="${esc(e.reps||'')}" ${fld(s.code,k,ei,'reps')}></label>
-          <label>${esEjCardio(e)||esEjRondas(e)?'FC objetivo':'Peso'}<input class="sf-in" placeholder="${esEjCardio(e)||esEjRondas(e)?'Vacío = automático (edad y objetivo)':''}" value="${esc(e.peso||'')}" ${fld(s.code,k,ei,'peso')}></label>
-        </div>
-        <label class="ej-ed-l">Nota propioceptiva<input class="sf-in" value="${esc(e.tip||'')}" placeholder="Dónde y cómo sentir el estímulo" ${fld(s.code,k,ei,'tip')}></label>
-        ${esEjMovilidad(e)?`<label class="ej-ed-l">Para qué es esta movilidad (se muestra al socio)<input class="sf-in" value="${esc(e.porque||'')}" placeholder="${esc(movInfo(e,d).porque.slice(0,70))}…  (vacío = explicación automática)" ${fld(s.code,k,ei,'porque')}></label>`:''}
-        <details class="ej-ed-more">
-          <summary>Método, grupo, descanso y opciones</summary>
-          <label class="ej-ed-l">Método de intensidad
-            <select class="sf-in" onchange="staffUpdMetodo('${s.code}','${k}',${ei},this.value)">
-              <option value="">Sin método</option>
-              ${Object.entries(KB_METODOS).map(([id,M])=>`<option value="${id}" ${e.metodo&&e.metodo.id===id?'selected':''}>${esc(M.nm)}</option>`).join('')}
-            </select>
-          </label>
-          <div class="ej-ed-r2">
-            <label>Grupo (ej. A1)<input class="sf-in" value="${esc(e.grupo||'')}" ${fld(s.code,k,ei,'grupo','this.value.toUpperCase()')}></label>
-            <label>Descanso<input class="sf-in" value="${esc(e.descanso||'')}" ${fld(s.code,k,ei,'descanso')}></label>
-          </div>
-          <label class="ej-ed-l">Detalle del método<input class="sf-in" value="${esc(e.metodo&&e.metodo.detalle||'')}" placeholder="Ej. drop de 25% en la última serie" onchange="staffUpdMetodoDet('${s.code}','${k}',${ei},this.value)"></label>
-          <label class="ej-ed-l">Opciones si el área está ocupada (separadas por coma)<input class="sf-in" value="${esc((e.alternativas||[]).map(a=>a.nm).join(', '))}" onchange="staffUpdAlts('${s.code}','${k}',${ei},this.value)"></label>
-        </details>
-      </div>`).join('');
+    const ab=staffDiasAbiertos.has(s.code+'|'+k);
+    const ejRows=d.ejercicios.map((e,ei)=>staffEjEditorHTML(s,k,d,e,ei)).join('');
     return `
-      <div class="dia-card">
-        <div class="dia-h" onclick="const b=document.getElementById('stb-${s.code}-${k}');const o=b.style.display==='none';b.style.display=o?'block':'none';this.parentNode.classList.toggle('open',o)">
+      <div class="dia-card${ab?' open':''}">
+        <div class="dia-h" onclick="staffToggleDia('${s.code}','${k}',this)">
           <span class="dia-n">${DIAS_NAMES[k].substring(0,3)}</span>
           <input class="dia-t" value="${esc(d.tipo||'')}" placeholder="Tipo de sesión" onclick="event.stopPropagation()" onchange="staffUpdTipo('${s.code}','${k}',this.value)" aria-label="Tipo de sesión del ${DIAS_NAMES[k]}">
           <span class="dia-c">${d.ejercicios.length} ej.</span><span class="dia-chev" aria-hidden="true">›</span>
         </div>
-        <div id="stb-${s.code}-${k}" class="dia-b" style="display:none">
+        <div id="stb-${s.code}-${k}" class="dia-b" style="display:${ab?'block':'none'}">
           <div class="dia-swap">
             <label>Intercambiar todo este día con
               <select class="sf-in" id="swap-${s.code}-${k}">
@@ -8686,6 +8711,19 @@ function staffRenderContent(s){
         </div>
       </div>`;
   }).join('');
+
+  // ── Pestañas: Evolución · Nutrición · Rutina · Progresión ──
+  if(staffTab==='progresion' && isPend) staffTab='rutina';
+  const hotProg = !isPend && pqNecesitaAccion(s);
+  const TABS=[['evolucion','Evolución','chart'],['nutricion','Nutrición','leaf'],['rutina','Rutina','dumbbell'],['progresion','Progresión','trophy']];
+  const tabsHTML=`<div class="sd-tabs" id="sd-tabs" role="tablist">${TABS.map(([id,nm,ic])=>`<button type="button" role="tab" class="tb${staffTab===id?' on':''}" data-t="${id}" onclick="staffSetTab('${id}')">${ico(ic)}${nm}${(id==='progresion'&&hotProg)?'<i></i>':''}</button>`).join('')}</div>`;
+  const pane=(id,html)=>`<div class="sd-pane${staffTab===id?' on':''}" id="sdp-${id}">${html}</div>`;
+  const recientes=comoArray(s.logs&&s.logs.sesiones).filter(Boolean).slice(-6).reverse();
+  const recHTML=recientes.length?`<div class="sd-sec">Últimas sesiones</div><div class="sd-body">${recientes.map(x=>`<div class="pg-mini"><span>${esc(fmtFecha(x.fecha))} · ${esc(sc(x.tipo||''))}</span><b>${x.volumen?Math.round(x.volumen).toLocaleString()+' kg':''}${x.tut>=20?(x.volumen?' · ':'')+esc(fmtTut(x.tut)):''}${x.cardioMin?(x.volumen||x.tut>=20?' · ':'')+x.cardioMin+' min cardio':''}</b></div>`).join('')}</div>`:'';
+  const asigTxt=`Entrenador: <b>${esc(s.asignado||'Sin asignar')}</b>${s.nutriologo?` · Nutrición: <b>${esc(s.nutriologo)}</b>`:''}`;
+  const asigHTML = puedeEd
+    ? `<details class="sd-asig-d"><summary><span>${asigTxt}</span><em>Cambiar ›</em></summary>${bloqueAsignacionStaff(s)}</details>`
+    : `<div class="sd-asig">${asigTxt}</div>`;
 
   ca.innerHTML=`
     <datalist id="kb-nombres">${KB_EJERCICIOS.map(e=>`<option value="${esc(e.nm)}">`).join('')}</datalist>
@@ -8702,35 +8740,40 @@ function staffRenderContent(s){
         <div class="sd-chips">
           <span>${esc(sc(s.nivel))}</span><span>${esc(s.edad)} años</span><span>${esc(pesoNow)} kg</span><span>${esc(s.estatura)} cm</span><span>${esc(s.dias)} días/sem</span>
         </div>
-        <div class="sd-asig">Entrenador: <b>${esc(s.asignado||'Sin asignar')}</b>${s.nutriologo?` · Nutrición: <b>${esc(s.nutriologo)}</b>`:''}</div>
+        ${asigHTML}
         <div class="sd-lim">${limChips}</div>
         ${(s.clasesGrupales&&s.clasesGrupales.length)?`<div class="sd-lim" style="margin-top:4px">${s.clasesGrupales.map(c=>`<span class="sd-lim-c" style="color:var(--n);border-color:color-mix(in srgb,var(--n) 30%,transparent);background:color-mix(in srgb,var(--n) 6%,transparent)">${esc(c.clase)} · ${c.dias.map(d=>sc(DIAS_NAMES[d])).join('/')}${c.entrenaMismoDia?' +gym':''}</span>`).join('')}</div>`:''}
-        <div class="sd-acts">
-          ${puedeEd?`<button type="button" class="sd-b" onclick="abrirEditarSocio('${s.code}')">Editar datos</button>`:''}
-          <button type="button" class="sd-b p" onclick="staffEnriquecer('${s.code}')" title="Agrega métodos de intensidad y opciones por área ocupada donde falten, según tu filosofía">Métodos y opciones</button>
-        </div>
+        ${puedeEd?`<div class="sd-acts"><button type="button" class="sd-b" onclick="abrirEditarSocio('${s.code}')">Editar datos</button></div>`:''}
       </div>
 
       ${isPend?`<div class="sd-alert">⏳ Plan generado por cuestionario: pendiente de tu revisión y aprobación.${s.origenRutina==='plantilla'?' <b>Ojo: se generó con la plantilla base (la IA no estaba disponible); revísalo con más detalle.</b>':s.origenRutina==='ia'?' Generado con IA.':''}</div>`:''}
-      ${bloqueRecordatorioFilosofia()}
 
-      <div class="sd-kpis">
-        <div class="kpi" style="--kc:var(--v)"><div class="kpi-v">${ev.total}</div><div class="kpi-l">Sesiones</div></div>
-        <div class="kpi" style="--kc:var(--n)"><div class="kpi-v">${ev.estaSemana}/${esc(s.dias)}</div><div class="kpi-l">Esta semana</div></div>
-        <div class="kpi" style="--kc:var(--g)"><div class="kpi-v">${ev.adherencia}%</div><div class="kpi-l">Adherencia, 4 sem</div></div>
-        <div class="kpi" style="--kc:var(--p)"><div class="kpi-v">${ev.deltaPeso===null?'—':(ev.deltaPeso>0?'+':'')+ev.deltaPeso+' kg'}</div><div class="kpi-l">Cambio de peso</div></div>
-      </div>
+      ${tabsHTML}
 
-      ${bloqueAnalisisStaff(s)}
+      ${pane('evolucion',`
+        <div class="sd-kpis">
+          <div class="kpi" style="--kc:var(--v)"><div class="kpi-v">${ev.total}</div><div class="kpi-l">Sesiones</div></div>
+          <div class="kpi" style="--kc:var(--n)"><div class="kpi-v">${ev.estaSemana}/${esc(s.dias)}</div><div class="kpi-l">Esta semana</div></div>
+          <div class="kpi" style="--kc:var(--g)"><div class="kpi-v">${ev.adherencia}%</div><div class="kpi-l">Adherencia, 4 sem</div></div>
+          <div class="kpi" style="--kc:var(--p)"><div class="kpi-v">${ev.deltaPeso===null?'—':(ev.deltaPeso>0?'+':'')+ev.deltaPeso+' kg'}</div><div class="kpi-l">Cambio de peso</div></div>
+        </div>
+        ${bloqueAnalisisStaff(s)}
+        ${recHTML}`)}
 
-      ${bloqueAsignacionStaff(s)}
+      ${pane('nutricion',bloqueNutricionStaff(s))}
 
-      ${bloqueNutricionStaff(s)}
+      ${pane('rutina',`
+        ${bloqueRecordatorioFilosofia()}
+        <div class="sd-sec">Rutina semanal <small>Toca un día para abrirlo. Elige el ejercicio del catálogo y ajusta series, repeticiones y descanso con un toque.</small></div>
+        <div class="sd-body">
+          <div class="rt-bar">
+            <button type="button" class="sd-b p" onclick="staffEnriquecer('${s.code}')" title="Agrega métodos de intensidad y opciones por área ocupada donde falten, según tu filosofía">✨ Métodos y opciones</button>
+            ${staffRutBackup[s.code]?`<button type="button" class="sd-b" onclick="staffDeshacerBase('${s.code}')">↩ Deshacer rutina cargada</button>`:''}
+          </div>
+          ${diasHTML}
+        </div>`)}
 
-      ${bloqueProgresionStaff(s)}
-
-      <div class="sd-sec">Rutina semanal <small>Toca un día para abrirlo y editarlo</small></div>
-      <div class="sd-body">${diasHTML}</div>
+      ${pane('progresion',bloqueProgresionTab(s))}
 
       ${puedeEd?`<div class="sd-danger">
         <div><b>Zona de peligro</b><p>Eliminar borra su rutina e historial. No se puede deshacer.</p></div>
@@ -8742,6 +8785,337 @@ function staffRenderContent(s){
         <button type="button" class="sd-pri" onclick="staffGuardar('${s.code}')">Guardar cambios</button>
       </div>
     </div>`;
+}
+
+// ═════════════════════════════════════════
+// PANEL DEL STAFF · pestañas
+// ═════════════════════════════════════════
+let staffTab='evolucion', staffTabCode=null, staffProgSel='actual';
+const staffDiasAbiertos=new Set();   // "código|día" de los días de rutina que están abiertos
+const staffRutBackup={};             // respaldo de la rutina antes de cargar un bloque anterior
+function staffSetTab(t){
+  staffTab=t;
+  document.querySelectorAll('#sd-tabs .tb').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
+  document.querySelectorAll('#staff-content .sd-pane').forEach(p=>p.classList.toggle('on',p.id==='sdp-'+t));
+  const el=document.getElementById('sd-tabs'); if(el&&el.scrollIntoView) el.scrollIntoView({block:'nearest',behavior:'smooth'});
+}
+function staffToggleDia(code,k,el){
+  const key=code+'|'+k, b=document.getElementById('stb-'+code+'-'+k); if(!b) return;
+  const o=b.style.display==='none';
+  b.style.display=o?'block':'none'; el.parentNode.classList.toggle('open',o);
+  if(o) staffDiasAbiertos.add(key); else staffDiasAbiertos.delete(key);
+}
+function staffRerender(code,k){
+  const s=getSocio(code); if(!s) return;
+  if(k) staffDiasAbiertos.add(code+'|'+k);
+  staffRenderContent(s);
+}
+
+// ═════════════════════════════════════════
+// EDITOR RÁPIDO DE EJERCICIO — se elige del catálogo y series/repeticiones/descanso/método
+// se ajustan con un toque (todo sigue pudiéndose escribir a mano).
+// ═════════════════════════════════════════
+function staffKindEj(e){ return esEjCardio(e)?'cardio':esEjRondas(e)?'rondas':esEjMovilidad(e)?'mov':esEjIsometrico(e)?'iso':'fuerza'; }
+const ST_DESC=[['30 s','30 s'],['45 s','45 s'],['60 s','60 s'],['90 s','90 s'],['2 min','2 min'],['3 min','3 min'],['Libre','Autorregulado (~90 s)']];
+const ST_PESOS=['Ligero — 30% 1RM','Moderado — 55% 1RM','Pesado — 75% 1RM','Corporal','Banda — resistencia media','Sin carga','Carga progresiva'];
+function stNum(txt){ const m=String(txt||'').match(/\d+/); return m?parseInt(m[0]):null; }
+function stChips(code,k,ei,grupo,opts,actual,fn){
+  return opts.map(([lb,v])=>`<button type="button" class="ch${String(actual)===String(v)?' on':''}" data-g="${grupo}" onclick="${fn}('${code}','${k}',${ei},'${esc(String(v))}',this)">${esc(String(lb))}</button>`).join('');
+}
+function staffEjEditorHTML(s,k,d,e,ei){
+  const code=s.code, kind=staffKindEj(e);
+  const kb=kbBuscar(e.nm||''), les=lesionKeys(s.limitaciones||[]);
+  const malLes=kb?(kb.ev||[]).filter(l=>les.includes(l)):[];
+  const nombre=e.nm?esc(e.nm):'Elegir ejercicio…';
+  const sub=[e.ms||'', kb&&KB_ZONAS[kb.z]?KB_ZONAS[kb.z]:''].filter(Boolean).join(' · ');
+  const tag={cardio:'💓 Cardio continuo — minutos fijos del plan; la FC objetivo se calcula con la edad y el objetivo del socio',
+             rondas:'💓 Por rondas — repeticiones (o segundos) y FC al terminar cada ronda en lugar de peso',
+             iso:'⏱ Isométrico — se mide por tiempo: rondas × segundos por ronda',
+             mov:'🧘 Movilidad — sin carga; se le explica al socio para qué es'}[kind]||'';
+  const nRep=stNum(e.reps);
+  let repOpts=[], repLbl='Repeticiones', repPh='Ej. 10 reps — hipertrofia';
+  if(kind==='fuerza') repOpts=[5,6,8,10,12,15,20].map(n=>[n,n]);
+  else if(kind==='iso'){ repLbl='Tiempo por ronda (seg)'; repOpts=[15,20,30,45,60].map(n=>[n+' s',n]); repPh='Ej. 30 seg — isométrico'; }
+  else if(kind==='cardio'){ repLbl='Minutos (fijos del plan)'; repOpts=[10,12,15,20,25,30,40].map(n=>[n+' min',n]); repPh='Ej. 12 min'; }
+  else if(kind==='rondas'){ const u=rondasRx(e,s).u; repLbl=u==='reps'?'Repeticiones por ronda':u==='seg'?'Segundos por ronda':'Metros por ronda'; repOpts=(u==='reps'?[6,8,10,12,15,20]:u==='seg'?[20,30,40,45,60]:[15,20,30,40]).map(n=>[n,n]); repPh='Ej. 12 reps'; }
+  const serLbl=kind==='cardio'?'Bloques':(kind==='iso'||kind==='rondas'||kind==='mov')?'Rondas':'Series';
+  const serOpts=(kind==='cardio'?[1,2,3]:kind==='mov'?[1,2,3,4]:[1,2,3,4,5,6]).map(n=>[n,n]);
+  const metodoHTML = kind==='fuerza' ? `
+      <div class="ej-g"><div class="ej-gl">Método de intensidad</div>
+        <select class="sf-in" onchange="staffUpdMetodo('${code}','${k}',${ei},this.value)">
+          <option value="">Sin método</option>
+          ${Object.entries(KB_METODOS).map(([id,M])=>`<option value="${id}" ${e.metodo&&e.metodo.id===id?'selected':''}>${esc(M.nm)}${M.nivel>nivelNum(s.nivel)?' · nivel '+M.nivel:''}</option>`).join('')}
+        </select>
+        ${e.metodo&&KB_METODOS[e.metodo.id]?`<div class="ej-met-como">${esc(KB_METODOS[e.metodo.id].como)}</div>`:''}
+      </div>` : '';
+  const pesoHTML = (kind==='fuerza') ? `
+      <div class="ej-g"><div class="ej-gl">Carga</div>
+        <div class="ej-2c">
+          <select class="sf-in" onchange="staffPesoSel('${code}','${k}',${ei},this.value,this)">
+            <option value="">Elegir…</option>
+            ${ST_PESOS.map(p=>`<option value="${esc(p)}" ${e.peso===p?'selected':''}>${esc(p)}</option>`).join('')}
+          </select>
+          <input class="sf-in" data-f="peso" value="${esc(e.peso||'')}" placeholder="o escribe: 40 kg" onchange="staffUpd('${code}','${k}',${ei},'peso',this.value)">
+        </div></div>`
+    : (kind==='cardio'||kind==='rondas') ? `
+      <div class="ej-g"><div class="ej-gl">FC objetivo <small>vacío = automático (edad y objetivo del socio)</small></div>
+        <input class="sf-in" data-f="peso" value="${esc(e.peso||'')}" placeholder="${esc((kind==='cardio'?(()=>{const r=cardioRx(e,s);return r.lo+'–'+r.hi+' lpm';})():(()=>{const r=rondasRx(e,s);return r.lo+'–'+r.hi+' lpm';})()))}" onchange="staffUpd('${code}','${k}',${ei},'peso',this.value)"></div>` : '';
+  const descHTML = (kind==='cardio'||kind==='mov') ? '' : `
+      <div class="ej-g"><div class="ej-gl">Descanso entre series</div>
+        <div class="ch-row">${stChips(code,k,ei,'desc',ST_DESC,e.descanso||'','staffChipDesc')}</div></div>`;
+  return `
+  <div class="ej-ed" id="eje-${code}-${k}-${ei}">
+    <div class="ej-ed-top">
+      <span class="ej-ed-n">${ei+1}</span>
+      <button type="button" class="ej-ed-nm${e.nm?'':' vacio'}" onclick="epAbrir('${code}','${k}',${ei})"><b>${nombre}</b><small>${esc(sub)||'Toca para cambiar'}</small></button>
+      <div class="ej-ed-mv"><button type="button" onclick="staffMoverEj('${code}','${k}',${ei},-1)" aria-label="Subir">▲</button><button type="button" onclick="staffMoverEj('${code}','${k}',${ei},1)" aria-label="Bajar">▼</button></div>
+      <button type="button" class="ej-ed-x" onclick="staffDelEj('${code}','${k}',${ei})" aria-label="Quitar ejercicio">✕</button>
+    </div>
+    ${tag?`<div class="ej-ed-cardio-tag">${tag}</div>`:''}
+    ${malLes.length?`<div class="ej-warn">⚠ Evitar con lesión de: ${esc(malLes.join(', '))}</div>`:''}
+    <div class="ej-g"><div class="ej-gl">${serLbl}</div><div class="ch-row">${stChips(code,k,ei,'ser',serOpts,parseInt(e.series)||'','staffChipSeries')}</div></div>
+    <div class="ej-g"><div class="ej-gl">${repLbl}</div>
+      ${repOpts.length?`<div class="ch-row">${stChips(code,k,ei,'rep',repOpts,nRep,'staffChipReps')}</div>`:''}
+      <input class="sf-in" data-f="reps" value="${esc(e.reps||'')}" placeholder="${repPh}" onchange="staffUpd('${code}','${k}',${ei},'reps',this.value)"></div>
+    ${pesoHTML}
+    ${descHTML}
+    ${metodoHTML}
+    <label class="ej-ed-l">Nota propioceptiva<input class="sf-in" value="${esc(e.tip||'')}" placeholder="Dónde y cómo sentir el estímulo" onchange="staffUpd('${code}','${k}',${ei},'tip',this.value)"></label>
+    ${kind==='mov'?`<label class="ej-ed-l">Para qué es esta movilidad (se muestra al socio)<input class="sf-in" value="${esc(e.porque||'')}" placeholder="${esc(movInfo(e,d).porque.slice(0,70))}…  (vacío = explicación automática)" onchange="staffUpd('${code}','${k}',${ei},'porque',this.value)"></label>`:''}
+    <details class="ej-ed-more">
+      <summary>Grupo, detalle del método y opciones</summary>
+      <div class="ej-ed-r2">
+        <label>Grupo (ej. A1)<input class="sf-in" value="${esc(e.grupo||'')}" onchange="staffUpd('${code}','${k}',${ei},'grupo',this.value.toUpperCase())"></label>
+        <label>Descanso (texto libre)<input class="sf-in" data-f="descanso" value="${esc(e.descanso||'')}" onchange="staffUpd('${code}','${k}',${ei},'descanso',this.value)"></label>
+      </div>
+      ${kind==='fuerza'?`<label class="ej-ed-l">Detalle del método<input class="sf-in" value="${esc(e.metodo&&e.metodo.detalle||'')}" placeholder="Ej. drop de 25% en la última serie" onchange="staffUpdMetodoDet('${code}','${k}',${ei},this.value)"></label>`:''}
+      <label class="ej-ed-l">Opciones si el área está ocupada (separadas por coma)<input class="sf-in" value="${esc((e.alternativas||[]).map(a=>a.nm).join(', '))}" onchange="staffUpdAlts('${code}','${k}',${ei},this.value)"></label>
+    </details>
+  </div>`;
+}
+function stEj(code,k,ei){ const s=getSocio(code); return s&&s.rutina[k]&&s.rutina[k].ejercicios[ei]||null; }
+function stMarcar(btn){ if(!btn) return; const g=btn.dataset.g; btn.parentNode.querySelectorAll('.ch').forEach(x=>x.classList.toggle('on',x===btn&&true)); }
+function stCampo(btn,f,v){ const box=btn&&btn.closest('.ej-ed'); const i=box&&box.querySelector('[data-f="'+f+'"]'); if(i) i.value=v; }
+function staffChipSeries(code,k,ei,v,btn){ const e=stEj(code,k,ei); if(!e) return; staffDirty.add(code); e.series=+v; stMarcar(btn); }
+function staffChipDesc(code,k,ei,v,btn){ const e=stEj(code,k,ei); if(!e) return; staffDirty.add(code); e.descanso=v; stMarcar(btn); stCampo(btn,'descanso',v); }
+function staffChipReps(code,k,ei,v,btn){
+  const s=getSocio(code), e=stEj(code,k,ei); if(!e) return; staffDirty.add(code);
+  const n=+v, kind=staffKindEj(e); let txt;
+  if(kind==='fuerza') txt=n+' reps — '+(n<=6?'fuerza':n<=12?'hipertrofia':'resistencia');
+  else if(kind==='iso') txt=n+' seg'+(ladoIso(e)?' por lado':'')+' — isométrico';
+  else if(kind==='cardio'){ txt=n+' min'; if(!(parseInt(e.series)>0)) e.series=1; }
+  else if(kind==='rondas') txt=txtUnidad(n,rondasRx(e,s).u);
+  else txt=n+' min';
+  e.reps=txt; stMarcar(btn); stCampo(btn,'reps',txt);
+}
+function staffPesoSel(code,k,ei,v,sel){ const e=stEj(code,k,ei); if(!e||!v) return; staffDirty.add(code); e.peso=v; stCampo(sel,'peso',v); }
+function staffMoverEj(code,k,ei,dir){
+  const s=getSocio(code); if(!s) return; const arr=s.rutina[k].ejercicios, j=ei+dir;
+  if(j<0||j>=arr.length) return; staffDirty.add(code);
+  const t=arr[ei]; arr[ei]=arr[j]; arr[j]=t; staffRerender(code,k);
+}
+
+// ═════════════════════════════════════════
+// SELECTOR DE EJERCICIOS (agregar / cambiar) + crear ejercicio nuevo en el catálogo
+// ═════════════════════════════════════════
+const EP_GRUPOS=[['sug','⭐ Sugeridos'],['pecho','Pecho'],['espalda','Espalda'],['hombro','Hombro'],['brazos','Brazos'],['pierna','Pierna'],['gluteo','Glúteo'],['core','Core'],['cardio','Cardio'],['mov','Movilidad'],['iso','⏱ Isométricos'],['propios','★ Propios'],['todos','Todos']];
+const EP_ENF={pecho:['pecho','pecho_sup'],espalda:['dorsal','espalda_media','trapecio'],hombro:['deltoide','deltoide_lat','deltoide_post','manguito'],brazos:['biceps','triceps','braquial'],pierna:['cuadriceps','femoral','pantorrilla'],gluteo:['gluteo'],core:['core','abdomen'],cardio:['cardio']};
+const EP_ZONAS=[['','Todo el equipo'],['maquina','Máquinas'],['polea','Poleas'],['mancuernas','Mancuernas'],['libre','Barra'],['corporal','Peso corporal'],['liga','Ligas'],['trx','TRX'],['disco','Discos'],['funcional','Funcional']];
+let EP={code:null,k:null,ei:null,grupo:'sug',zona:'',q:''};
+function epZonaOk(z,f){ if(!f) return true; if(f==='libre') return z==='rack'||z==='banco'; return z===f; }
+function epAbrir(code,k,ei){
+  const s=getSocio(code); if(!s) return;
+  EP={code,k,ei:(ei==null?null:ei),grupo:'sug',zona:'',q:''};
+  const d=s.rutina[k]||{};
+  document.getElementById('ep-titulo').textContent=EP.ei==null?'Agregar ejercicio':'Cambiar ejercicio';
+  const les=lesionKeys(s.limitaciones||[]);
+  document.getElementById('ep-ctx').textContent=sc(DIAS_NAMES[k])+' · '+(d.tipo||'sin tipo')+' — '+tc(s.nombre)+' ('+sc(s.nivel)+(les.length?', cuidar: '+les.join(', '):'')+')';
+  document.getElementById('ep-q').value='';
+  document.getElementById('ep-q').style.display='';
+  document.getElementById('ep-filtros').style.display='';
+  document.getElementById('modal-ejpick').classList.add('open');
+  epRender();
+}
+function epCerrar(){ document.getElementById('modal-ejpick').classList.remove('open'); }
+function epSetGrupo(g){ EP.grupo=g; epRender(); }
+function epSetZona(z){ EP.zona=z; epRender(); }
+function epBuscar(v){ EP.q=v; epRender(); }
+function epItems(s,d){
+  const les=lesionKeys(s.limitaciones||[]);
+  const yaDia=new Set((d.ejercicios||[]).map(x=>kbNorm(x.nm||'')));
+  const q=kbNorm(EP.q);
+  let items=KB_EJERCICIOS.map(x=>({id:x.id,nm:x.nm,ms:x.ms,z:x.z,t:x.t,enf:x.enf,iso:!!x.iso,cardio:x.enf==='cardio'||!!x.rondas,custom:!!x._custom,ev:x.ev||[],aka:x.aka||[]}));
+  KB_MOVILIDAD.forEach(m=>items.push({id:m.id,nm:m.nm,ms:'Movilidad · '+m.tipo,z:'corporal',enf:'mov',mov:true,ev:[],aka:[]}));
+  if(q){
+    items=items.filter(x=>kbNorm(x.nm).includes(q)||kbNorm(x.ms).includes(q)||(x.aka||[]).some(a=>kbNorm(a).includes(q)));
+  } else if(EP.grupo==='sug'){
+    const par=KB_DIA_ENF.find(([key])=>kbNorm(d.tipo||'').includes(key));
+    if(par) items=items.filter(x=>par[1].includes(x.enf)); else items=items.filter(x=>!x.mov);
+  } else if(EP.grupo==='mov') items=items.filter(x=>x.mov);
+  else if(EP.grupo==='iso') items=items.filter(x=>x.iso);
+  else if(EP.grupo==='propios') items=items.filter(x=>x.custom);
+  else if(EP.grupo!=='todos') items=items.filter(x=>(EP_ENF[EP.grupo]||[]).includes(x.enf));
+  items=items.filter(x=>epZonaOk(x.z,EP.zona));
+  items.forEach(x=>{ x.mal=x.ev.filter(l=>les.includes(l)); x.ya=yaDia.has(kbNorm(x.nm)); });
+  items.sort((a,b)=>(a.mal.length?1:0)-(b.mal.length?1:0) || (a.ya?1:0)-(b.ya?1:0) || (a.iso?1:0)-(b.iso?1:0) || ((a.t==='c')?0:1)-((b.t==='c')?0:1) || a.nm.localeCompare(b.nm,'es'));
+  return items;
+}
+function epRender(){
+  const s=getSocio(EP.code); if(!s) return; const d=s.rutina[EP.k]||{ejercicios:[]};
+  document.getElementById('ep-filtros').innerHTML=
+    `<div class="ep-rowc">${EP_GRUPOS.map(([g,n])=>`<button type="button" class="ch${EP.grupo===g&&!EP.q?' on':''}" onclick="epSetGrupo('${g}')">${n}</button>`).join('')}</div>
+     <div class="ep-rowc">${EP_ZONAS.map(([z,n])=>`<button type="button" class="ch${EP.zona===z?' on':''}" onclick="epSetZona('${z}')">${n}</button>`).join('')}</div>`;
+  const items=epItems(s,d), tot=items.length, max=80;
+  const lista=items.slice(0,max).map(x=>`
+    <div class="ep-it${x.mal.length?' mal':''}" onclick="epElegir('${x.id}')">
+      <div><b>${esc(x.nm)}</b><span>${esc(x.ms)}${KB_ZONAS[x.z]?' · '+esc(KB_ZONAS[x.z]):''}</span></div>
+      <em class="${x.mal.length?'w':''}">${x.mal.length?'⚠ evitar: '+esc(x.mal.join(', ')):x.ya?'ya en el día':''}${x.iso?' ⏱':''}${x.cardio?' 💓':''}${x.custom?' ★':''}</em>
+    </div>`).join('');
+  const q=limpiarTexto(EP.q);
+  document.getElementById('ep-lista').innerHTML=
+    (lista||`<div class="ep-vacio">No encontré ejercicios con ese filtro.${q?'':' Prueba con otro grupo, o crea el ejercicio nuevo.'}</div>`)+
+    (tot>max?`<div class="ep-vacio">Mostrando ${max} de ${tot}. Escribe en el buscador para afinar.</div>`:'')+
+    `<button type="button" class="ep-new" onclick="epFormNuevo()">＋ ${q?'Crear «'+esc(q)+'» como ejercicio nuevo':'Crear un ejercicio nuevo'}</button>`;
+}
+function epElegir(id){
+  const s=getSocio(EP.code); if(!s) return;
+  const m=KB_MOVILIDAD.find(x=>x.id===id);
+  const kb=m?{mov:true,id:m.id,nm:m.nm,ms:'Movilidad'}:KB_IDX[id];
+  if(!kb) return;
+  staffAplicarEj(EP.code,EP.k,EP.ei,kb);
+}
+// Datos prellenados del ejercicio según su tipo, el nivel y el objetivo del socio
+function ejDefaults(kb,s){
+  const nv=nivelNum(s.nivel), obj=claveObjFc(s.objetivo), esFza=/FUERZA/i.test(s.objetivo||'');
+  const base={nm:kb.nm,ms:kb.ms,enf:kb.enf||'',series:3,reps:'10 reps — hipertrofia',peso:'Moderado — 55% 1RM',descanso:'90 s',tip:kb.tip||''};
+  if(kb.mov){ const m=KB_MOVILIDAD.find(x=>x.id===kb.id); return Object.assign(base,{ms:'Movilidad',enf:'',series:m.series,reps:m.reps,peso:'Sin carga',descanso:'',tip:m.que}); }
+  const tmp={nm:kb.nm,series:'',reps:'',peso:''};
+  if(esEjCardio(tmp)){ const r=cardioRx(tmp,s); return Object.assign(base,{series:1,reps:r.per+' min',peso:'FC objetivo '+r.lo+'–'+r.hi+' lpm',descanso:'',tip:kb.tip||'Ritmo en el que puedas hablar frases cortas.'}); }
+  if(esEjRondas(tmp)){ const r=rondasRx(tmp,s); return Object.assign(base,{series:r.series,reps:txtUnidad(r.base,r.u),peso:'FC objetivo '+r.lo+'–'+r.hi+' lpm',descanso:'60 s'}); }
+  if(kb.iso || esEjIsometrico(tmp)){ const x=dosisIsometrico({tt:kb.tt,lado:kb.lado},nv); return Object.assign(base,{series:x.series,reps:x.reps,peso:'Corporal',descanso:'45 s',tip:kb.tip||'Respira lento y mantén la tensión sin moverte.'}); }
+  const comp=kb.t==='c';
+  let series=comp&&nv>=2?4:3, reps, desc;
+  if(esFza){ reps=comp?'5 reps — fuerza':'10 reps — hipertrofia'; desc=comp?'2 min':'90 s'; }
+  else if(obj==='MASA'){ reps=comp?'8 reps — hipertrofia':'12 reps — hipertrofia'; desc=comp?'90 s':'60 s'; }
+  else if(obj==='PERDER'||obj==='RESIST'){ reps='15 reps — resistencia'; desc='45 s'; }
+  else { reps=comp?'8 reps — hipertrofia':'12 reps — hipertrofia'; desc=comp?'90 s':'60 s'; }
+  let peso=comp?'Moderado — 55% 1RM':'Moderado — 50% 1RM';
+  if(kb.z==='corporal'||kb.z==='trx') peso='Corporal'; else if(kb.z==='liga') peso='Banda — resistencia media';
+  if(kb._custom){ if(kb.series) series=kb.series; if(kb.reps) reps=kb.reps; if(kb.peso) peso=kb.peso; }
+  return Object.assign(base,{series,reps,peso,descanso:desc,tip:kb.tip||('Siente el músculo objetivo ('+kb.ms+') durante todo el recorrido y controla la bajada.')});
+}
+function staffAplicarEj(code,k,ei,kb){
+  const s=getSocio(code); if(!s) return;
+  if(!s.rutina[k]) s.rutina[k]={tipo:'',color:'verde',ejercicios:[]};
+  const d=s.rutina[k]; if(!Array.isArray(d.ejercicios)) d.ejercicios=[];
+  const def=ejDefaults(kb,s);
+  if(!esEjMovilidad(def)){
+    try{ const ent=s.entrenadorId?getEntrenador(s.entrenadorId):null;
+      const ctx=ctxDesdePerfil({nivel:s.nivel,objetivo:s.objetivo,limitaciones:s.limitaciones}, ent&&ent.filosofia);
+      def.alternativas=alternativasPara(def,ctx,datosEj(def)); }catch(err){ console.warn('alternativas',err); }
+  }
+  if(ei==null) d.ejercicios.push(def); else { const old=d.ejercicios[ei]||{}; d.ejercicios[ei]=Object.assign({},def,old.grupo?{grupo:old.grupo}:{}); }
+  if(/descanso/i.test(d.tipo||'')){ d.tipo=''; d.color='verde'; }
+  staffDirty.add(code); epCerrar(); staffRerender(code,k);
+  showToast('✓ '+def.nm+(ei==null?' agregado':' cambiado')+' — ajusta series y repeticiones con un toque y presiona GUARDAR');
+}
+function epFormNuevo(){
+  const q=limpiarTexto(EP.q);
+  document.getElementById('ep-q').style.display='none';
+  document.getElementById('ep-filtros').style.display='none';
+  document.getElementById('ep-lista').innerHTML=`
+    <div class="f-grp"><label class="f-lbl" for="epn-nm">Nombre del ejercicio</label><input class="ti" id="epn-nm" maxlength="70" value="${esc(q)}" placeholder="Ej. Press Arnold"></div>
+    <div class="f-grp"><label class="f-lbl" for="epn-ms">Músculos que trabaja</label><input class="ti" id="epn-ms" maxlength="70" placeholder="Ej. Deltoides · Tríceps"></div>
+    <div class="f-row">
+      <div class="f-grp"><label class="f-lbl" for="epn-enf">Enfoque muscular</label><select class="ti" id="epn-enf">${Object.entries(KB_ENFOQUES).map(([k,n])=>`<option value="${k}">${esc(n)}</option>`).join('')}</select></div>
+      <div class="f-grp"><label class="f-lbl" for="epn-z">Equipo / zona</label><select class="ti" id="epn-z">${Object.entries(KB_ZONAS).map(([k,n])=>`<option value="${k}" ${k==='mancuernas'?'selected':''}>${esc(n)}</option>`).join('')}</select></div>
+    </div>
+    <div class="f-row">
+      <div class="f-grp"><label class="f-lbl" for="epn-t">Tipo</label><select class="ti" id="epn-t"><option value="c">Compuesto (varias articulaciones)</option><option value="a">Aislamiento (un músculo)</option></select></div>
+      <div class="f-grp"><label class="f-lbl" for="epn-iso">Cómo se mide</label><select class="ti" id="epn-iso"><option value="">Series × repeticiones</option><option value="1">Isométrico (por tiempo)</option></select></div>
+    </div>
+    <div class="f-grp"><label class="f-lbl" for="epn-tip">Descripción / nota propioceptiva</label><textarea class="ti" id="epn-tip" rows="3" placeholder="Dónde sentir el estímulo, ángulo, errores comunes…"></textarea></div>
+    <div class="f-grp"><label class="f-lbl">Evitar si el socio tiene lesión en</label><div class="chk-grid">${KB_LESIONES_OPC.map(l=>`<div class="chk epn-ev" data-v="${l}" onclick="this.classList.toggle('ck')">${sc(l)}</div>`).join('')}</div></div>
+    <div class="f-nota">Se guarda en el catálogo (queda para todas las rutinas y entrenadores) y se agrega a este día con series, repeticiones y descanso prellenados.</div>
+    <div style="display:flex;gap:10px;margin-top:14px">
+      <button type="button" class="sd-b" style="flex:1" onclick="epRender();document.getElementById('ep-q').style.display='';document.getElementById('ep-filtros').style.display=''">Volver</button>
+      <button type="button" class="sd-pri" style="flex:1" onclick="epGuardarNuevo()">Guardar y agregar</button>
+    </div>`;
+}
+function epGuardarNuevo(){
+  const v=id=>document.getElementById(id).value;
+  const nm=limpiarTexto(v('epn-nm')), ms=limpiarTexto(v('epn-ms'));
+  if(!nm||!ms){ showToast('Completa el nombre y los músculos'); return; }
+  if(KB_EJERCICIOS.find(x=>kbNorm(x.nm)===kbNorm(nm))){ showToast('Ya existe un ejercicio con ese nombre — búscalo en la lista'); return; }
+  const iso=v('epn-iso')==='1', t=v('epn-t');
+  const ev=[...document.querySelectorAll('#ep-lista .epn-ev.ck')].map(x=>x.dataset.v);
+  const id=kbNuevoId('c',nm);
+  kbExtra().ejercicios[id]={nm,ms,enf:v('epn-enf'),z:v('epn-z'),t,series:3,reps:iso?'30 seg — isométrico':(t==='c'?'8 reps — hipertrofia':'12 reps — hipertrofia'),peso:iso?'Corporal':'Moderado',tip:v('epn-tip').trim(),ev,aka:[],iso};
+  kbAplicarExtra(); guardarLocal();
+  const payload=limpio(kbExtra()); payload._v=1;
+  fbEncolar('/config/kb','set',payload,{ok:()=>{}});
+  if(estaSinConexion()||!fbListo) showToast('📚 Ejercicio guardado · se subirá al volver la conexión');
+  const kb=KB_IDX[id]; if(!kb){ showToast('⚠ No se pudo guardar el ejercicio'); return; }
+  staffAplicarEj(EP.code,EP.k,EP.ei,kb);
+}
+
+// ═════════════════════════════════════════
+// PROGRESIÓN · bloques: se elige "Bloque 1, 2…" y se ve la rutina de ese bloque y lo logrado
+// ═════════════════════════════════════════
+function pqLogros(s,desde,hasta){
+  const m={};
+  comoArray(s.logs&&s.logs.sesiones).forEach(x=>{
+    if(!x||!x.fecha) return; if(desde&&x.fecha<desde) return; if(hasta&&x.fecha>hasta) return;
+    comoArray(x.detalle).forEach(d=>{ if(!d||!d.n) return; const r=m[d.n]=m[d.n]||{};
+      if(d.kg) r.kg=Math.max(r.kg||0,d.kg); if(d.fc) r.fc=d.fc; if(d.seg) r.seg=Math.max(r.seg||0,d.seg); });
+  });
+  return m;
+}
+function pqRutinaLogrosHTML(rut,logros){
+  return DIAS_ORDER.map(k=>{ const d=rut&&rut[k]; const ej=comoArray(d&&d.ejercicios); if(!ej.length) return '';
+    return `<div class="pg-dia">${esc(sc(DIAS_NAMES[k]).substring(0,3))} · ${esc(sc(d.tipo||''))}</div>`+ej.map(e=>{
+      const l=logros&&logros[e.nm]; const t=l?(l.kg?'logró '+l.kg+' kg':l.fc?'FC '+l.fc+' lpm':l.seg?l.seg+' s':''):'';
+      return `<div class="pg-mini"><span>${esc(e.nm)}</span><b>${esc(pqEjTxt(e))}${t?`<span class="pg-logro">${esc(t)}</span>`:''}</b></div>`; }).join('');
+  }).join('')||'<p class="pg-p">Este bloque no tiene ejercicios registrados.</p>';
+}
+function staffProgElegir(code,n){ staffProgSel=(n==='actual')?'actual':+n; const s=getSocio(code); if(s) staffRenderContent(s); }
+function bloqueProgresionTab(s){
+  if(s.status==='pendiente') return `<div class="sd-sec">Progresión</div><div class="sd-body"><p class="pg-p">Disponible en cuanto apruebes el plan inicial del socio.</p></div>`;
+  const hist=comoArray(s.historialRutinas).filter(Boolean).slice().sort((a,b)=>(+a.n||0)-(+b.n||0));
+  const b=pqBloque(s), c=esc(s.code);
+  if(staffProgSel!=='actual' && !hist.find(x=>+x.n===+staffProgSel)) staffProgSel='actual';
+  const chips=hist.map(x=>`<button type="button" class="ch${staffProgSel===+x.n?' on':''}" onclick="staffProgElegir('${c}','${+x.n}')">Progresión ${esc(x.n)}</button>`).join('')+
+    `<button type="button" class="ch${staffProgSel==='actual'?' on':''}" onclick="staffProgElegir('${c}','actual')">Progresión ${esc(b.n)} · actual</button>`;
+  let cuerpo='';
+  if(staffProgSel==='actual'){
+    const logros=pqLogros(s,b.desde,null);
+    cuerpo=bloqueProgresionStaff(s,true)+`<details class="pg-h" style="margin:12px 16px 0" open><summary><b>Rutina del bloque ${esc(b.n)}</b><span>lo que lleva logrado en este bloque</span></summary>${pqRutinaLogrosHTML(s.rutina,logros)}</details>`;
+  } else {
+    const x=hist.find(y=>+y.n===+staffProgSel), logros=pqLogros(s,x.desde,x.hasta);
+    cuerpo=`<div class="sd-sec">Progresión ${esc(x.n)} <small>${esc(fmtFecha(x.desde))} – ${esc(fmtFecha(x.hasta))} · ${esc(x.semanas||'')} semanas · ${esc(x.sesiones)} sesiones · ${esc(x.adherencia)}% de adherencia</small></div>
+      <div class="sd-body">
+        ${x.respuestas?`<details class="pg-h"><summary><b>Respuestas del socio</b><span>evaluación de ese bloque</span></summary>${pqRespuestasHTML(x.respuestas)}</details>`:''}
+        <div class="pg-card" style="margin-top:10px">${pqRutinaLogrosHTML(x.rutina,logros)}</div>
+        <div class="pg-acts" style="margin-top:12px"><button type="button" class="sd-b p" onclick="staffUsarBloque('${c}',${+x.n})">📋 Usar esta rutina como base</button></div>
+        <p class="pg-p" style="margin-top:8px">Carga la rutina de este bloque en la pestaña Rutina para editarla; no se guarda hasta que presiones Guardar cambios, y puedes deshacerlo.</p>
+      </div>`;
+  }
+  return `<div class="sd-body" style="padding-top:14px"><div class="pg-chs">${chips}</div></div>${cuerpo}`;
+}
+function staffUsarBloque(code,n){
+  const s=getSocio(code); if(!s) return;
+  const x=comoArray(s.historialRutinas).find(y=>y&&+y.n===+n); if(!x||!x.rutina) return;
+  uiConfirm('¿Cargar la rutina de la Progresión '+n+' en el editor?\nReemplaza la rutina actual en pantalla; no se guarda hasta que presiones Guardar cambios y puedes deshacerlo.',()=>{
+    staffRutBackup[code]=limpio(s.rutina);
+    s.rutina=JSON.parse(JSON.stringify(x.rutina)); staffDirty.add(code);
+    staffTab='rutina'; staffRenderContent(s);
+    showToast('📋 Rutina de la Progresión '+n+' cargada — edítala y presiona GUARDAR');
+  },{label:'Cargar rutina'});
+}
+function staffDeshacerBase(code){
+  const s=getSocio(code); if(!s||!staffRutBackup[code]) return;
+  s.rutina=staffRutBackup[code]; delete staffRutBackup[code]; staffDirty.add(code);
+  staffRenderContent(s); showToast('↩ Rutina anterior restaurada');
 }
 
 // ── Recordatorio de la propia filosofía al modificar una rutina ──
@@ -8788,8 +9162,11 @@ function staffUpdTipo(code,k,val){
 }
 function staffUpdMetodo(code,k,ei,id){
   const s=getSocio(code); const e=s&&s.rutina[k]&&s.rutina[k].ejercicios[ei]; if(!e) return; staffDirty.add(code);
-  if(!id){ delete e.metodo; return; }
-  e.metodo={id, nm:KB_METODOS[id].nm, detalle:(e.metodo&&e.metodo.detalle)||''};
+  if(!id){ delete e.metodo; staffRerender(code,k); return; }
+  const det=(e.metodo&&e.metodo.detalle)||'', antes=e.series+'|'+e.reps;
+  aplicarMetodo(e,id,det);   // ajusta series/repeticiones según el método (pirámide, cluster, tempo…)
+  staffRerender(code,k);
+  if(antes!==(e.series+'|'+e.reps)) showToast('⚡ '+KB_METODOS[id].nm+': se ajustaron series y repeticiones al método');
 }
 function staffUpdMetodoDet(code,k,ei,v){
   const s=getSocio(code); const e=s&&s.rutina[k]&&s.rutina[k].ejercicios[ei]; if(!e||!e.metodo) { showToast('Elige primero un método'); return; }
@@ -8811,16 +9188,9 @@ function staffEnriquecer(code){
 function staffDelEj(code,k,ei){
   const s=getSocio(code); if(!s) return; staffDirty.add(code);
   s.rutina[k].ejercicios.splice(ei,1);
-  staffRenderContent(s);
-  setTimeout(()=>{const b=document.getElementById('stb-'+code+'-'+k); if(b) b.style.display='block';},30);
+  staffRerender(code,k);
 }
-function staffAddEj(code,k){
-  const s=getSocio(code); if(!s) return; staffDirty.add(code);
-  s.rutina[k].ejercicios.push({nm:'',series:3,reps:'12 reps',peso:'Moderado',ms:'',tip:''});
-  if(/descanso/i.test(s.rutina[k].tipo)) { s.rutina[k].tipo=''; s.rutina[k].color='verde'; }
-  staffRenderContent(s);
-  setTimeout(()=>{const b=document.getElementById('stb-'+code+'-'+k); if(b) b.style.display='block';},30);
-}
+function staffAddEj(code,k){ staffDiasAbiertos.add(code+'|'+k); epAbrir(code,k,null); }
 function staffAprobar(code){
   const s=getSocio(code); if(!s) return;
   s.status='activo';
@@ -8830,6 +9200,7 @@ function staffAprobar(code){
 }
 function staffGuardar(code){
   const s=getSocio(code); if(!s) return;
+  delete staffRutBackup[code];
   dbSaveStaff(s.code); staffRenderList();
   showToast('✓ Cambios guardados — visibles para el socio al instante');
 }
@@ -9099,7 +9470,7 @@ function pqAprobarFinal(code,sem){
   hist.push({n:b.n, desde:b.desde, hasta:hoy, semanas:b.semanas, rutina:limpio(s.rutina), sesiones:st.sesiones, adherencia:st.adherencia, respuestas:P.respuestas||null});
   s.historialRutinas=hist.slice(-12);
   s.rutina=JSON.parse(JSON.stringify(p.rutina));
-  s.bloque={n:b.n+1, desde:hoy, semanas:sem};
+  s.bloque={n:b.n+1, desde:hoy, semanas:sem}; staffProgSel='actual';
   s.progresion={estado:'aprobado', bloque:b.n+1, fecha:hoy, visto:false, resumen:(p.resumen||[]).filter(x=>!/^Comentario del socio/.test(x)).slice(0,6), nCambios:(p.cambios||[]).length, por:pqStaffNombre()};
   staffDirty.delete(code);
   pqGuardarStaff(s,['rutina','bloque','historialRutinas','progresion']);
@@ -9219,7 +9590,7 @@ function bloqueAnalisisStaff(s){
       ${(!estancados.length&&!subiendo.length)?'<p class="pg-p" style="margin-top:12px">Aún no hay suficientes sesiones con peso registrado por ejercicio para ver tendencia.</p>':''}
     </div>`;
 }
-function bloqueProgresionStaff(s){
+function bloqueProgresionStaff(s,sinHist){
   if(s.status==='pendiente') return '';
   const b=pqBloque(s), sem=pqSemanaActual(s), est=pqEstado(s), st=pqStatsBloque(s), P=s.progresion||{}, c=esc(s.code);
   const semTxt=sem>b.semanas?`bloque terminado (semana ${sem})`:`semana ${sem} de ${b.semanas}`;
@@ -9241,7 +9612,7 @@ function bloqueProgresionStaff(s){
     cuerpo=`${P.respuestas?`<details class="pg-h"><summary><b>Respuestas del socio</b><span>${esc(fmtFecha(P.fechaResp||''))}</span></summary>${pqRespuestasHTML(P.respuestas)}</details>`:''}${pqPropuestaHTML(s,P.propuesta)}`;
   }
   return `<div class="sd-sec" id="pg-sec">Progresión <small>Bloque ${b.n} · ${semTxt} · ${st.sesiones} sesiones (${st.adherencia}%)</small></div>
-    <div class="sd-body"><div class="pg-card${hot?' hot':''}">${cuerpo}</div>${pqHistorialHTML(s)}</div>`;
+    <div class="sd-body"><div class="pg-card${hot?' hot':''}">${cuerpo}</div>${sinHist?'':pqHistorialHTML(s)}</div>`;
 }
 function pqBadgeLista(s){
   const e=pqEstado(s);
@@ -9532,7 +9903,7 @@ function kbAplicarExtra(){
     if(!e||!e.nm) return;
     KB_EJERCICIOS.push({id, nm:String(e.nm), ms:String(e.ms||''), z:KB_ZONAS[e.z]?e.z:'maquina', t:e.t==='a'?'a':'c',
       enf:e.enf||'', ev:comoArray(e.ev), aka:comoArray(e.aka), alt:{}, tip:e.tip||'', series:parseInt(e.series)||3,
-      reps:e.reps||'12 reps — hipertrofia', peso:e.peso||'Moderado', _custom:true});
+      reps:e.reps||'12 reps — hipertrofia', peso:e.peso||'Moderado', iso:!!e.iso, tt:e.iso?[20,30,45]:undefined, _custom:true});
   });
   Object.keys(KB_IDX).forEach(x=>delete KB_IDX[x]);
   KB_EJERCICIOS.forEach(e=>{ KB_IDX[e.id]=e; });
@@ -10496,6 +10867,18 @@ if('serviceWorker' in navigator){
 
 
 <!-- ═══ MODAL CONOCIMIENTO (agregar / editar) ═══ -->
+<!-- ═══ MODAL SELECTOR DE EJERCICIOS (staff) ═══ -->
+<div class="modal" id="modal-ejpick" onclick="if(event.target===this)epCerrar()">
+  <div class="mbox">
+    <div class="mx" onclick="epCerrar()">✕</div>
+    <div class="m-title" id="ep-titulo" style="margin-bottom:14px">Agregar ejercicio</div>
+    <div class="ep-ctx" id="ep-ctx"></div>
+    <input class="sf-in" id="ep-q" style="width:100%;box-sizing:border-box;min-height:46px;padding:0 14px;border-radius:14px;border:1.5px solid var(--b);background:var(--in-bg);color:var(--tx);font-size:15px" placeholder="🔎 Buscar ejercicio…" oninput="epBuscar(this.value)" autocomplete="off">
+    <div id="ep-filtros"></div>
+    <div id="ep-lista"></div>
+  </div>
+</div>
+
 <div class="modal" id="modal-kb" onclick="if(event.target===this)kbCerrar()">
   <div class="mbox" style="max-width:560px">
     <div class="mx" onclick="kbCerrar()">✕</div>

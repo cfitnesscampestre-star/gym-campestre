@@ -1,3 +1,24 @@
+# Cambios — v7.9 · Panel del director / entrenador reorganizado
+
+## Ficha del socio en pestañas
+- Arriba queda el nombre, edad, peso, nivel, limitaciones y quién lo lleva; abajo cuatro botones: **Evolución · Nutrición · Rutina · Progresión**.
+- **Evolución:** sesiones, días a la semana, adherencia, cambio de peso corporal, días sin entrenar, volumen de la semana, ejercicios que suben carga o están estancados y las últimas sesiones (con tiempo isométrico y minutos de cardio).
+- **Nutrición:** quién lo lleva, calorías y macros, menú, personalizar o restablecer.
+- **Rutina:** los días de la semana (cada día se queda abierto aunque cambies de pestaña o edites).
+- **Progresión:** botones "Progresión 1, 2, 3…" (la última es la actual). Al elegir uno se ve la rutina de ese bloque, fechas, sesiones, adherencia, las respuestas del socio y lo que logró en cada ejercicio (kg, FC o segundos). "Usar esta rutina como base" la carga en el editor (no se guarda hasta Guardar cambios y se puede deshacer).
+- Un punto rojo en Progresión avisa cuando toca actuar. Si el plan está pendiente de aprobar, la ficha abre directo en Rutina.
+- La asignación de entrenador/nutriólogo (solo director) pasa a un desplegable en el encabezado ("Cambiar ›").
+
+## Editar la rutina más fácil
+- **Elegir el ejercicio del catálogo:** se toca el nombre y se abre un selector con buscador y filtros por grupo muscular (sugeridos según el tipo de día) y por equipo (máquinas, poleas, mancuernas, barra, peso corporal, ligas, TRX, discos). Avisa con ⚠ si el ejercicio se debe evitar por una limitación del socio.
+- **Se prellena solo** según el tipo de ejercicio, el nivel y el objetivo del socio: series, repeticiones, carga, descanso, nota propioceptiva y opciones por área ocupada. También cardio (minutos y FC), rondas, isométricos y movilidad.
+- **Se ajusta con un toque:** series, repeticiones o segundos o minutos, y descanso con botones; la carga con una lista; el método con un menú que además ajusta series y repeticiones al método y explica cómo se hace. Todo se puede seguir escribiendo a mano.
+- **Si no está en la lista:** "Crear ejercicio nuevo" (nombre, músculos, enfoque, equipo, tipo, si es isométrico, nota y lesiones a evitar). Se guarda en el catálogo para todos los entrenadores y se agrega al día con los datos prellenados.
+- También se puede **cambiar** un ejercicio por otro y **subir o bajar** el orden con ▲▼.
+- Service worker: `fitnesspro-v26`.
+
+---
+
 # Cambios — v7.8 · Movilidad explicada
 
 ## Cada ejercicio de movilidad ahora le explica al socio:
