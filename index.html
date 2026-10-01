@@ -47,7 +47,8 @@ const KB_PRINCIPIOS = [
 const KB_ZONAS = {
   rack:'Rack / barra libre', banco:'Bancos + barra', mancuernas:'Área de mancuernas',
   maquina:'Máquinas guiadas', polea:'Poleas / cables', corporal:'Peso corporal / tapete',
-  cardio:'Equipos de cardio', funcional:'Zona funcional (kettlebell, TRX, cajón)'
+  cardio:'Equipos de cardio', funcional:'Zona funcional (kettlebell, cajón, trineo)',
+  liga:'Ligas / bandas elásticas', trx:'TRX / suspensión', disco:'Discos / landmine'
 };
 
 /* ── MÉTODOS DE INTENSIDAD ──
@@ -135,9 +136,9 @@ const KB_EJERCICIOS = [
   {id:'sissy', nm:'Sentadilla sissy asistida', ms:'Cuádriceps', z:'corporal', t:'a', enf:'cuadriceps', ev:['rodilla'],
    alt:{cuadriceps:['ext_cuad','goblet']}, aka:[]},
   {id:'isom_cuad', nm:'Isométrico de cuádriceps', ms:'Cuádriceps', z:'corporal', t:'a', enf:'cuadriceps', ev:[],
-   alt:{cuadriceps:['ext_cuad','sentadilla_pared']}, aka:['isométrico de cuádriceps']},
+   alt:{cuadriceps:['ext_cuad','sentadilla_pared']}, aka:['isométrico de cuádriceps'], iso:true, tt:[20,30,45]},
   {id:'sentadilla_pared', nm:'Sentadilla isométrica en pared', ms:'Cuádriceps', z:'corporal', t:'a', enf:'cuadriceps', ev:[],
-   alt:{cuadriceps:['isom_cuad','ext_cuad']}, aka:['wall sit']},
+   alt:{cuadriceps:['isom_cuad','ext_cuad']}, aka:['wall sit'], iso:true, tt:[30,45,60]},
   // ── PIERNA · CADENA POSTERIOR ──
   {id:'peso_muerto', nm:'Peso muerto convencional', ms:'Glúteo · Femorales · Espalda', z:'rack', t:'c', enf:'gluteo', ev:['lumbar'],
    alt:{gluteo:['hip_thrust','pm_rumano_mancuerna'], femoral:['pm_rumano_mancuerna','curl_fem']}, aka:['peso muerto','deadlift']},
@@ -284,9 +285,9 @@ const KB_EJERCICIOS = [
 
   // ── CORE ──
   {id:'plancha', nm:'Plancha frontal', ms:'Core', z:'corporal', t:'a', enf:'core', ev:[],
-   alt:{core:['dead_bug','pallof','rueda']}, aka:['plancha','plank']},
+   alt:{core:['dead_bug','pallof','rueda']}, aka:['plancha','plank'], iso:true, tt:[20,30,45]},
   {id:'plancha_lateral', nm:'Plancha lateral', ms:'Oblicuos', z:'corporal', t:'a', enf:'core', ev:['hombro'],
-   alt:{core:['pallof','farmer_unilateral']}, aka:[]},
+   alt:{core:['pallof','farmer_unilateral']}, aka:[], iso:true, tt:[15,25,40], lado:true},
   {id:'dead_bug', nm:'Dead bug', ms:'Core profundo', z:'corporal', t:'a', enf:'core', ev:[],
    alt:{core:['bird_dog','plancha']}, aka:[]},
   {id:'bird_dog', nm:'Bird-dog', ms:'Core · Erectores', z:'corporal', t:'a', enf:'core', ev:[],
@@ -317,6 +318,268 @@ const KB_EJERCICIOS = [
    alt:{cardio:['bici','eliptica']}, aka:['remo ergometro','rower']},
   {id:'kb_swing', nm:'Swing con kettlebell', ms:'Glúteo · Cadena posterior', z:'funcional', t:'c', enf:'gluteo', ev:['lumbar'],
    alt:{gluteo:['hip_thrust','puente'], cardio:['bici']}, aka:['kettlebell swing']},
+  // ── AMPLIACIÓN v7.6 · máquinas, peso libre, mancuernas, ligas, TRX y discos ──
+  // tip: nota propioceptiva · nv: nivel mínimo (1-3) · iso+tt: isométrico por TIEMPO (seg por nivel) · lado: se hace por lado
+  {id:'sentadilla_smith', nm:'Sentadilla en Smith', ms:'Cuádriceps · Glúteo', z:'maquina', t:'c', enf:'cuadriceps', ev:['lumbar','rodilla'],
+   alt:{cuadriceps:['goblet','sentadilla_caja','sentadilla_liga']}, aka:[], tip:'Pies un poco adelante de la barra; baja sintiendo el muslo cargar y empuja el piso con todo el pie.'},
+  {id:'sentadilla_caja', nm:'Sentadilla a la caja', ms:'Cuádriceps · Glúteo', z:'rack', t:'c', enf:'cuadriceps', ev:['rodilla'],
+   alt:{cuadriceps:['sentadilla_disco','prensa','goblet']}, aka:['box squat'], tip:'Siéntate hacia atrás sin soltar la tensión del glúteo; sube empujando el piso, sin rebotar en la caja.', nv:2},
+  {id:'sentadilla_disco', nm:'Sentadilla con disco al pecho', ms:'Cuádriceps · Glúteo', z:'disco', t:'c', enf:'cuadriceps', ev:['rodilla'],
+   alt:{cuadriceps:['sissy','sentadilla_trx','prensa_baja']}, aka:['sentadilla con disco'], tip:'Abraza el disco al pecho; el peso al frente mantiene el torso erguido y el muslo trabajando.'},
+  {id:'sentadilla_trx', nm:'Sentadilla asistida en TRX', ms:'Cuádriceps · Glúteo', z:'trx', t:'c', enf:'cuadriceps', ev:[],
+   alt:{cuadriceps:['ext_cuad','ext_rodilla_liga']}, aka:['sentadilla con TRX'], tip:'Sujeta las asas solo para equilibrio; baja con el pecho arriba y siente el muslo, no los brazos.'},
+  {id:'sentadilla_liga', nm:'Sentadilla con banda en rodillas', ms:'Cuádriceps · Glúteo', z:'liga', t:'c', enf:'cuadriceps', ev:['rodilla'],
+   alt:{cuadriceps:['zancada_reversa','prensa_unilateral','sissy']}, aka:['sentadilla con liga'], tip:'Empuja las rodillas contra la banda al bajar y al subir; siente glúteo medio y muslo juntos.'},
+  {id:'zancada_reversa', nm:'Zancada reversa con mancuernas', ms:'Cuádriceps · Glúteo', z:'mancuernas', t:'c', enf:'cuadriceps', ev:['rodilla'],
+   alt:{cuadriceps:['prensa_baja','sentadilla_landmine','sentadilla_caja']}, aka:['reverse lunge','desplante hacia atrás'], tip:'Da el paso atrás y baja vertical; el peso se queda en el talón de la pierna delantera y ahí sientes el glúteo.'},
+  {id:'prensa_unilateral', nm:'Prensa de piernas unilateral', ms:'Cuádriceps · Glúteo', z:'maquina', t:'c', enf:'cuadriceps', ev:[],
+   alt:{cuadriceps:['sentadilla_trx','ext_rodilla_liga']}, aka:['prensa a una pierna'], tip:'Empuja con toda la planta del pie; sin bloquear la rodilla arriba. Siente el muslo de la pierna que trabaja.', nv:2},
+  {id:'sentadilla_landmine', nm:'Sentadilla landmine', ms:'Cuádriceps · Core', z:'disco', t:'c', enf:'cuadriceps', ev:['rodilla'],
+   alt:{cuadriceps:['prensa_unilateral','sentadilla_salto','sentadilla_liga']}, aka:['landmine squat'], tip:'La barra al pecho funciona de contrapeso: baja profundo con el torso erguido y siente el muslo y el abdomen firmes.', nv:2},
+  {id:'sentadilla_salto', nm:'Sentadilla con salto', ms:'Cuádriceps · Glúteo', z:'corporal', t:'c', enf:'cuadriceps', ev:['rodilla'],
+   alt:{cuadriceps:['sentadilla_liga','pistol_trx','zancada_reversa']}, aka:['jump squat'], tip:'Sube explosivo y cae suave, absorbiendo con el muslo y glúteo; si la rodilla se mete, baja la altura.', nv:2},
+  {id:'pistol_trx', nm:'Sentadilla a una pierna asistida en TRX', ms:'Cuádriceps · Glúteo', z:'trx', t:'c', enf:'cuadriceps', ev:['rodilla'],
+   alt:{cuadriceps:['sentadilla_landmine','sentadilla_liga','prensa_unilateral']}, aka:['pistol asistida','sentadilla pistola'], tip:'Usa el TRX solo para equilibrio; baja lento sobre una pierna sintiendo muslo y glúteo, sin dejar caer la rodilla hacia adentro.', nv:3, lado:true},
+  {id:'ext_rodilla_liga', nm:'Extensión de rodilla con banda', ms:'Cuádriceps', z:'liga', t:'a', enf:'cuadriceps', ev:[],
+   alt:{cuadriceps:['ext_cuad','sentadilla_trx']}, aka:['extensión de cuádriceps con liga'], tip:'Sentado, estira la rodilla contra la banda y aprieta el muslo un segundo arriba.'},
+  {id:'sentadilla_isom_goblet', nm:'Sentadilla isométrica con mancuerna', ms:'Cuádriceps · Glúteo', z:'mancuernas', t:'a', enf:'cuadriceps', ev:['rodilla'],
+   alt:{cuadriceps:['split_isom','isom_cuad','sentadilla_pared']}, aka:['aguante de sentadilla con mancuerna'], tip:'Sostén la mancuerna al pecho en 90° de rodilla; siente el muslo ardiendo y respira sin soltar el torso.', iso:true, tt:[20,30,45]},
+  {id:'split_isom', nm:'Aguante de zancada (split squat isométrico)', ms:'Cuádriceps · Glúteo', z:'corporal', t:'a', enf:'cuadriceps', ev:['rodilla'],
+   alt:{cuadriceps:['sentadilla_isom_goblet','isom_cuad','sentadilla_pared']}, aka:['zancada isométrica'], tip:'Mantén la posición baja con el torso erguido; reparte el peso en la pierna delantera y siente muslo y glúteo.', nv:2, iso:true, tt:[15,25,40], lado:true},
+  {id:'hip_thrust_maquina', nm:'Hip thrust en máquina', ms:'Glúteo mayor', z:'maquina', t:'c', enf:'gluteo', ev:[],
+   alt:{gluteo:['hip_thrust_disco','puente','puente_liga']}, aka:['empuje de cadera en máquina'], tip:'Mentón al pecho y costillas abajo; sube con el glúteo y aprieta 2 segundos arriba.'},
+  {id:'hip_thrust_unilateral', nm:'Hip thrust a una pierna', ms:'Glúteo mayor', z:'banco', t:'c', enf:'gluteo', ev:[],
+   alt:{gluteo:['abduccion','clamshell','puente']}, aka:['hip thrust unilateral'], tip:'Cadera nivelada, pie apoyado completo; siente el glúteo de la pierna de apoyo hacer todo el trabajo.', nv:2, lado:true},
+  {id:'hip_thrust_disco', nm:'Hip thrust con disco', ms:'Glúteo mayor', z:'disco', t:'c', enf:'gluteo', ev:[],
+   alt:{gluteo:['hip_thrust_maquina','puente','hip_thrust_unilateral']}, aka:[], tip:'Acomoda el disco sobre la cadera con una toalla; sube apretando el glúteo, no arqueando la espalda.'},
+  {id:'puente_liga', nm:'Puente de glúteo con banda', ms:'Glúteo', z:'liga', t:'a', enf:'gluteo', ev:[],
+   alt:{gluteo:['abduccion','hip_thrust_unilateral','monster_walk']}, aka:['puente con liga'], tip:'Abre las rodillas contra la banda al subir; glúteo medio y mayor trabajan juntos.'},
+  {id:'puente_isom', nm:'Puente de glúteo isométrico', ms:'Glúteo', z:'corporal', t:'a', enf:'gluteo', ev:[],
+   alt:{gluteo:[]}, aka:['aguante de puente'], tip:'Sube la cadera y sostén apretando glúteo; no lo compenses arqueando la lumbar.', iso:true, tt:[20,30,45]},
+  {id:'patada_liga', nm:'Patada de glúteo con banda', ms:'Glúteo mayor', z:'liga', t:'a', enf:'gluteo', ev:[],
+   alt:{gluteo:['abduccion_polea','monster_walk','patada_maquina']}, aka:['patada con liga'], tip:'En cuatro apoyos, empuja el talón hacia atrás contra la banda sin arquear la espalda; el glúteo cierra el movimiento.'},
+  {id:'patada_maquina', nm:'Patada de glúteo en máquina', ms:'Glúteo mayor', z:'maquina', t:'a', enf:'gluteo', ev:[],
+   alt:{gluteo:['patada_polea','patada_liga','puente']}, aka:[], tip:'Empuja con el talón, no con la punta; pausa de 1 segundo arriba sintiendo el glúteo.'},
+  {id:'clamshell', nm:'Almeja con banda', ms:'Glúteo medio', z:'liga', t:'a', enf:'gluteo', ev:[],
+   alt:{gluteo:['monster_walk','hip_thrust_disco','abduccion_polea']}, aka:['clamshell'], tip:'De lado, abre la rodilla sin que la cadera se abra hacia atrás; siente el glúteo medio en el costado.'},
+  {id:'abduccion_polea', nm:'Abducción de cadera en polea', ms:'Glúteo medio', z:'polea', t:'a', enf:'gluteo', ev:[],
+   alt:{gluteo:['hip_thrust_unilateral','abduccion','puente']}, aka:[], tip:'Lleva la pierna hacia afuera con el tronco quieto; el costado de la cadera es el que debe arder.'},
+  {id:'sumo_mancuerna', nm:'Sentadilla sumo con mancuerna', ms:'Glúteo · Aductores', z:'mancuernas', t:'c', enf:'gluteo', ev:['rodilla'],
+   alt:{gluteo:['hip_thrust_unilateral','patada_polea','zancada_trx']}, aka:['sentadilla sumo'], tip:'Pies abiertos y puntas afuera; baja vertical y sube empujando los talones, apretando el glúteo arriba.'},
+  {id:'pm_sumo', nm:'Peso muerto sumo', ms:'Glúteo · Femorales · Aductores', z:'rack', t:'c', enf:'gluteo', ev:['lumbar'],
+   alt:{gluteo:['patada_liga','kb_swing','hip_thrust_maquina']}, aka:['sumo deadlift'], tip:'Espalda neutra, empuja el piso abriendo las rodillas; el glúteo termina el movimiento.', nv:2},
+  {id:'pull_through', nm:'Pull-through en polea', ms:'Glúteo · Femorales', z:'polea', t:'c', enf:'gluteo', ev:['lumbar'],
+   alt:{gluteo:['abduccion','puente_liga','step_up']}, aka:['jalón de cadera en polea'], tip:'Bisagra de cadera: lleva la cadera atrás sintiendo el femoral y cierra apretando el glúteo.'},
+  {id:'zancada_trx', nm:'Zancada con pie en TRX', ms:'Glúteo · Cuádriceps', z:'trx', t:'c', enf:'gluteo', ev:['rodilla'],
+   alt:{gluteo:['hip_thrust_unilateral','sumo_mancuerna','puente_liga']}, aka:['zancada suspendida','desplante con pie en TRX'], tip:'El pie atrasado cuelga del TRX; baja controlado sobre la pierna delantera y siente el glúteo trabajar.', nv:2, lado:true},
+  {id:'desplante_lateral', nm:'Desplante lateral', ms:'Glúteo · Cuádriceps · Aductores', z:'mancuernas', t:'c', enf:'gluteo', ev:['cadera','rodilla'],
+   alt:{gluteo:['hip_thrust_unilateral','step_up','hip_thrust_maquina']}, aka:['lateral lunge','zancada lateral'], tip:'Cadera atrás hacia el lado que baja, pierna contraria estirada; siente el glúteo y la cara interna del muslo.', nv:2},
+  {id:'curl_fem_liga', nm:'Curl femoral con banda', ms:'Femorales', z:'liga', t:'a', enf:'femoral', ev:[],
+   alt:{femoral:['curl_fem_fitball','curl_fem_sentado','curl_fem_trx']}, aka:[], tip:'Boca abajo, lleva el talón al glúteo contra la banda y baja lento; el femoral hace el trabajo.'},
+  {id:'curl_fem_trx', nm:'Curl femoral en TRX', ms:'Femorales · Glúteo', z:'trx', t:'a', enf:'femoral', ev:[],
+   alt:{femoral:['curl_fem','curl_fem_disco','curl_fem_fitball']}, aka:['curl de pierna en TRX'], tip:'Talones en las asas y cadera arriba; flexiona las rodillas sin dejar caer la cadera, sintiendo el femoral.', nv:2},
+  {id:'curl_fem_polea', nm:'Curl femoral en polea con tobillera', ms:'Femorales', z:'polea', t:'a', enf:'femoral', ev:[],
+   alt:{femoral:['curl_fem_liga','curl_fem_trx','curl_fem_disco']}, aka:[], tip:'De pie, lleva el talón al glúteo con el muslo quieto; baja en 3 segundos.', lado:true},
+  {id:'pm_unilateral', nm:'Peso muerto a una pierna con mancuerna', ms:'Femorales · Glúteo', z:'mancuernas', t:'c', enf:'femoral', ev:['lumbar'],
+   alt:{femoral:['good_morning','curl_fem_liga','curl_fem_trx']}, aka:['peso muerto unilateral','single leg rdl'], tip:'Cadera cuadrada, pierna libre atrás; baja con espalda neutra sintiendo el femoral estirarse.', nv:2, lado:true},
+  {id:'pm_rumano_smith', nm:'Peso muerto rumano en Smith', ms:'Femorales · Glúteo', z:'maquina', t:'c', enf:'femoral', ev:['lumbar'],
+   alt:{femoral:['good_morning','curl_fem_trx','curl_fem_fitball']}, aka:[], tip:'La barra roza las piernas; cadera atrás hasta sentir el estiramiento del femoral y sube con el glúteo.'},
+  {id:'pm_rigido_mancuerna', nm:'Peso muerto piernas rígidas con mancuernas', ms:'Femorales', z:'mancuernas', t:'c', enf:'femoral', ev:['lumbar'],
+   alt:{femoral:['pm_rumano_smith','curl_fem_fitball','curl_fem_liga']}, aka:['stiff leg deadlift'], tip:'Rodillas casi estiradas, baja las mancuernas pegadas a las piernas; el estiramiento va en el femoral.', nv:2},
+  {id:'curl_fem_disco', nm:'Curl femoral deslizando con discos', ms:'Femorales · Glúteo', z:'disco', t:'a', enf:'femoral', ev:[],
+   alt:{femoral:['curl_fem_liga','curl_fem_trx','curl_fem_fitball']}, aka:['curl con sliders','curl femoral deslizando'], tip:'Talones sobre los discos en el piso; desliza hacia afuera y regresa con el femoral, cadera siempre arriba.', nv:2},
+  {id:'puente_fem_isom', nm:'Puente isométrico con talones elevados', ms:'Femorales · Glúteo', z:'corporal', t:'a', enf:'femoral', ev:[],
+   alt:{femoral:[]}, aka:['aguante de puente de femoral'], tip:'Talones sobre un banco y cadera arriba; sostén sintiendo la parte trasera del muslo.', nv:2, iso:true, tt:[20,30,45]},
+  {id:'good_morning', nm:'Buenos días con barra', ms:'Femorales · Espalda baja', z:'rack', t:'c', enf:'femoral', ev:['lumbar'],
+   alt:{femoral:['pm_rumano_mancuerna','pm_rumano_smith','curl_fem_trx']}, aka:['good morning'], tip:'Bisagra de cadera con la barra en la espalda alta; espalda neutra y estiramiento en el femoral.', nv:3},
+  {id:'pantorrilla_sentado', nm:'Pantorrilla sentado en máquina', ms:'Sóleo', z:'maquina', t:'a', enf:'pantorrilla', ev:[],
+   alt:{pantorrilla:['pantorrilla_escalon','pantorrilla_mancuerna','pantorrilla_liga']}, aka:['gemelo sentado'], tip:'Rodillas dobladas trabajan el sóleo; sube alto, pausa 1 segundo arriba y baja hasta estirar.'},
+  {id:'pantorrilla_smith', nm:'Pantorrilla en Smith', ms:'Gemelos', z:'maquina', t:'a', enf:'pantorrilla', ev:[],
+   alt:{pantorrilla:['pantorrilla_mancuerna','pantorrilla_liga','pantorrilla_escalon']}, aka:[], tip:'Punta de los pies sobre un escalón; rango completo, pausa arriba y estiramiento abajo.'},
+  {id:'pantorrilla_mancuerna', nm:'Pantorrilla a una pierna con mancuerna', ms:'Gemelos', z:'mancuernas', t:'a', enf:'pantorrilla', ev:[],
+   alt:{pantorrilla:['pantorrilla_sentado','pantorrilla_escalon','pantorrilla_liga']}, aka:[], tip:'Apóyate con una mano; sube lento, pausa arriba y baja hasta estirar la pantorrilla.', lado:true},
+  {id:'pantorrilla_iso', nm:'Aguante de pantorrilla en punta', ms:'Gemelos · Sóleo', z:'corporal', t:'a', enf:'pantorrilla', ev:[],
+   alt:{pantorrilla:[]}, aka:['aguante en puntas'], tip:'Sube a la punta de los pies y sostén sin balancearte; siente la pantorrilla trabajando todo el tiempo.', iso:true, tt:[20,30,45]},
+  {id:'pantorrilla_liga', nm:'Flexión plantar con banda', ms:'Gemelos · Sóleo', z:'liga', t:'a', enf:'pantorrilla', ev:[],
+   alt:{pantorrilla:['pantorrilla_mancuerna','pantorrilla_smith','pantorrilla_escalon']}, aka:[], tip:'Sentado con la banda en la punta del pie, empuja hacia abajo y regresa lento.'},
+  {id:'press_banca_smith', nm:'Press banca en Smith', ms:'Pecho mayor · Tríceps', z:'maquina', t:'c', enf:'pecho', ev:['hombro'],
+   alt:{pecho:['press_mancuerna','lagartija','lagartija_trx']}, aka:[], tip:'Escápulas juntas y abajo; baja a la altura del pecho y empuja dirigiendo la fuerza al centro del pectoral.'},
+  {id:'press_declinado', nm:'Press declinado con mancuernas', ms:'Pecho (porción baja)', z:'mancuernas', t:'c', enf:'pecho', ev:['hombro'],
+   alt:{pecho:['press_banca','lagartija_inclinada','lagartija_liga']}, aka:['decline press'], tip:'Baja controlado hasta sentir el estiramiento bajo del pecho; sube juntando las mancuernas arriba.', nv:2},
+  {id:'press_suelo', nm:'Press en el suelo con mancuernas', ms:'Pecho mayor · Tríceps', z:'mancuernas', t:'c', enf:'pecho', ev:[],
+   alt:{pecho:['pec_deck','press_disco','cruce_poleas']}, aka:['floor press'], tip:'Los codos tocan el piso en cada bajada; pausa 1 segundo y empuja sintiendo el pecho.'},
+  {id:'press_disco', nm:'Press de pecho con disco (squeeze press)', ms:'Pecho mayor', z:'disco', t:'a', enf:'pecho', ev:[],
+   alt:{pecho:['pec_deck','press_suelo','aperturas_liga']}, aka:['squeeze press con disco'], tip:'Aprieta el disco con las palmas todo el recorrido; el pecho se contrae con esa presión constante.'},
+  {id:'lagartija_trx', nm:'Lagartijas en TRX', ms:'Pecho · Core · Hombro', z:'trx', t:'c', enf:'pecho', ev:['hombro'],
+   alt:{pecho:['fondos','press_liga','lagartija']}, aka:['push up en TRX'], tip:'Cuerpo en línea y codos a 45°; la inestabilidad del TRX te obliga a mantener el abdomen firme.', nv:2},
+  {id:'lagartija_inclinada', nm:'Lagartijas inclinadas (manos elevadas)', ms:'Pecho · Tríceps', z:'corporal', t:'c', enf:'pecho', ev:[],
+   alt:{pecho:['press_disco','press_suelo','cruce_poleas']}, aka:['lagartija en banco','push up inclinada'], tip:'Manos sobre un banco: más fácil para empezar. Baja el pecho al banco con el cuerpo en línea recta.'},
+  {id:'lagartija_liga', nm:'Lagartijas con banda', ms:'Pecho · Tríceps', z:'liga', t:'c', enf:'pecho', ev:['hombro'],
+   alt:{pecho:['lagartija_inclinada','cruce_poleas','press_disco']}, aka:['push up con liga'], tip:'La banda cruza tu espalda y sube la resistencia al final del empuje; aprieta el pecho arriba.', nv:2},
+  {id:'press_liga', nm:'Press de pecho con banda', ms:'Pecho mayor', z:'liga', t:'c', enf:'pecho', ev:['hombro'],
+   alt:{pecho:['press_banca','aperturas_trx','press_suelo']}, aka:['press con liga de pie'], tip:'Banda atrás de la espalda; empuja al frente juntando las manos al centro del pecho.'},
+  {id:'aperturas_trx', nm:'Aperturas en TRX', ms:'Pecho mayor', z:'trx', t:'a', enf:'pecho', ev:['hombro'],
+   alt:{pecho:['press_mancuerna','cruce_poleas','press_liga']}, aka:['fly en TRX'], tip:'Brazos casi estirados; abre y cierra como abrazando, sintiendo el estiramiento y la contracción del pecho.', nv:2},
+  {id:'aperturas_liga', nm:'Aperturas con banda', ms:'Pecho mayor', z:'liga', t:'a', enf:'pecho', ev:[],
+   alt:{pecho:['cruce_alto','lagartija_inclinada','press_maquina']}, aka:['cruce con liga'], tip:'Cruza los brazos al frente con ligera flexión de codo; aprieta el pecho 1 segundo al juntar.'},
+  {id:'lagartija_diamante', nm:'Lagartijas diamante', ms:'Tríceps · Pecho', z:'corporal', t:'c', enf:'triceps', ev:['hombro'],
+   alt:{triceps:['frances','patada_triceps','ext_triceps_trx']}, aka:['diamond push up'], tip:'Manos juntas bajo el pecho; codos pegados al cuerpo y siente el tríceps empujar al subir.', nv:2},
+  {id:'lagartija_declinada', nm:'Lagartijas declinadas (pies elevados)', ms:'Pecho superior · Hombro', z:'corporal', t:'c', enf:'pecho_sup', ev:['hombro'],
+   alt:{pecho_sup:['aperturas_inclinadas','press_inclinado','press_maquina_incl']}, aka:['push up con pies elevados'], tip:'Pies sobre un banco; el ángulo carga el pecho alto. Cuerpo en línea, sin hundir la cadera.', nv:2},
+  {id:'aperturas_inclinadas', nm:'Aperturas inclinadas con mancuernas', ms:'Pecho superior', z:'mancuernas', t:'a', enf:'pecho_sup', ev:['hombro'],
+   alt:{pecho_sup:['press_inclinado','press_maquina_incl','lagartija_declinada']}, aka:['incline fly'], tip:'Banco a 30°, codos ligeramente flexionados; abre sintiendo el estiramiento y cierra hacia arriba del pecho.', nv:2},
+  {id:'pecho_iso_palmas', nm:'Presión isométrica de palmas', ms:'Pecho mayor', z:'corporal', t:'a', enf:'pecho', ev:[],
+   alt:{pecho:[]}, aka:['aguante de palmas','squeeze isométrico'], tip:'Junta las palmas frente al pecho y empuja una contra otra a fondo; siente el centro del pectoral contraído.', iso:true, tt:[15,25,40]},
+  {id:'lagartija_isom', nm:'Aguante isométrico en lagartija (abajo)', ms:'Pecho · Tríceps · Core', z:'corporal', t:'a', enf:'pecho', ev:['hombro'],
+   alt:{pecho:['pecho_iso_palmas']}, aka:['aguante en fondo de lagartija'], tip:'Baja a medio recorrido y sostén con el cuerpo en línea; pecho y tríceps ardiendo sin hundir la cadera.', nv:2, iso:true, tt:[10,20,30]},
+  {id:'jalon_neutro', nm:'Jalón agarre neutro', ms:'Dorsal · Bíceps', z:'polea', t:'c', enf:'dorsal', ev:[],
+   alt:{dorsal:['dominada_asistida','jalon_liga']}, aka:['jalón con triángulo'], tip:'Lleva los codos a las costillas y saca el pecho; siente el dorsal debajo de la axila.'},
+  {id:'jalon_liga', nm:'Jalón con banda', ms:'Dorsal', z:'liga', t:'c', enf:'dorsal', ev:[],
+   alt:{dorsal:['dominada_asistida','jalon_unilateral']}, aka:['jalón con liga'], tip:'Banda anclada arriba; jala los codos hacia las caderas sintiendo la espalda y no los brazos.'},
+  {id:'dominada_neutra', nm:'Dominada agarre neutro', ms:'Dorsal · Bíceps', z:'funcional', t:'c', enf:'dorsal', ev:['hombro'],
+   alt:{dorsal:['jalon_liga','jalon_neutro','dominada_asistida']}, aka:['pull up neutro'], tip:'Inicia bajando los hombros y lleva el pecho hacia la barra; el dorsal jala, no el bíceps.', nv:3},
+  {id:'dominada_negativa', nm:'Dominada excéntrica (negativa)', ms:'Dorsal · Bíceps', z:'funcional', t:'c', enf:'dorsal', ev:['hombro'],
+   alt:{dorsal:['jalon_liga','dominada_asistida','jalon']}, aka:['negativas en barra'], tip:'Sube con ayuda del banco y baja en 4-5 segundos controlando; el dorsal frena el descenso.', nv:2},
+  {id:'dominada_isom', nm:'Aguante isométrico en barra (arriba)', ms:'Dorsal · Bíceps', z:'funcional', t:'a', enf:'dorsal', ev:['hombro'],
+   alt:{dorsal:[]}, aka:['aguante en dominada'], tip:'Sube con ayuda y mantén la barbilla sobre la barra; hombros abajo y dorsal activo.', nv:2, iso:true, tt:[10,20,30]},
+  {id:'remo_pecho_apoyado', nm:'Remo con mancuernas pecho apoyado', ms:'Espalda media · Dorsal', z:'banco', t:'c', enf:'espalda_media', ev:[],
+   alt:{espalda_media:['remo_mancuerna','remo_maquina','remo_polea']}, aka:['remo en banco inclinado','chest supported row'], tip:'Pecho apoyado en banco inclinado: la espalda baja descansa y las escápulas se juntan al subir.'},
+  {id:'remo_maquina', nm:'Remo en máquina con pecho apoyado', ms:'Espalda media', z:'maquina', t:'c', enf:'espalda_media', ev:[],
+   alt:{espalda_media:['remo_mancuerna','remo_liga','remo_pecho_apoyado']}, aka:['remo sentado en máquina'], tip:'Pecho pegado al respaldo; jala los codos atrás y aprieta las escápulas 1 segundo.'},
+  {id:'remo_unilateral_maq', nm:'Remo unilateral en máquina', ms:'Dorsal · Espalda media', z:'maquina', t:'c', enf:'espalda_media', ev:[],
+   alt:{espalda_media:['remo_trx','remo_liga','remo_pecho_apoyado']}, aka:['remo hammer'], tip:'Un brazo a la vez: lleva el codo a la cadera y siente cómo se cierra la escápula.', lado:true},
+  {id:'remo_liga', nm:'Remo sentado con banda', ms:'Espalda media', z:'liga', t:'c', enf:'espalda_media', ev:[],
+   alt:{espalda_media:['remo_invertido_smith','remo_polea','remo_mancuerna']}, aka:['remo con liga'], tip:'Jala la banda al abdomen con el pecho abierto; siente el cierre de las escápulas.'},
+  {id:'remo_t', nm:'Remo T con barra (landmine)', ms:'Espalda media · Dorsal', z:'disco', t:'c', enf:'espalda_media', ev:['lumbar'],
+   alt:{espalda_media:['remo_pecho_apoyado','remo_apoyo','remo_trx']}, aka:['landmine row','remo T'], tip:'Torso inclinado, espalda neutra; lleva el disco al pecho apretando la espalda media.', nv:2},
+  {id:'remo_invertido_smith', nm:'Remo invertido en Smith', ms:'Espalda media · Bíceps', z:'maquina', t:'c', enf:'espalda_media', ev:[],
+   alt:{espalda_media:['remo_polea','remo_pecho_apoyado','remo_mancuerna']}, aka:['remo invertido','inverted row'], tip:'Bajo la barra del Smith, cuerpo recto; jala el pecho a la barra sintiendo las escápulas juntarse.'},
+  {id:'superman', nm:'Superman', ms:'Espalda baja · Glúteo', z:'corporal', t:'a', enf:'espalda_media', ev:['lumbar'],
+   alt:{espalda_media:['remo_pecho_apoyado','remo_barra','remo_trx']}, aka:['extensión de espalda en suelo'], tip:'Boca abajo, levanta brazos y piernas sin forzar el cuello; siente la espalda y el glúteo contraerse.'},
+  {id:'superman_isom', nm:'Superman isométrico', ms:'Espalda baja · Glúteo', z:'corporal', t:'a', enf:'espalda_media', ev:['lumbar'],
+   alt:{espalda_media:[]}, aka:['aguante superman'], tip:'Eleva brazos y piernas y sostén mirando al piso; respira sin tensar el cuello.', iso:true, tt:[15,25,40]},
+  {id:'face_pull_liga', nm:'Face pull con banda', ms:'Deltoide posterior · Manguito', z:'liga', t:'a', enf:'deltoide_post', ev:[],
+   alt:{deltoide_post:['reverse_pec','pajaro','pajaro_trx']}, aka:['jalón a la cara con liga'], tip:'Banda a la altura de los ojos; jala separando las manos y rotando hacia afuera.'},
+  {id:'pec_deck_inverso', nm:'Pec deck inverso', ms:'Deltoide posterior', z:'maquina', t:'a', enf:'deltoide_post', ev:[],
+   alt:{deltoide_post:['pajaro_trx','face_pull_liga','face_pull']}, aka:['aperturas posteriores en máquina','reverse fly máquina'], tip:'Brazos casi estirados; abre llevando los codos atrás sin encoger los hombros.'},
+  {id:'pajaro_trx', nm:'Aperturas posteriores en TRX (T)', ms:'Deltoide posterior · Espalda media', z:'trx', t:'a', enf:'deltoide_post', ev:[],
+   alt:{deltoide_post:['face_pull','reverse_pec','face_pull_liga']}, aka:['T en TRX','reverse fly TRX'], tip:'Inclinado atrás, abre los brazos en T juntando escápulas; el hombro posterior hace el trabajo.'},
+  {id:'landmine_press', nm:'Press landmine a una mano', ms:'Deltoide anterior · Pecho superior', z:'disco', t:'c', enf:'deltoide', ev:['hombro'],
+   alt:{deltoide:['landmine','frontal_ligera','press_hombro_maquina']}, aka:['press con barra en esquina'], tip:'Empuja la barra hacia arriba y adelante; el ángulo es amable con el hombro.', nv:2, lado:true},
+  {id:'elev_frontal_disco', nm:'Elevación frontal con disco', ms:'Deltoide anterior', z:'disco', t:'a', enf:'deltoide', ev:['hombro'],
+   alt:{deltoide:['press_hombro_mancuerna','frontal_polea','landmine']}, aka:[], tip:'Sujeta el disco como volante y súbelo a la altura del hombro sin balancear el torso.'},
+  {id:'elev_lateral_liga', nm:'Elevación lateral con banda', ms:'Deltoide lateral', z:'liga', t:'a', enf:'deltoide_lat', ev:[],
+   alt:{deltoide_lat:['lateral_maquina','laterales','lateral_polea']}, aka:['elevaciones laterales con liga'], tip:'Pisa la banda y sube los codos a los lados hasta el hombro; siente el costado del hombro.'},
+  {id:'remo_menton', nm:'Remo al mentón agarre ancho', ms:'Deltoide lateral · Trapecio', z:'mancuernas', t:'c', enf:'deltoide_lat', ev:['cuello','hombro'],
+   alt:{deltoide_lat:['lateral_maquina','lateral_polea','elev_lateral_liga']}, aka:['upright row'], tip:'Agarre un poco más ancho que los hombros; sube los codos hasta la altura del hombro, sin pasar de ahí.', nv:2},
+  {id:'hombro_iso_lateral', nm:'Aguante lateral isométrico con mancuernas', ms:'Deltoide lateral', z:'mancuernas', t:'a', enf:'deltoide_lat', ev:['hombro'],
+   alt:{deltoide_lat:[]}, aka:['elevación lateral isométrica'], tip:'Sube los brazos a la altura del hombro y sostén; el costado del hombro arde sin encoger el cuello.', nv:2, iso:true, tt:[15,25,40]},
+  {id:'hombro_iso_frontal', nm:'Aguante frontal con disco', ms:'Deltoide anterior · Core', z:'disco', t:'a', enf:'deltoide', ev:['hombro'],
+   alt:{deltoide:[]}, aka:['aguante con disco al frente'], tip:'Disco al frente a la altura del pecho con brazos estirados; sostén sin arquear la espalda.', nv:2, iso:true, tt:[15,25,40]},
+  {id:'rot_int_liga', nm:'Rotación interna con banda', ms:'Manguito rotador', z:'liga', t:'a', enf:'manguito', ev:[],
+   alt:{manguito:['rotacion_polea','banda_rotacion','rot_ext_mancuerna']}, aka:[], tip:'Codo pegado al costado; lleva la mano hacia el abdomen lentamente, sintiendo el hombro por dentro.', lado:true},
+  {id:'rot_ext_mancuerna', nm:'Rotación externa acostado con mancuerna', ms:'Manguito rotador', z:'mancuernas', t:'a', enf:'manguito', ev:[],
+   alt:{manguito:['rotacion_polea','banda_rotacion','rot_int_liga']}, aka:['rotación externa de lado'], tip:'De lado con el codo apoyado en la cadera; sube la mancuerna ligera sin despegar el codo.', lado:true},
+  {id:'rot_ext_isom', nm:'Rotación externa isométrica en pared', ms:'Manguito rotador', z:'corporal', t:'a', enf:'manguito', ev:[],
+   alt:{manguito:[]}, aka:['isométrico de manguito'], tip:'Codo a 90°, empuja el dorso de la mano contra la pared sin moverte; siente el hombro trasero profundo.', iso:true, tt:[10,20,30], lado:true},
+  {id:'encogimiento_mancuerna', nm:'Encogimientos con mancuernas', ms:'Trapecio superior', z:'mancuernas', t:'a', enf:'trapecio', ev:['cuello'],
+   alt:{trapecio:['encogimiento_disco','encog_maquina']}, aka:['shrugs'], tip:'Sube los hombros hacia las orejas en vertical, pausa 1 segundo y baja lento; sin girar los hombros.'},
+  {id:'encogimiento_smith', nm:'Encogimientos en Smith', ms:'Trapecio superior', z:'maquina', t:'a', enf:'trapecio', ev:['cuello'],
+   alt:{trapecio:['encogimiento_mancuerna','encogimiento_disco']}, aka:[], tip:'Hombros directo hacia arriba, sin mover la cabeza; pausa arriba.'},
+  {id:'encogimiento_disco', nm:'Encogimientos con disco', ms:'Trapecio superior', z:'disco', t:'a', enf:'trapecio', ev:['cuello'],
+   alt:{trapecio:['encogimientos','encog_maquina']}, aka:[], tip:'Sujeta el disco al frente con los brazos estirados y encoge los hombros con control.'},
+  {id:'curl_inclinado', nm:'Curl inclinado con mancuernas', ms:'Bíceps (cabeza larga)', z:'mancuernas', t:'a', enf:'biceps', ev:['hombro'],
+   alt:{biceps:['curl_liga','curl_scott','curl_polea']}, aka:['incline curl'], tip:'Banco inclinado: el brazo cae atrás y el bíceps se estira más; sube sin mover el codo.', nv:2},
+  {id:'curl_concentrado', nm:'Curl concentrado', ms:'Bíceps', z:'mancuernas', t:'a', enf:'biceps', ev:[],
+   alt:{biceps:['curl_predicador','curl_scott','curl_trx']}, aka:[], tip:'Codo apoyado en el muslo; sube girando la muñeca y aprieta el pico del bíceps arriba.', lado:true},
+  {id:'curl_liga', nm:'Curl con banda', ms:'Bíceps', z:'liga', t:'a', enf:'biceps', ev:[],
+   alt:{biceps:['curl_barra','curl_polea','curl_trx']}, aka:['curl con liga'], tip:'Pisa la banda; sube con los codos pegados y siente la tensión creciente al final.'},
+  {id:'curl_trx', nm:'Curl en TRX', ms:'Bíceps', z:'trx', t:'a', enf:'biceps', ev:[],
+   alt:{biceps:['curl_scott','curl_mancuerna','curl_predicador']}, aka:['curl con TRX'], tip:'Inclinado atrás con codos arriba; dobla los codos llevando las manos a la frente.'},
+  {id:'curl_disco', nm:'Curl con disco', ms:'Braquial · Bíceps', z:'disco', t:'a', enf:'braquial', ev:[],
+   alt:{braquial:['curl_martillo','curl_cuerda']}, aka:['curl con disco al frente'], tip:'Sujeta el disco por los costados con codos pegados y súbelo al pecho.'},
+  {id:'curl_scott', nm:'Curl Scott con barra Z', ms:'Bíceps', z:'banco', t:'a', enf:'biceps', ev:[],
+   alt:{biceps:['curl_liga','curl_polea','curl_predicador']}, aka:['curl en banco predicador'], tip:'Brazos apoyados en el banco: no puedes hacer trampa; sube sin despegar el pecho y baja lento.'},
+  {id:'curl_isom', nm:'Curl isométrico a 90°', ms:'Bíceps · Braquial', z:'mancuernas', t:'a', enf:'biceps', ev:[],
+   alt:{biceps:[]}, aka:['aguante de curl'], tip:'Sostén la mancuerna con el codo a 90° sin balancear; el bíceps arde en la posición.', iso:true, tt:[15,25,40]},
+  {id:'ext_triceps_cuerda', nm:'Extensión de tríceps con cuerda', ms:'Tríceps', z:'polea', t:'a', enf:'triceps', ev:[],
+   alt:{triceps:['ext_triceps_maquina','patada_triceps','ext_triceps_liga']}, aka:['jalón de tríceps con cuerda'], tip:'Codos fijos a las costillas; abre la cuerda al final y aprieta el tríceps.'},
+  {id:'ext_triceps_liga', nm:'Extensión de tríceps con banda', ms:'Tríceps', z:'liga', t:'a', enf:'triceps', ev:[],
+   alt:{triceps:['ext_triceps','patada_triceps','ext_triceps_maquina']}, aka:['extensión de tríceps con liga'], tip:'Banda anclada arriba; extiende los codos sin moverlos del cuerpo.'},
+  {id:'patada_triceps', nm:'Patada de tríceps con mancuerna', ms:'Tríceps', z:'mancuernas', t:'a', enf:'triceps', ev:[],
+   alt:{triceps:['ext_triceps_cuerda','ext_triceps_maquina','ext_triceps_liga']}, aka:['kickback de tríceps'], tip:'Codo alto y pegado; extiende completo y aprieta 1 segundo.', lado:true},
+  {id:'ext_triceps_trx', nm:'Extensión de tríceps en TRX', ms:'Tríceps', z:'trx', t:'a', enf:'triceps', ev:['hombro'],
+   alt:{triceps:['fondos_banco','ext_triceps_disco','ext_triceps_liga']}, aka:['skull crusher en TRX'], tip:'Inclinado al frente con brazos extendidos; dobla solo los codos y empuja de vuelta.', nv:2},
+  {id:'fondos_maquina', nm:'Fondos asistidos en máquina', ms:'Tríceps · Pecho', z:'maquina', t:'c', enf:'triceps', ev:['hombro'],
+   alt:{triceps:['ext_triceps','ext_triceps_mancuerna','press_cerrado']}, aka:['fondos en máquina'], tip:'Codos pegados al torso; baja controlado y empuja sintiendo el tríceps.'},
+  {id:'frances_mancuerna', nm:'Press francés con mancuernas', ms:'Tríceps', z:'mancuernas', t:'a', enf:'triceps', ev:[],
+   alt:{triceps:['ext_triceps_liga','ext_triceps_cuerda','ext_triceps_maquina']}, aka:['skull crusher con mancuernas'], tip:'Codos apuntando al techo; baja las mancuernas junto a la cabeza y extiende con el tríceps.'},
+  {id:'ext_triceps_disco', nm:'Extensión de tríceps con disco sobre la cabeza', ms:'Tríceps', z:'disco', t:'a', enf:'triceps', ev:['hombro'],
+   alt:{triceps:['ext_triceps_mancuerna','ext_triceps_trx','frances']}, aka:[], tip:'Disco con ambas manos detrás de la cabeza; extiende hacia arriba con codos cerrados.'},
+  {id:'ext_triceps_maquina', nm:'Extensión de tríceps en máquina', ms:'Tríceps', z:'maquina', t:'a', enf:'triceps', ev:[],
+   alt:{triceps:['frances_mancuerna','ext_triceps_cuerda','ext_triceps_liga']}, aka:[], tip:'Codos apoyados; extiende completo y regresa lento.'},
+  {id:'plancha_trx', nm:'Plancha en TRX', ms:'Core · Hombro', z:'trx', t:'a', enf:'core', ev:['hombro'],
+   alt:{core:['plancha_alta','pallof_isom']}, aka:['plancha suspendida'], tip:'Pies en las asas y cuerpo en línea; la inestabilidad activa el abdomen más profundo.', nv:2, iso:true, tt:[15,25,40]},
+  {id:'plancha_disco', nm:'Plancha con disco en la espalda', ms:'Core', z:'disco', t:'a', enf:'core', ev:['lumbar'],
+   alt:{core:['plancha','pallof_isom','hiperext_isom']}, aka:['plancha con peso'], tip:'Alguien coloca el disco en tu espalda baja; mantén la línea recta sin hundir la cadera.', nv:3, iso:true, tt:[20,30,45]},
+  {id:'plancha_alta', nm:'Plancha alta (brazos extendidos)', ms:'Core · Hombro', z:'corporal', t:'a', enf:'core', ev:[],
+   alt:{core:['pallof_isom','plancha','plancha_lateral_elev']}, aka:['plancha en manos'], tip:'Manos bajo los hombros y glúteo apretado; empuja el piso para empujar los omóplatos.', iso:true, tt:[20,30,45]},
+  {id:'plancha_lateral_elev', nm:'Plancha lateral con pierna elevada', ms:'Oblicuos · Glúteo medio', z:'corporal', t:'a', enf:'core', ev:[],
+   alt:{core:['pallof_isom','plancha','plancha_alta']}, aka:['plancha lateral avanzada'], tip:'Cadera alta y pierna de arriba elevada; siente el oblicuo y el glúteo medio del costado de abajo.', nv:3, iso:true, tt:[15,25,35], lado:true},
+  {id:'plancha_lateral_trx', nm:'Plancha lateral en TRX', ms:'Oblicuos · Core', z:'trx', t:'a', enf:'core', ev:['hombro'],
+   alt:{core:['plancha_alta','pallof_isom']}, aka:[], tip:'Pies en las asas y cuerpo alineado de lado; el oblicuo sostiene toda la línea.', nv:3, iso:true, tt:[15,25,35], lado:true},
+  {id:'hollow', nm:'Hollow hold', ms:'Abdomen · Core', z:'corporal', t:'a', enf:'abdomen', ev:['lumbar'],
+   alt:{abdomen:[]}, aka:['aguante hueco','hollow body'], tip:'Lumbar pegada al piso, piernas y hombros elevados; abdomen contraído como una banana.', nv:2, iso:true, tt:[15,25,40]},
+  {id:'l_sit', nm:'Aguante en L (L-sit)', ms:'Abdomen · Tríceps', z:'funcional', t:'a', enf:'abdomen', ev:['hombro'],
+   alt:{abdomen:[]}, aka:['l sit en paralelas'], tip:'Empuja el piso o las paralelas y sostén las piernas al frente; abdomen y flexores de cadera en tensión.', nv:3, iso:true, tt:[10,15,25]},
+  {id:'pallof_isom', nm:'Pallof isométrico (sostén al frente)', ms:'Core · Oblicuos', z:'polea', t:'a', enf:'core', ev:[],
+   alt:{core:['plancha_lateral_elev','plancha','plancha_alta']}, aka:['pallof hold'], tip:'Brazos estirados al frente resistiendo la rotación del cable; abdomen firme y respiración tranquila.', iso:true, tt:[20,30,45], lado:true},
+  {id:'pallof_liga', nm:'Press Pallof con banda', ms:'Core · Oblicuos', z:'liga', t:'a', enf:'core', ev:[],
+   alt:{core:['plancha_toque','woodchop_polea','farmer_unilateral']}, aka:[], tip:'Banda al costado; empuja al frente sin dejar que te gire el tronco.', lado:true},
+  {id:'plancha_toque', nm:'Plancha con toque de hombro', ms:'Core · Hombro', z:'corporal', t:'a', enf:'core', ev:[],
+   alt:{core:['farmer_unilateral','woodchop_polea','woodchop_liga']}, aka:['shoulder tap plank'], tip:'Cadera quieta al tocar el hombro contrario; abdomen y glúteo apretados para no balancearte.', nv:2},
+  {id:'hiperext_isom', nm:'Aguante en hiperextensión', ms:'Espalda baja · Glúteo', z:'maquina', t:'a', enf:'core', ev:['lumbar'],
+   alt:{core:['plancha','pallof_isom','plancha_disco']}, aka:['aguante en banco de hiperextensiones'], tip:'Cuerpo en línea recta, sin pasarte de extensión; glúteo y espalda baja sostienen.', nv:2, iso:true, tt:[15,25,40]},
+  {id:'crunch', nm:'Crunch abdominal', ms:'Recto abdominal', z:'corporal', t:'a', enf:'abdomen', ev:[],
+   alt:{abdomen:['crunch_maquina','elev_rodillas_banco','crunch_bicicleta']}, aka:['abdominal corto'], tip:'Sube costillas hacia la pelvis exhalando; el movimiento es corto y el abdomen se aprieta arriba.'},
+  {id:'elev_rodillas_banco', nm:'Elevación de rodillas en banco', ms:'Abdomen bajo', z:'corporal', t:'a', enf:'abdomen', ev:[],
+   alt:{abdomen:['crunch_maquina','crunch','crunch_bicicleta']}, aka:[], tip:'Sentado al borde del banco, lleva las rodillas al pecho inclinando ligeramente el torso.'},
+  {id:'rodillas_trx', nm:'Rodillas al pecho en TRX', ms:'Abdomen · Core', z:'trx', t:'a', enf:'abdomen', ev:['hombro'],
+   alt:{abdomen:['crunch_bicicleta','crunch_maquina']}, aka:['pike y rodillas en TRX'], tip:'Posición de plancha con pies en las asas; lleva las rodillas al pecho redondeando la espalda.', nv:2},
+  {id:'rollout_trx', nm:'Fallout en TRX', ms:'Abdomen · Core', z:'trx', t:'a', enf:'abdomen', ev:['hombro','lumbar'],
+   alt:{abdomen:['elev_piernas','elev_rodillas_banco','crunch_maquina']}, aka:['fallout TRX'], tip:'Brazos hacia el frente inclinándote lentamente; el abdomen frena la caída.', nv:2},
+  {id:'giro_ruso_disco', nm:'Giro ruso con disco', ms:'Oblicuos', z:'disco', t:'a', enf:'core', ev:['lumbar'],
+   alt:{core:['woodchop_liga','pallof','farmer']}, aka:['russian twist'], tip:'Gira el torso (no solo los brazos) a cada lado con el disco; siente los oblicuos.', nv:2},
+  {id:'woodchop_polea', nm:'Leñador en polea', ms:'Oblicuos · Core', z:'polea', t:'a', enf:'core', ev:[],
+   alt:{core:['farmer','plancha_toque','woodchop_liga']}, aka:['wood chop','tala en polea'], tip:'Gira desde el torso, pivotando el pie; los brazos solo conducen.', lado:true},
+  {id:'woodchop_liga', nm:'Leñador con banda', ms:'Oblicuos · Core', z:'liga', t:'a', enf:'core', ev:[],
+   alt:{core:['woodchop_polea','farmer_unilateral','escaladores']}, aka:[], tip:'Banda anclada alta; baja en diagonal girando el tronco y controla el regreso.', lado:true},
+  {id:'escaladores', nm:'Escaladores', ms:'Core · Hombro', z:'corporal', t:'a', enf:'core', ev:[],
+   alt:{core:['pallof_liga','farmer_unilateral','woodchop_polea']}, aka:['mountain climber'], tip:'Cadera nivelada y abdomen firme; lleva las rodillas al pecho alternando a ritmo constante.'},
+  {id:'crunch_bicicleta', nm:'Crunch bicicleta', ms:'Oblicuos · Abdomen', z:'corporal', t:'a', enf:'abdomen', ev:[],
+   alt:{abdomen:['crunch_maquina','crunch','elev_rodillas_banco']}, aka:['bicycle crunch'], tip:'Lleva el codo hacia la rodilla contraria rotando el torso, sin jalar el cuello.'},
+  {id:'tijeras_abd', nm:'Tijeras (flutter kicks)', ms:'Abdomen bajo', z:'corporal', t:'a', enf:'abdomen', ev:['lumbar'],
+   alt:{abdomen:['crunch_maquina','elev_piernas']}, aka:['flutter kicks'], tip:'Lumbar pegada al piso; patadas cortas alternas sintiendo el abdomen bajo.', nv:2},
+  {id:'caminata_disco_alto', nm:'Caminata con disco sobre la cabeza', ms:'Core · Hombro', z:'disco', t:'c', enf:'core', ev:['hombro'],
+   alt:{core:['farmer','woodchop_polea','escaladores']}, aka:['overhead carry'], tip:'Disco con brazos estirados sobre la cabeza y costillas abajo; camina erguido con el abdomen firme.', nv:2},
+  {id:'caminadora_trote', nm:'Trote en caminadora', ms:'Sistema cardiovascular', z:'cardio', t:'c', enf:'cardio', ev:['rodilla'],
+   alt:{cardio:['cuerda_salto','trineo']}, aka:['trote','correr en caminadora'], tip:'Zancada corta y ritmo parejo; respira por nariz y boca y mantén la zona de frecuencia cardíaca.'},
+  {id:'bici_aire', nm:'Bicicleta de aire', ms:'Sistema cardiovascular', z:'cardio', t:'c', enf:'cardio', ev:[],
+   alt:{cardio:['trineo','caminadora_incl','eliptica']}, aka:['assault bike','air bike'], tip:'Empuja y jala con brazos y piernas a la vez; ideal para intervalos cortos de alta intensidad.', nv:2},
+  {id:'escaladora', nm:'Escaladora (stair climber)', ms:'Sistema cardiovascular · Glúteo', z:'cardio', t:'c', enf:'cardio', ev:['rodilla'],
+   alt:{cardio:['trineo','cuerda_salto']}, aka:['stair master','escaleras'], tip:'Postura erguida sin colgarte de los barandales; empuja con todo el pie.'},
+  {id:'ski_erg', nm:'Esquiadora (ski erg)', ms:'Sistema cardiovascular · Dorsal', z:'cardio', t:'c', enf:'cardio', ev:[],
+   alt:{cardio:['trineo','caminadora_incl','eliptica']}, aka:['ski erg'], tip:'Jala con el dorsal y la cadera, no solo con los brazos; ritmo constante.', nv:2},
+  {id:'cuerda_salto', nm:'Salto de cuerda', ms:'Sistema cardiovascular', z:'corporal', t:'c', enf:'cardio', ev:['rodilla'],
+   alt:{cardio:['eliptica','trineo']}, aka:['saltar la cuerda'], tip:'Saltos cortos sobre el antepié con las muñecas haciendo el giro; aterriza suave.'},
+  {id:'cuerdas_batalla', nm:'Cuerdas de batalla', ms:'Sistema cardiovascular · Hombro', z:'funcional', t:'c', enf:'cardio', ev:['hombro'],
+   alt:{cardio:['caminadora_incl','eliptica','bici']}, aka:['battle ropes'], tip:'Rodillas flexionadas y core firme; ondas alternas desde el hombro, sin encoger el cuello.', nv:2},
+  {id:'burpee', nm:'Burpees', ms:'Sistema cardiovascular · Cuerpo completo', z:'corporal', t:'c', enf:'cardio', ev:['hombro','rodilla'],
+   alt:{cardio:['bici_aire','trineo']}, aka:['burpee'], tip:'Pecho al piso, salto controlado al final; mantén el abdomen firme y regula el ritmo.', nv:2},
+  {id:'trineo', nm:'Empuje de trineo', ms:'Sistema cardiovascular · Piernas', z:'funcional', t:'c', enf:'cardio', ev:[],
+   alt:{cardio:['caminadora_incl','eliptica','bici']}, aka:['sled push'], tip:'Torso inclinado, brazos estirados y pasos potentes; empuja con las piernas todo el tiempo.'},
+  {id:'jumping_jacks', nm:'Jumping jacks', ms:'Sistema cardiovascular', z:'corporal', t:'c', enf:'cardio', ev:['rodilla'],
+   alt:{cardio:['escaladora','trineo']}, aka:['saltos de tijera'], tip:'Aterriza suave y coordina brazos y piernas; ideal de calentamiento o circuito.'},
 ];
 
 /* ── CLASES GRUPALES DEL CLUB ──
@@ -374,8 +637,12 @@ function kbBuscar(nombre){
   if(m) return m;
   // coincidencia parcial: el nombre contiene el del catálogo (el más largo gana)
   const cands=KB_EJERCICIOS.flatMap(e=>[e.nm,...(e.aka||[])].map(x=>({e,k:kbNorm(x)})))
-    .filter(o=>o.k.length>4 && (n.includes(o.k)||o.k.includes(n))).sort((a,b)=>b.k.length-a.k.length);
-  return cands.length?cands[0].e:null;
+    .filter(o=>o.k.length>4 && (n.includes(o.k)||o.k.includes(n)));
+  // 1º el nombre dado CONTIENE al del catálogo (gana el más largo); 2º el del catálogo contiene al dado (gana el más corto)
+  const a=cands.filter(o=>n.includes(o.k)).sort((x,y)=>y.k.length-x.k.length);
+  if(a.length) return a[0].e;
+  const b=cands.sort((x,y)=>x.k.length-y.k.length);
+  return b.length?b[0].e:null;
 }
 const KB_ENFOQUES = {cuadriceps:'Cuádriceps',gluteo:'Glúteo',femoral:'Femorales',pantorrilla:'Pantorrilla',pecho:'Pecho',pecho_sup:'Pecho superior',
   dorsal:'Dorsal',espalda_media:'Espalda media',deltoide:'Hombro (frontal)',deltoide_lat:'Hombro lateral',deltoide_post:'Hombro posterior',
@@ -864,7 +1131,8 @@ canvas.chart{width:100%;height:170px;display:block;}
 .m-sub{font-size:14px;color:var(--mu);margin-bottom:18px;}
 .m-sets{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;}
 .set-r{display:grid;grid-template-columns:26px 1fr 104px 40px;align-items:center;gap:8px;padding:10px 12px;background:var(--gl);border:1px solid var(--b);border-radius:var(--r-md);}
-.set-r.iso{grid-template-columns:26px 1fr 40px;}
+.set-r.iso{grid-template-columns:22px 1fr 58px 64px 40px;gap:6px;padding:10px 8px;}
+.set-r.iso .set-i{font-size:13px;}
 .set-n{font-family:var(--fd);font-weight:800;font-size:20px;color:var(--mu);}
 .set-i{font-size:14px;font-weight:600;color:var(--tx);}
 .set-kg{width:100%;height:40px;padding:0 4px;background:var(--in-bg);border:1.5px solid var(--b);border-radius:12px;font-family:var(--fd);font-weight:800;font-size:16px;color:var(--tx);outline:none;text-align:center;caret-color:var(--v);}
@@ -2894,8 +3162,9 @@ function calcEvolucion(s){
 
   // Volumen total esta semana (kg levantados aprox)
   const volSemana = ses.filter(x=>x.ts>=iniSem).reduce((a,x)=>a+(x.volumen||0),0);
+  const tutSemana = ses.filter(x=>x.ts>=iniSem).reduce((a,x)=>a+(x.tut||0),0);
 
-  return { total, estaSemana, adherencia, racha, deltaPeso, volSemana, ult4 };
+  return { total, estaSemana, adherencia, racha, deltaPeso, volSemana, tutSemana, ult4 };
 }
 
 // ── Mapa de rendimiento: fuerza, resistencia, constancia, volumen y nivel del socio ──
@@ -3968,7 +4237,7 @@ INSTRUCCIONES DE FORMATO
 Responde ÚNICAMENTE con JSON válido, sin texto adicional, sin backticks, sin comentarios.
 El campo "tip" de cada ejercicio DEBE ser una instrucción propioceptiva específica (dónde sentir, en qué ángulo, qué músculo exacto).
 El campo "peso" debe ser descriptivo: "Ligero — 40% 1RM", "Moderado — 60% 1RM", "Isométrico — sin carga", etc.
-El campo "reps" debe incluir el rango y el propósito: "6 reps — fuerza", "15 reps — resistencia", "45 seg — isométrico".
+El campo "reps" debe incluir el rango y el propósito: "6 reps — fuerza", "15 reps — resistencia", "45 seg — isométrico". Los ejercicios isométricos (plancha, sentadilla isométrica, aguantes) SIEMPRE se prescriben por TIEMPO: "series" = rondas y "reps" = segundos por ronda (ej. 3 rondas × "30 seg — isométrico", "por lado" si es unilateral); el tiempo sube con el nivel del socio y nunca se expresa en repeticiones.
 
 {
   "perfil": {
@@ -4068,7 +4337,14 @@ function ctxQuiz(){
   return ctxDesdePerfil({nivel:qAnswers.nivel,objetivo:qAnswers.objetivo,limitaciones:qAnswers.limitaciones}, ent&&ent.filosofia);
 }
 function mostrarPreview(data){
-  try{ normalizarRutinaIA(data); enriquecerSemana(data.semana, ctxQuiz(), (qAnswers.nombre||'')+Date.now()); }
+  try{
+    normalizarRutinaIA(data);
+    const ctxP=ctxQuiz(), entP=qAnswers.entrenadorId?getEntrenador(qAnswers.entrenadorId):null;
+    const semillaP=(qAnswers.nombre||'')+Date.now();
+    if(data.origen==='plantilla') diversificarSemana(data.semana, ctxP, entP&&entP.filosofia, semillaP);
+    ajustarIsometricos(data.semana, ctxP);
+    enriquecerSemana(data.semana, ctxP, semillaP);
+  }
   catch(e){ console.warn('No se pudo enriquecer la rutina',e); }
   window._rutinaTemp = data;
   renderPreview(data);
@@ -5458,7 +5734,7 @@ function renderProgresoTab(){
     : '<div class="empty-msg">Registra los kg que usas en cada ejercicio<br>y aquí aparecerán tus récords personales.</div>';
 
   const sesHTML = ses.length
-    ? ses.map(x=>`<div class="ses-row"><div class="ses-f">${fmtFecha(x.fecha)}</div><div><div class="ses-t">${esc(sc(x.tipo))}</div><div style="font-size:11.5px;color:var(--mu);font-family:var(--fb)">${x.ejercicios} ejercicios completados</div></div><div class="ses-e">${x.volumen?Math.round(x.volumen)+' kg vol.':''}</div></div>`).join('')
+    ? ses.map(x=>`<div class="ses-row"><div class="ses-f">${fmtFecha(x.fecha)}</div><div><div class="ses-t">${esc(sc(x.tipo))}</div><div style="font-size:11.5px;color:var(--mu);font-family:var(--fb)">${x.ejercicios} ejercicios completados</div></div><div class="ses-e">${x.volumen?Math.round(x.volumen)+' kg vol.':''}${x.tut>=20?(x.volumen?' · ':'')+fmtTut(x.tut)+' iso':''}</div></div>`).join('')
     : '<div class="empty-msg">Aún no hay sesiones registradas.<br>Al finalizar tu primera sesión aparecerá aquí.</div>';
 
   const delta = ev.deltaPeso===null ? '' :
@@ -5477,7 +5753,7 @@ function renderProgresoTab(){
     <div class="card">
       <div class="card-t">${it('calendar','sm')}Consistencia<span class="card-t-r">${ev.estaSemana}/${s.dias} días</span></div>
       <div class="cons">${DIAS_ORDER.map((k,i)=>`<div class="cons-d${sem[i]?' ok':''}${k===HOY_KEY?' hoy':''}"><i>${sem[i]?ico('check'):''}</i><span>${'LMXJVSD'[i]}</span></div>`).join('')}</div>
-      <div class="cons-v">${ev.volSemana>0?Math.round(ev.volSemana).toLocaleString()+' kg de volumen total esta semana':'Completa una sesión para sumar volumen'}</div>
+      <div class="cons-v">${ev.volSemana>0?Math.round(ev.volSemana).toLocaleString()+' kg de volumen total esta semana':(ev.tutSemana>0?'':'Completa una sesión para sumar volumen')}${ev.tutSemana>0?(ev.volSemana>0?' · ':'')+fmtTut(ev.tutSemana)+' de isométricos esta semana':''}</div>
     </div>
 
     <div class="card">
@@ -7107,11 +7383,106 @@ function esEjCardio(e){
   const d=datosEj(e);
   return d.enf==='cardio' || /cardio|caminad|bici|el[ií]ptica|trote|correr|remo erg[oó]?metro/i.test(nm);
 }
-// Ejercicios isométricos (plancha, sostenes, etc.): se miden por tiempo/rondas, no por peso —
-// se detecta por el propio texto de "reps" ("45 seg — isométrico"), igual que se arma en generarSesion().
+// ═════════════════════════════════════════
+// ISOMÉTRICOS — se miden por TIEMPO (rondas × segundos), nunca por repeticiones.
+// Un ejercicio es isométrico si el catálogo lo marca (iso:true), si dice "isométrico"
+// o si su prescripción es solo de segundos ("30 seg", "6 seg × 8") sin repeticiones.
+// ═════════════════════════════════════════
 function esEjIsometrico(e){
-  const reps=String(e.reps||'');
-  return /isom[eé]tric/i.test(reps) || /isom[eé]tric/i.test(e.nm||e.nombre||'');
+  const reps=String(e.reps||''), nm=e.nm||e.nombre||'';
+  if(/isom[eé]tric/i.test(reps) || /isom[eé]tric/i.test(nm)) return true;
+  if(esEjCardio(e)) return false;
+  const kb=kbBuscar(nm); if(kb && kb.iso) return true;
+  return /\d\s*seg\b/i.test(reps) && !/rep/i.test(reps);
+}
+// ¿se hace por lado? (plancha lateral, pallof, rotaciones...) → el tiempo bajo tensión cuenta por los dos lados
+function ladoIso(e){
+  if(/por lado|por pierna|por brazo|cada lado|c\/lado/i.test(String(e.reps||''))) return true;
+  const kb=kbBuscar(e.nm||e.nombre); return !!(kb && kb.lado);
+}
+// Segundos objetivo de UNA ronda (un lado). "30 seg"→30 · "6 seg × 8"→48 · "1 min"→60
+function segMetaIso(e,nivel){
+  const r=String(e.reps||'');
+  let m=r.match(/(\d+)\s*seg\s*[×x]\s*(\d+)/i); if(m) return (+m[1])*(+m[2]);
+  m=r.match(/(\d+)\s*min/i); if(m) return (+m[1])*60;
+  m=r.match(/(\d+)\s*seg/i); if(m) return +m[1];
+  const kb=kbBuscar(e.nm||e.nombre);
+  const nv=nivel||((typeof activeSocio!=='undefined'&&activeSocio)?nivelNum(activeSocio.nivel):2);
+  return (kb&&kb.tt?kb.tt[Math.max(0,Math.min(2,nv-1))]:30)||30;
+}
+// Tiempo bajo tensión isométrico PRESCRITO de una lista de ejercicios (segundos)
+function tutIsoPrescrito(ejs,nivel){
+  return (ejs||[]).reduce((a,e)=>esEjIsometrico(e)?a+(parseInt(e.series)||0)*segMetaIso(e,nivel)*(ladoIso(e)?2:1):a,0);
+}
+function fmtTut(seg){ seg=Math.round(seg||0); return seg>=90 ? (Math.round(seg/6)/10)+' min' : seg+' s'; }
+// Dosis por nivel: principiante 3 rondas cortas · intermedio 3 · avanzado 4 rondas largas
+function dosisIsometrico(kb,nivel){
+  const tt=kb.tt||[20,30,45];
+  return {series: nivel>=3?4:3, reps: tt[Math.max(0,Math.min(2,nivel-1))]+' seg'+(kb.lado?' por lado':'')+' — isométrico'};
+}
+function ajustarIsometricos(semana,ctx){
+  if(ctx.sinMetodos||ctx.soloSuaves) return semana; // flexibilidad / rehabilitación traen su propio protocolo
+  (semana||[]).forEach(d=>{ if(!d||!Array.isArray(d.ejercicios)) return;
+    d.ejercicios.forEach(e=>{
+      const nm=e.nm||e.nombre; if(!nm||esEjCardio(e)) return;
+      const kb=kbBuscar(nm); if(!kb||!kb.iso) return;
+      const ds=dosisIsometrico(kb,ctx.nivel);
+      e.series=ds.series; e.reps=ds.reps;
+      if(!e.peso||/1RM|moderado|progresiva|ligero/i.test(e.peso)) e.peso=(kb.z==='corporal'||kb.z==='trx')?'Corporal':'Corporal o carga extra ligera';
+      if(!e.descanso) e.descanso='45 seg entre rondas';
+    });
+  });
+  return semana;
+}
+
+// ═════════════════════════════════════════
+// VARIEDAD — la plantilla local ahora reparte ejercicios del catálogo completo
+// (máquinas, peso libre, mancuernas, ligas, TRX, discos) respetando lesiones, nivel
+// y la filosofía del entrenador elegido: equipo preferido, trabajo unilateral,
+// variedad, ejercicios firma y los que NUNCA programa.
+// ═════════════════════════════════════════
+function aplicarEjCatalogo(e,x){
+  e.nombre=x.nm; e.nm=x.nm; e.musculo=x.ms; e.ms=x.ms; e.enf=x.enf;
+  e.tip=x.tip||('Siente el músculo objetivo ('+x.ms+') durante todo el recorrido y controla la bajada.');
+  delete e.alternativas; delete e.metodo; delete e.grupo;
+  if(x.z==='corporal'||x.z==='trx') e.peso='Corporal';
+  else if(x.z==='liga') e.peso='Banda — resistencia media';
+  else if(!e.peso||/^(corporal|banda|sin carga)/i.test(e.peso)) e.peso='Moderado — 50% 1RM';
+}
+function diversificarSemana(semana,ctx,filo,semilla){
+  if(ctx.sinMetodos||ctx.soloSuaves) return semana;
+  const f=filo||{}, se=f.seleccion||{};
+  const variedad=(f.exerciseStyle&&f.exerciseStyle.variety)||3;
+  const pCambio=({1:.2,2:.4,3:.6,4:.8,5:.9})[variedad]||.6;
+  const lista=s=>String(s||'').split(/[,;\n]+/).map(kbNorm).filter(x=>x.length>2);
+  const nunca=lista(se.nunca), firma=lista(se.firma);
+  const rnd=prng('div|'+semilla);
+  const usados=new Set();
+  const libres=['mancuernas','rack','banco','funcional','disco'], guiadas=['maquina','polea'];
+  (semana||[]).forEach(d=>{
+    if(!d||!Array.isArray(d.ejercicios)||/descanso|complemento/i.test(d.tipo||'')) return;
+    d.ejercicios.forEach(e=>{
+      const nm=e.nm||e.nombre; if(!nm||esEjCardio(e)) return;
+      const kb=kbBuscar(nm); if(!kb||!kb.enf||kb.enf==='cardio') return;
+      const prohibido=nunca.some(n=>kbNorm(nm).includes(n));
+      const esFirma=firma.some(n=>kbNorm(nm).includes(n));
+      const cands=KB_EJERCICIOS.filter(x=>x.enf===kb.enf && x.id!==kb.id && x.t===kb.t && !!x.iso===!!kb.iso && !usados.has(x.id)
+        && !ctx.les.some(l=>(x.ev||[]).includes(l)) && (x.nv||1)<=ctx.nivel
+        && !nunca.some(n=>kbNorm(x.nm).includes(n)));
+      if(!cands.length || (!prohibido && (esFirma || rnd()>pCambio))){ usados.add(kb.id); return; }
+      const w=cands.map(x=>{ let v=1;
+        if(ctx.equipo>=4 && libres.includes(x.z)) v+=2; else if(ctx.equipo<=2 && guiadas.includes(x.z)) v+=2;
+        if(firma.some(n=>kbNorm(x.nm).includes(n))) v+=6;
+        const uni=!!x.lado || /unilateral|una pierna|a una|alterno|b[uú]lgara|zancada|desplante|step/i.test(x.nm);
+        if(se.unilateral>=4 && uni) v+=2; else if(se.unilateral<=2 && uni) v=Math.max(.3,v-.7);
+        return v; });
+      let r=rnd()*w.reduce((a,b)=>a+b,0), pick=cands[cands.length-1];
+      for(let i=0;i<cands.length;i++){ r-=w[i]; if(r<=0){ pick=cands[i]; break; } }
+      usados.add(pick.id);
+      aplicarEjCatalogo(e,pick);
+    });
+  });
+  return semana;
 }
 function cargaLesion(ctx,d){
   return ctx.les.some(l=>(d.kb&&(d.kb.ev||[]).includes(l)) || (ZONA_LESION_ENF[l]||[]).includes(d.enf));
@@ -7315,6 +7686,7 @@ function openDay(key){
   document.getElementById('det-stats').innerHTML=ejs.length?`
     <div class="ds">${ico('layers')}<b>${ejs.length}</b><span>Ejercicios</span></div>
     <div class="ds">${ico('dumbbell')}<b>${series}</b><span>Series</span></div>
+    ${tutIsoPrescrito(ejs,nivelNum(s.nivel))>0?`<div class="ds">${ico('timer')}<b>${fmtTut(tutIsoPrescrito(ejs,nivelNum(s.nivel)))}</b><span>Isométrico</span></div>`:''}
     <div class="ds">${ico('target')}<b>${esc(sc(s.nivel))}</b><span>Nivel</span></div>`:'';
   document.getElementById('btn-finalizar').style.display = key===HOY_KEY ? 'flex':'none';
 
@@ -7560,10 +7932,16 @@ function openModal(idx){
   const n=parseInt(ej.series)||4;
   const esIso=esEjIsometrico(ej);
   if(head) head.style.display=esIso?'none':'';
-  document.getElementById('m-sets').innerHTML=Array.from({length:n},(_,i)=> esIso ? `
+  const metaIso=esIso?segMetaIso(ej):0, ladoI=esIso&&ladoIso(ej);
+  const capIso=esIso?`<div style="font-size:12px;color:var(--mu);font-family:var(--fb);line-height:1.45;padding:0 4px 6px">⏱ Se mide por <b>tiempo</b>: anota los segundos que sostuviste en cada ronda${ladoI?' (por lado)':''}. Si usas carga extra (disco, mancuerna), anótala en ${unidadPeso}.</div>`:'';
+  document.getElementById('m-sets').innerHTML=capIso+Array.from({length:n},(_,i)=> esIso ? `
     <div class="set-r iso">
       <div class="set-n">${i+1}</div>
-      <div class="set-i">${esc(repsDeSerie(ej,i))}</div>
+      <div class="set-i">Meta ${metaIso} s${ladoI?' / lado':''}</div>
+      <input class="set-kg" type="number" inputmode="numeric" placeholder="seg" title="Segundos sostenidos"
+        value="${saved[i]?.seg!=null?saved[i].seg:''}" onchange="setSeg(${idx},${i},this.value)" onclick="event.stopPropagation()">
+      <input class="set-kg" type="number" inputmode="decimal" step="0.5" placeholder="+${unidadPeso}" title="Carga extra (opcional)"
+        value="${saved[i]?.kg!=null?kgToDisplay(saved[i].kg):''}" onchange="setKg(${idx},${i},this.value)" onclick="event.stopPropagation()">
       <div class="set-d ${saved[i]?.ok?'ok':''}" onclick="setOk(${idx},${i},this)">${saved[i]?.ok?'✓':''}</div>
     </div>` : `
     <div class="set-r">
@@ -7597,6 +7975,11 @@ function setKg(idx,i,v){
   if(!sesionTemp.ej[idx].sets[i]) sesionTemp.ej[idx].sets[i]={};
   sesionTemp.ej[idx].sets[i].kg=displayToKg(v);
 }
+function setSeg(idx,i,v){
+  if(!sesionTemp.ej[idx]) sesionTemp.ej[idx]={done:false,sets:[]};
+  if(!sesionTemp.ej[idx].sets[i]) sesionTemp.ej[idx].sets[i]={};
+  sesionTemp.ej[idx].sets[i].seg = (v===''||+v<=0)?null:Math.round(+v);
+}
 function setOk(idx,i,el){
   if(!sesionTemp.ej[idx]) sesionTemp.ej[idx]={done:false,sets:[]};
   if(!sesionTemp.ej[idx].sets[i]) sesionTemp.ej[idx].sets[i]={};
@@ -7613,7 +7996,7 @@ function finalizarSesion(){
   if(!s0){ showToast('⚠ Vuelve a entrar con tu código para registrar la sesión'); return; }
   if(!sesionTemp){ showToast('⚠ Abre el día desde tu rutina para registrar la sesión'); return; }
   const idxs0=Object.keys(sesionTemp.ej);
-  const hechos0=idxs0.filter(i=>sesionTemp.ej[i].done || (sesionTemp.ej[i].sets||[]).some(x=>x&&(x.ok||x.kg))).length;
+  const hechos0=idxs0.filter(i=>sesionTemp.ej[i].done || (sesionTemp.ej[i].sets||[]).some(x=>x&&(x.ok||x.kg||x.seg))).length;
   if(hechos0===0) uiConfirm('No marcaste ningún ejercicio. ¿Registrar la sesión de todas formas?',finalizarSesionConfirmada,{label:'Registrar de todas formas'});
   else finalizarSesionConfirmada();
 }
@@ -7625,7 +8008,7 @@ function finalizarSesionConfirmada(reemplazar){
     const d=s.rutina[sesionTemp.diaKey];
     if(!d){ showToast('⚠ No se encontró la rutina de ese día'); return; }
     const idxs=Object.keys(sesionTemp.ej);
-    const hechos=idxs.filter(i=>sesionTemp.ej[i].done || (sesionTemp.ej[i].sets||[]).some(x=>x&&(x.ok||x.kg))).length;
+    const hechos=idxs.filter(i=>sesionTemp.ej[i].done || (sesionTemp.ej[i].sets||[]).some(x=>x&&(x.ok||x.kg||x.seg))).length;
     const hoy=fechaISO(new Date());
     const previa=s.logs.sesiones.find(x=>x.fecha===hoy);
     if(previa && !reemplazar){
@@ -7636,7 +8019,7 @@ function finalizarSesionConfirmada(reemplazar){
     if(previa) s.logs.sesiones=s.logs.sesiones.filter(x=>x.fecha!==hoy);
 
     // Volumen y PRs
-    let volumen=0; const cambios=[], detalle=[];
+    let volumen=0, tutSes=0; const cambios=[], detalle=[];
     idxs.forEach(i=>{
       const ej=d.ejercicios[i]; if(!ej) return;
       const alt=ejEjecutado(ej,i);
@@ -7645,8 +8028,22 @@ function finalizarSesionConfirmada(reemplazar){
       // Detalle por ejercicio: peso máximo y series hechas (para proponer la progresión)
       const sets=(sesionTemp.ej[i].sets||[]).filter(Boolean);
       const kgs=sets.map(x=>+x.kg||0).filter(x=>x>0);
-      const hechas=sets.filter(x=>x.ok||x.kg>0).length || (sesionTemp.ej[i].done?(parseInt(ej.series)||0):0);
-      if(hechas||kgs.length){ const reg={n:ej.nm, s:hechas, p:parseInt(ej.series)||hechas}; if(kgs.length) reg.kg=Math.max(...kgs); if(alt) reg.alt=alt.nm; detalle.push(reg); }
+      const hechas=sets.filter(x=>x.ok||x.kg>0||x.seg>0).length || (sesionTemp.ej[i].done?(parseInt(ej.series)||0):0);
+      // Isométricos: cuentan por TIEMPO. Segundos reales si los anotó; si solo marcó ✓, la meta de la ronda.
+      const esIsoEj=esEjIsometrico(ej);
+      let segsEj=[];
+      if(esIsoEj){
+        const metaI=segMetaIso(ej), multI=ladoIso(ej)?2:1;
+        segsEj=sets.map(x=>x.seg>0?x.seg:(x.ok?metaI:0)).filter(x=>x>0);
+        if(!segsEj.length && sesionTemp.ej[i].done) segsEj=Array.from({length:parseInt(ej.series)||0},()=>metaI);
+        tutSes += segsEj.reduce((a,b)=>a+b,0)*multI;
+        // con carga extra: 3 s de tensión ≈ 1 repetición → kg × segundos ÷ 3 entra al volumen
+        sets.forEach(x=>{ const sg=x.seg>0?x.seg:(x.ok?metaI:0);
+          if(x.kg>0 && sg>0){ volumen += x.kg*sg*multI/3;
+            const k=prKey(nmHecho), pr=s.logs.prs[k]; if(!pr || x.kg>pr.kg) s.logs.prs[k]={kg:x.kg,fecha:hoy}; } });
+      }
+      if(hechas||kgs.length||segsEj.length){ const reg={n:ej.nm, s:hechas, p:parseInt(ej.series)||hechas}; if(kgs.length) reg.kg=Math.max(...kgs); if(segsEj.length) reg.seg=Math.max(...segsEj); if(alt) reg.alt=alt.nm; detalle.push(reg); }
+      if(esIsoEj) return;
       (sesionTemp.ej[i].sets||[]).forEach((set,si)=>{
         if(set&&set.kg>0){
           const repsTxt=repsDeSerie(ej,si), repsObj=parseInt(repsTxt)||0;
@@ -7666,12 +8063,12 @@ function finalizarSesionConfirmada(reemplazar){
 
     s.logs.sesiones.push({
       fecha:hoy, ts:Date.now(), diaKey:sesionTemp.diaKey,
-      tipo:d.tipo, ejercicios:hechos||d.ejercicios.length, volumen:Math.round(volumen),
+      tipo:d.tipo, ejercicios:hechos||d.ejercicios.length, volumen:Math.round(volumen), tut:Math.round(tutSes),
       hora:new Date().toTimeString().substring(0,5), cambios, detalle
     });
     dbSave(s.code);
     sesionTemp=null;
-    showToast('✓ Sesión guardada'+(volumen>0?' · '+Math.round(volumen).toLocaleString()+' kg de volumen':''));
+    showToast('✓ Sesión guardada'+(volumen>0?' · '+Math.round(volumen).toLocaleString()+' kg de volumen':'')+(tutSes>=20?' · '+fmtTut(tutSes)+' de isométricos':''));
     go('s-dash'); refreshDash(); dashTab('progreso');
   }catch(e){
     console.error('finalizarSesion',e);
@@ -7982,10 +8379,10 @@ function staffRenderContent(s){
           <input class="sf-in" value="${esc(e.nm||'')}" placeholder="Nombre del ejercicio" list="kb-nombres" onchange="staffUpdNombreEj('${s.code}','${k}',${ei},this.value)">
           <button type="button" class="ej-ed-x" onclick="staffDelEj('${s.code}','${k}',${ei})" aria-label="Quitar ejercicio">✕</button>
         </div>
-        ${esEjCardio(e)?'<div class="ej-ed-cardio-tag">💓 Aeróbico — tiempo y frecuencia cardíaca en vez de series/peso</div>':''}
+        ${esEjCardio(e)?'<div class="ej-ed-cardio-tag">💓 Aeróbico — tiempo y frecuencia cardíaca en vez de series/peso</div>':(esEjIsometrico(e)?'<div class="ej-ed-cardio-tag">⏱ Isométrico — se mide por tiempo: rondas × segundos por ronda</div>':'')}
         <div class="ej-ed-r3">
-          <label>${esEjCardio(e)?'Bloques':'Series'}<input class="sf-in" inputmode="numeric" value="${esc(e.series??'')}" ${fld(s.code,k,ei,'series')}></label>
-          <label>${esEjCardio(e)?'Tiempo':'Repeticiones'}<input class="sf-in" placeholder="${esEjCardio(e)?'Ej. 20 min — zona 2':''}" value="${esc(e.reps||'')}" ${fld(s.code,k,ei,'reps')}></label>
+          <label>${esEjCardio(e)?'Bloques':(esEjIsometrico(e)?'Rondas':'Series')}<input class="sf-in" inputmode="numeric" value="${esc(e.series??'')}" ${fld(s.code,k,ei,'series')}></label>
+          <label>${esEjCardio(e)?'Tiempo':(esEjIsometrico(e)?'Tiempo por ronda':'Repeticiones')}<input class="sf-in" placeholder="${esEjCardio(e)?'Ej. 20 min — zona 2':(esEjIsometrico(e)?'Ej. 30 seg — isométrico':'')}" value="${esc(e.reps||'')}" ${fld(s.code,k,ei,'reps')}></label>
           <label>${esEjCardio(e)?'Frecuencia cardíaca':'Peso'}<input class="sf-in" placeholder="${esEjCardio(e)?'Ej. 65–75% FCmáx':''}" value="${esc(e.peso||'')}" ${fld(s.code,k,ei,'peso')}></label>
         </div>
         <label class="ej-ed-l">Nota propioceptiva<input class="sf-in" value="${esc(e.tip||'')}" placeholder="Dónde y cómo sentir el estímulo" ${fld(s.code,k,ei,'tip')}></label>

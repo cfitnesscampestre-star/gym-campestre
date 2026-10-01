@@ -1,3 +1,26 @@
+# Cambios — v7.6 · Catálogo ampliado, isométricos por tiempo y carga del día
+
+## Catálogo de ejercicios: de 96 a 226
+- 130 ejercicios nuevos: máquinas, peso libre, mancuernas, poleas, **ligas**, **TRX** y **discos / landmine**. Cada uno trae su nota propioceptiva, lesiones donde evitarlo, nivel mínimo y alternativas por área ocupada (en otra zona del gimnasio).
+- Zonas nuevas en el catálogo: Ligas / bandas, TRX / suspensión, Discos / landmine.
+- La plantilla local ahora **reparte ejercicios de todo el catálogo** (antes rotaba solo 3 opciones fijas por hueco muscular). Respeta lesiones, nivel y evita repetir ejercicios en la misma semana.
+- Las fotos nuevas se nombran según `img/ejercicios/LEEME.md` (ya trae las filas de los 130 nuevos).
+
+## Filosofía del entrenador en la plantilla local
+- Con el catálogo ampliado, ahora el entrenador elegido sí cambia los ejercicios de la plantilla local: equipo preferido (libre vs máquina), trabajo unilateral, nivel de variedad, ejercicios firma y ejercicios que NUNCA programa.
+
+## Isométricos por tiempo
+- Plancha, sentadilla isométrica, aguantes, etc. se prescriben como **rondas × segundos**, nunca repeticiones. El tiempo sube con el nivel (ej. plancha: 20 → 30 → 45 s; 3 rondas, 4 en avanzado). Los unilaterales dicen "por lado".
+- En la ficha, cada ronda tiene campo de **segundos sostenidos** y de **carga extra opcional** (disco, mancuerna). Si solo marcas ✓, cuenta la meta.
+- El editor del coordinador muestra "Rondas / Tiempo por ronda" en los isométricos.
+
+## Carga total del día
+- Prescrita: la pantalla del día muestra los minutos isométricos programados junto a ejercicios y series.
+- Real: cada sesión guarda su **tiempo bajo tensión isométrico**. Con carga extra, 3 s de tensión ≈ 1 repetición (kg × segundos ÷ 3 entra al volumen). Sin carga solo cuenta tiempo. Se ve al guardar, en el historial de sesiones y en el resumen semanal.
+- Service worker: `fitnesspro-v23`.
+
+---
+
 # Cambios — v7.5 · Foto del ejercicio en vez del muñeco de silueta
 
 ## Recuadro de foto en la ficha del ejercicio
