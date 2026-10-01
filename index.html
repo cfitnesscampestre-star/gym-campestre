@@ -1501,6 +1501,36 @@ select.ti{padding-right:34px;background-image:linear-gradient(45deg,transparent 
 .sl-nm{font-size:16px;font-weight:700;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .sl-sub{font-size:13px;color:var(--mu);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .sl-st{flex-shrink:0;padding:4px 11px;border-radius:999px;font-size:12.5px;font-weight:700;border:1px solid;}
+
+/* ── Mensualidad / estado del socio ── */
+.sl-st.off{color:var(--mu);background:var(--in-bg2);border-color:var(--b2);}
+.sl-st.tol{color:var(--g);background:color-mix(in srgb,var(--g) 14%,transparent);border-color:color-mix(in srgb,var(--g) 40%,transparent);}
+button.sl-st{font-family:inherit;cursor:pointer;display:inline-flex;align-items:center;gap:5px;min-height:34px;}
+button.sl-st::after{content:'▾';font-size:11px;opacity:.7;}
+.sd-memb{margin-top:10px;font-size:13.5px;color:var(--mu);line-height:1.5;}
+.sd-memb b{color:var(--tx);}
+.sd-memb.tol b,.sd-memb.tol{color:var(--g);}
+.sd-memb.off,.sd-memb.off b{color:var(--r);}
+.mb-aviso{margin:10px 0 0;padding:11px 14px;border-radius:16px;background:color-mix(in srgb,var(--g) 12%,var(--gl));border:1px solid color-mix(in srgb,var(--g) 34%,transparent);font-size:13.5px;line-height:1.45;cursor:pointer;}
+.mb-aviso b{display:block;font-size:14px;}
+.mb-sum{padding:12px 14px;border-radius:16px;background:var(--in-bg2);border:1px solid var(--b);font-size:14px;line-height:1.55;margin-bottom:12px;}
+.mb-sum b{color:var(--tx);}
+.mb-opt{width:100%;min-height:54px;display:flex;align-items:center;gap:12px;text-align:left;padding:10px 16px;margin-top:8px;border-radius:16px;border:1.5px solid var(--b2);background:var(--gl);color:var(--tx);font-size:15px;font-weight:700;cursor:pointer;}
+.mb-opt small{display:block;font-size:12.5px;font-weight:500;color:var(--mu);margin-top:1px;}
+.mb-opt .em{font-size:20px;width:26px;text-align:center;flex:0 0 auto;}
+.mb-opt.on{border-color:var(--v2);background:color-mix(in srgb,var(--v2) 10%,transparent);}
+.mb-opt.danger{color:var(--r);border-color:color-mix(in srgb,var(--r) 40%,transparent);background:color-mix(in srgb,var(--r) 6%,transparent);}
+.mb-sep{height:1px;background:var(--b);margin:16px 0 6px;}
+.mb-h{font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--mu);margin:14px 0 4px;}
+.mb-pago{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;padding:7px 0;border-bottom:1px solid var(--b);}
+.mb-pago span{color:var(--mu);}
+.mb-prev{margin-top:10px;padding:11px 14px;border-radius:14px;background:color-mix(in srgb,var(--v) 10%,transparent);border:1px solid color-mix(in srgb,var(--v) 30%,transparent);font-size:14px;line-height:1.5;}
+.mb-prev.warn{background:color-mix(in srgb,var(--r) 8%,transparent);border-color:color-mix(in srgb,var(--r) 30%,transparent);}
+#modal-memb .mbox{max-width:520px;}
+#modal-memb .ti{width:100%;box-sizing:border-box;}
+.memb-aviso-socio{margin:14px 16px 0;padding:14px 16px;border-radius:var(--r-lg);background:color-mix(in srgb,var(--g) 14%,var(--gl));border:1px solid color-mix(in srgb,var(--g) 40%,transparent);font-size:14.5px;line-height:1.5;}
+.memb-aviso-socio b{display:block;font-size:15.5px;margin-bottom:2px;}
+.login-err.inact{line-height:1.5;}
 .sl-st.ok{color:var(--v);background:color-mix(in srgb,var(--v) 10%,transparent);border-color:color-mix(in srgb,var(--v) 32%,transparent);}
 .sl-st.pend{color:var(--g);background:color-mix(in srgb,var(--g) 12%,transparent);border-color:color-mix(in srgb,var(--g) 34%,transparent);}
 
@@ -2576,6 +2606,7 @@ input[type=range]::-webkit-slider-thumb{background:var(--lime);border-color:var(
 
 <!-- ═══ S5: DASHBOARD SOCIO ═══ -->
 <div class="sc" id="s-dash">
+  <div id="memb-aviso-socio"></div>
   <div class="dash-section on" id="dsec-inicio"></div>
   <div class="dash-section" id="dsec-rutina"></div>
   <div class="dash-section" id="dsec-progreso"></div>
@@ -2711,9 +2742,12 @@ input[type=range]::-webkit-slider-thumb{background:var(--lime);border-color:var(
           <button type="button" class="sl-f ac" onclick="staffFilterStatus(this,'todos')">Todos <i id="slc-todos"></i></button>
           <button type="button" class="sl-f" onclick="staffFilterStatus(this,'pendiente')">Pendientes <i id="slc-pendiente"></i></button>
           <button type="button" class="sl-f" onclick="staffFilterStatus(this,'activo')">Activos <i id="slc-activo"></i></button>
+          <button type="button" class="sl-f" onclick="staffFilterStatus(this,'tolerancia')">⏳ Tolerancia <i id="slc-tolerancia"></i></button>
+          <button type="button" class="sl-f" onclick="staffFilterStatus(this,'inactivo')">Inactivos <i id="slc-inactivo"></i></button>
           <button type="button" class="sl-f" onclick="staffFilterStatus(this,'progresion')">📈 Progresión <i id="slc-progresion"></i></button>
         </div>
       </div>
+      <div id="staff-memb-aviso"></div>
       <div id="staff-socio-list"></div>
     </div>
     <div id="staff-content" style="overflow-y:auto;display:flex;flex-direction:column;">
@@ -3124,6 +3158,73 @@ function listaEntrenadoresParaElegir(){
 }
 
 function getSocio(code){ return DB.socios[code]||null; }
+
+// ═════════════════════════════════════════
+// MENSUALIDAD — cada socio tiene una fecha de renovación (mismo día cada mes).
+//  · Vigente  → "Activo" hasta el día anterior a la renovación.
+//  · Desde el día de renovación hay MEMB_TOL días de tolerancia (sigue entrando; el socio ve un aviso
+//    y el director lo ve marcado). Si no paga, pasa solo a "Inactivo" y no puede entrar a su plan.
+//  · El director registra el pago (renueva), pone Activo / Inactivo a mano o elimina al socio.
+//  · Socios sin fecha de renovación NO se bloquean nunca (así no se afecta a los actuales).
+// Todo se calcula con la fecha del dispositivo al abrir la app: no hay servidor que mande mensajes solos,
+// por eso los avisos son dentro de la app (y un botón para mandar el recordatorio por WhatsApp).
+// ═════════════════════════════════════════
+const MEMB_TOL=3;
+const MESES_C=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+function p2(n){ return String(n).padStart(2,'0'); }
+function isoP(iso){ const [y,m,d]=String(iso).split('-').map(Number); return {y,m,d}; }
+function isoDias(a,b){ const A=isoP(a),B=isoP(b); return Math.round((Date.UTC(B.y,B.m-1,B.d)-Date.UTC(A.y,A.m-1,A.d))/86400000); }
+function isoSumDias(iso,n){ const q=isoP(iso), d=new Date(Date.UTC(q.y,q.m-1,q.d+n)); return d.getUTCFullYear()+'-'+p2(d.getUTCMonth()+1)+'-'+p2(d.getUTCDate()); }
+function isoMasMeses(iso,n,ancla){
+  const q=isoP(iso); let m=q.m-1+n; const y=q.y+Math.floor(m/12); m=((m%12)+12)%12;
+  const dim=new Date(Date.UTC(y,m+1,0)).getUTCDate();
+  return y+'-'+p2(m+1)+'-'+p2(Math.min(ancla||q.d,dim));
+}
+function fmtFC(iso){ if(!iso) return '—'; const q=isoP(iso); return q.d+' '+MESES_C[q.m-1]+(q.y!==new Date().getFullYear()?' '+q.y:''); }
+function membEstado(s,hoy){
+  hoy=hoy||fechaISO(new Date());
+  if(!s) return {estado:'activo'};
+  const m=s.membresia||{};
+  if(s.status==='pendiente') return {estado:'pendiente',vence:m.vence||''};
+  if(m.suspendido) return {estado:'inactivo',motivo:'manual',vence:m.vence||''};
+  if(!m.vence) return {estado:s.status==='inactivo'?'inactivo':'activo',sinFecha:true,motivo:s.status==='inactivo'?'manual':'',vence:''};
+  const dV=isoDias(m.vence,hoy);
+  if(dV<0) return {estado:'activo',vence:m.vence,dV,faltan:-dV,porVencer:(-dV)<=3};
+  if(dV<MEMB_TOL) return {estado:'tolerancia',vence:m.vence,dV,restan:MEMB_TOL-dV,limite:isoSumDias(m.vence,MEMB_TOL-1)};
+  return {estado:'inactivo',motivo:'vencida',vence:m.vence,dV};
+}
+function membSiguienteVence(s,fechaPago){
+  const m=s.membresia||{};
+  if(m.vence && isoDias(m.vence,fechaPago)<MEMB_TOL) return isoMasMeses(m.vence,1,m.ancla||isoP(m.vence).d);   // renueva a tiempo (o dentro de la tolerancia): sigue su ciclo
+  return isoMasMeses(fechaPago,1,isoP(fechaPago).d);                                                              // contrato nuevo o reactivación: el ciclo empieza el día del pago
+}
+function membTxt(s){
+  const e=membEstado(s);
+  if(e.estado==='pendiente') return 'Pendiente de aprobar';
+  if(e.estado==='inactivo') return e.motivo==='manual'?'Inactivo (puesto a mano)':'Inactivo · venció el '+fmtFC(e.vence);
+  if(e.sinFecha) return 'Sin mensualidad configurada';
+  if(e.estado==='tolerancia') return 'En tolerancia · venció el '+fmtFC(e.vence)+' · le quedan '+e.restan+' día'+(e.restan===1?'':'s')+' (hasta el '+fmtFC(e.limite)+')';
+  return 'Renueva el '+fmtFC(e.vence)+(e.faltan===0?'':' · en '+e.faltan+' día'+(e.faltan===1?'':'s'));
+}
+// Pasa a "inactivo" (o regresa a "activo") lo que corresponda según las fechas y avisa al staff
+let membAvisoSig='';
+function membSincronizar(){
+  const socios=Object.values(DB.socios||{}).filter(Boolean);
+  let tol=[], inact=[], cambios=0;
+  socios.forEach(s=>{
+    const e=membEstado(s);
+    if(e.estado==='inactivo' && s.status==='activo'){ s.status='inactivo'; try{ pqGuardarStaff(s,['status']); }catch(err){} cambios++; }
+    else if((e.estado==='activo'||e.estado==='tolerancia') && s.status==='inactivo' && !(s.membresia&&s.membresia.suspendido)){ s.status='activo'; try{ pqGuardarStaff(s,['status']); }catch(err){} cambios++; }
+    if(e.estado==='tolerancia') tol.push(s); else if(e.estado==='inactivo' && e.motivo==='vencida') inact.push(s);
+  });
+  const sig=tol.map(s=>s.code+':'+membEstado(s).restan).join(',')+'|'+inact.map(s=>s.code).join(',');
+  if((tol.length||inact.length) && sig!==membAvisoSig && typeof staffRol!=='undefined' && document.getElementById('s-panel') && document.getElementById('s-panel').classList.contains('on')){
+    showToast('🔔 Mensualidades: '+(tol.length?tol.length+' en tolerancia':'')+(tol.length&&inact.length?' · ':'')+(inact.length?inact.length+' inactivo'+(inact.length>1?'s':'')+' por falta de pago':''));
+  }
+  membAvisoSig=sig;
+  return {tol,inact,cambios};
+}
+
 function lsLoad(){ try{ const r=localStorage.getItem(LS_KEY); return r?JSON.parse(r):null; }catch(e){return null;} }
 function fechaISO(d){ // fecha LOCAL (no UTC): en Aguascalientes UTC-6, toISOString() cambiaba de día a las 18:00
   const x=new Date(d); return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0');
@@ -3742,6 +3843,7 @@ function restaurarSesion(){
   if(ses.tipo==='socio'){
     const socio=getSocio(ses.code);
     if(!socio){ borrarSesion(); return; }
+    if(membBloqueoSocio(socio)){ borrarSesion(); return; }
     activeSocio=socio;
     // Recuperar el check-in de hoy si ya existe; si no, registrarlo
     const hoy=fechaISO(new Date());
@@ -3807,8 +3909,10 @@ cds.forEach((d,i)=>{
 function doLogin(){
   const code = ['cd1','cd2','cd3','cd4'].map(id=>document.getElementById(id).value).join('');
   const socio = getSocio(code);
-  if(!socio){ document.getElementById('login-err').style.display='block'; return; }
-  document.getElementById('login-err').style.display='none';
+  const errEl=document.getElementById('login-err');
+  if(!socio){ errEl.textContent='No encontramos ese código. Revisa tus 4 dígitos.'; errEl.classList.remove('inact'); errEl.style.display='block'; return; }
+  if(membBloqueoSocio(socio)){ errEl.textContent=MEMB_MSG_INACTIVO; errEl.classList.add('inact'); errEl.style.display='block'; return; }
+  errEl.style.display='none';
   activeSocio = socio;
   guardarSesion({tipo:'socio', code});
   const { registro, yaRegistrado } = registrarAsistencia(socio);
@@ -5295,6 +5399,8 @@ function fechasSemana(){
 function refreshDash(){
   actualizarHoy();
   const s=activeSocio; if(!s) return;
+  if(membBloqueoSocio(s)){ logoutSocio(); showToast(MEMB_MSG_INACTIVO); return; }
+  { const av=document.getElementById('memb-aviso-socio'); if(av) av.innerHTML=membAvisoSocioHTML(s); }
   asegurarLogs(s);
   const cont=document.getElementById('dsec-inicio');
   const primer=tc(s.nombre).split(' ')[0];
@@ -5494,8 +5600,8 @@ function renderPerfilTab(){
     </div>
     <div class="memb-c">
       ${it('shield')}
-      <div class="memb-tx"><div class="memb-k">Membresía · ${esc(s.id)}</div><div class="memb-t">Socio Club Campestre</div></div>
-      <span class="sl-st ${pend?'pend':'ok'}">${pend?'En revisión':'Activa'}</span>
+      <div class="memb-tx"><div class="memb-k">Membresía · ${esc(s.id)}${(s.membresia&&s.membresia.vence)?' · renueva '+esc(fmtFC(s.membresia.vence)):''}</div><div class="memb-t">Socio Club Campestre</div></div>
+      <span class="sl-st ${pend?'pend':(membEstado(s).estado==='tolerancia'?'tol':'ok')}">${pend?'En revisión':(membEstado(s).estado==='tolerancia'?'Por renovar':'Activa')}</span>
     </div>
     <div class="stats3 flat">
       <div class="st"><div class="st-l">Sesiones</div><div class="st-v">${ev.total}</div></div>
@@ -8418,7 +8524,7 @@ function abrirEditarSocio(code){
   document.getElementById('es-ent').innerHTML='<option value="">Sin asignar</option>'+ents.map(e=>`<option value="${esc(e.id)}" ${s.entrenadorId===e.id?'selected':''}>${esc(e.nombre)}</option>`).join('');
   const nutris=staffNutricionistas();
   document.getElementById('es-nut').innerHTML='<option value="">Sin asignar (o el mismo entrenador, si da nutrición)</option>'+nutris.map(e=>`<option value="${esc(e.id)}" ${s.nutriologoId===e.id?'selected':''}>${esc(e.nombre)}${entHace(e,'entrenamiento')?' (también entrena)':''}</option>`).join('');
-  document.getElementById('es-status').innerHTML=`<option value="activo" ${s.status==='activo'?'selected':''}>Activo</option><option value="pendiente" ${s.status!=='activo'?'selected':''}>Pendiente de revisión</option>`;
+  document.getElementById('es-status').innerHTML=`<option value="activo" ${s.status==='activo'?'selected':''}>Activo</option><option value="inactivo" ${s.status==='inactivo'?'selected':''}>Inactivo</option><option value="pendiente" ${s.status==='pendiente'?'selected':''}>Pendiente de revisión</option>`;
   document.getElementById('es-limit').value=(s.limitaciones||[]).join(', ');
   document.getElementById('es-nuevocode').value='';
   document.getElementById('es-nuevocode').placeholder='Actual: '+code;
@@ -8443,7 +8549,10 @@ function guardarEdicionSocio(){
   } else nuevo='';
 
   s.nombre=nombre; s.edad=edad; s.estatura=est; s.genero=v('es-genero'); s.objetivo=v('es-objetivo');
-  s.nivel=v('es-nivel'); s.dias=parseInt(v('es-dias'))||s.dias; s.status=v('es-status');
+  s.nivel=v('es-nivel'); s.dias=parseInt(v('es-dias'))||s.dias;
+  { const nuevoSt=v('es-status'); const mb=s.membresia=s.membresia||{};
+    if(nuevoSt==='inactivo') mb.suspendido=true; else if(nuevoSt==='activo') mb.suspendido=false;
+    s.status=nuevoSt; }
   const entId=v('es-ent');
   if(entId && DB.entrenadores[entId]){ s.entrenadorId=entId; s.asignado=DB.entrenadores[entId].nombre; }
   else { s.entrenadorId=''; s.asignado='Sin asignar'; }
@@ -8469,7 +8578,7 @@ function guardarEdicionSocio(){
       {
         fbEncolar('/socios/'+code,'update',({
           nombre:s.nombre, edad:s.edad, estatura:s.estatura, genero:s.genero, objetivo:s.objetivo, nivel:s.nivel, dias:s.dias,
-          status:s.status, asignado:s.asignado, entrenadorId:s.entrenadorId||'',
+          status:s.status, membresia:s.membresia||null, asignado:s.asignado, entrenadorId:s.entrenadorId||'',
           nutriologoId:s.nutriologoId||'', nutriologo:s.nutriologo||'',
           limitaciones:s.limitaciones.length?s.limitaciones:null, 'logs/pesoCorporal':s.logs.pesoCorporal
         }));
@@ -8625,30 +8734,46 @@ function staffGetSocios(){
   // Los socios sin asignar solo los ve el coordinador.
   return todos.filter(s=>s.entrenadorId===staffActivoEntId || s.nutriologoId===staffActivoEntId);
 }
+function membBadgeCls(e){ return e.estado==='pendiente'?'pend':e.estado==='tolerancia'?'tol':e.estado==='inactivo'?'off':'ok'; }
+function membBadgeTxt(e){ return e.estado==='pendiente'?'Pendiente':e.estado==='tolerancia'?'Tolerancia · '+e.restan+' d':e.estado==='inactivo'?'Inactivo':'Activo'; }
 function staffRenderList(){
   const cont=document.getElementById('staff-socio-list'); if(!cont) return;
+  try{ membSincronizar(); }catch(err){ console.warn('membSincronizar',err); }
   const todos=staffGetSocios();
-  const cnt={todos:todos.length,pendiente:todos.filter(s=>s.status==='pendiente').length,activo:todos.filter(s=>s.status==='activo').length,progresion:todos.filter(pqNecesitaAccion).length};
-  ['todos','pendiente','activo','progresion'].forEach(k=>{ const e=document.getElementById('slc-'+k); if(e) e.textContent=cnt[k]; });
+  const est=s=>membEstado(s).estado;
+  const cnt={todos:todos.length,pendiente:todos.filter(s=>s.status==='pendiente').length,activo:todos.filter(s=>{const e=est(s);return e==='activo'||e==='tolerancia';}).length,
+    tolerancia:todos.filter(s=>est(s)==='tolerancia').length,inactivo:todos.filter(s=>est(s)==='inactivo').length,progresion:todos.filter(pqNecesitaAccion).length};
+  ['todos','pendiente','activo','tolerancia','inactivo','progresion'].forEach(k=>{ const e=document.getElementById('slc-'+k); if(e) e.textContent=cnt[k]; });
   const tt=document.getElementById('sl-count'); if(tt) tt.textContent='('+todos.length+')';
+  const av=document.getElementById('staff-memb-aviso');
+  if(av){
+    const porV=todos.filter(s=>{const e=membEstado(s);return e.estado==='activo'&&e.porVencer;}).length;
+    av.innerHTML=(cnt.tolerancia||cnt.inactivo||porV)?`<div class="mb-aviso" onclick="staffFiltroDirecto('${cnt.tolerancia?'tolerancia':cnt.inactivo?'inactivo':'activo'}')"><b>🔔 Mensualidades</b>${cnt.tolerancia?cnt.tolerancia+' en tolerancia (tienen '+MEMB_TOL+' días para pagar). ':''}${cnt.inactivo?cnt.inactivo+' inactivo'+(cnt.inactivo>1?'s':'')+'. ':''}${porV?porV+(porV===1?' renueva':' renuevan')+' en 3 días o menos.':''}</div>`:'';
+  }
   let list=todos.slice();
   if(staffFilterVal==='progresion') list=list.filter(pqNecesitaAccion);
-  else if(staffFilterVal!=='todos') list=list.filter(s=>s.status===staffFilterVal);
+  else if(staffFilterVal==='activo') list=list.filter(s=>{const e=est(s);return e==='activo'||e==='tolerancia';});
+  else if(staffFilterVal==='tolerancia'||staffFilterVal==='inactivo'||staffFilterVal==='pendiente') list=list.filter(s=>est(s)===staffFilterVal);
   const q=(staffSearchVal||'').trim().toLowerCase();
   if(q) list=list.filter(s=>String(s.nombre||'').toLowerCase().includes(q)||String(s.code||'').includes(q));
-  list.sort((a,b)=>((a.status==='pendiente'?0:1)-(b.status==='pendiente'?0:1))||String(a.nombre||'').localeCompare(String(b.nombre||''),'es'));
+  const orden={pendiente:0,tolerancia:1,activo:2,inactivo:3};
+  list.sort((a,b)=>((orden[est(a)]??2)-(orden[est(b)]??2))||String(a.nombre||'').localeCompare(String(b.nombre||''),'es'));
   cont.innerHTML = list.length ? list.map(s=>{
     const ini=tc(s.nombre).split(' ').filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase();
-    const pend=s.status==='pendiente';
-    const sem=semaforoSocio(s);
+    const me=membEstado(s);
+    const sem=me.estado==='inactivo'?null:semaforoSocio(s);
     const semColor=sem==='r'?'var(--r)':sem==='y'?'var(--g)':sem==='g'?'var(--v)':'';
-    const semStyle=sem?` style="border-color:${semColor};box-shadow:0 0 0 1px ${semColor},0 8px 18px -10px ${semColor}"`:'';
+    const semStyle=sem?` style="border-color:${semColor};box-shadow:0 0 0 1px ${semColor},0 8px 18px -10px ${semColor}"`:(me.estado==='inactivo'?' style="opacity:.62"':'');
     return `<div class="sl-item${staffActivoId===s.code?' sel':''}"${semStyle} onclick="staffOpenSocio('${esc(s.code)}')" role="button" tabindex="0">
       <div class="sl-ini">${esc(ini)}</div>
       <div class="sl-tx"><div class="sl-nm">${esc(tc(s.nombre))}</div><div class="sl-sub">${esc(s.id)} · ${esc(sc(s.objetivo))}${esc(pqBadgeLista(s))}</div></div>
-      <span class="sl-st ${pend?'pend':'ok'}">${pend?'Pendiente':'Activo'}</span>
+      <span class="sl-st ${membBadgeCls(me)}">${membBadgeTxt(me)}</span>
     </div>`;
   }).join('') : `<div class="empty-msg">${q?'Ningún socio coincide con tu búsqueda.':'Aún no hay socios en esta lista.'}</div>`;
+}
+function staffFiltroDirecto(val){
+  const btn=[...document.querySelectorAll('#staff-filters .sl-f')].find(b=>(b.getAttribute('onclick')||'').includes("'"+val+"'"));
+  if(btn) staffFilterStatus(btn,val);
 }
 function staffFilterStatus(el,val){
   document.querySelectorAll('#staff-filters .sl-f').forEach(d=>d.classList.remove('ac'));
@@ -8735,12 +8860,13 @@ function staffRenderContent(s){
             <div class="sd-nom">${esc(tc(s.nombre))}</div>
             <div class="sd-cod">Código ${esc(s.code)} · ${esc(s.id)}</div>
           </div>
-          <span class="sl-st ${isPend?'pend':'ok'}">${isPend?'Pendiente':'Activo'}</span>
+          ${membBadgeHTML(s,puedeEd)}
         </div>
         <div class="sd-chips">
           <span>${esc(sc(s.nivel))}</span><span>${esc(s.edad)} años</span><span>${esc(pesoNow)} kg</span><span>${esc(s.estatura)} cm</span><span>${esc(s.dias)} días/sem</span>
         </div>
         ${asigHTML}
+        <div class="sd-memb ${membBadgeCls(membEstado(s))==='tol'?'tol':membBadgeCls(membEstado(s))==='off'?'off':''}">💳 <b>${esc(membTxt(s))}</b></div>
         <div class="sd-lim">${limChips}</div>
         ${(s.clasesGrupales&&s.clasesGrupales.length)?`<div class="sd-lim" style="margin-top:4px">${s.clasesGrupales.map(c=>`<span class="sd-lim-c" style="color:var(--n);border-color:color-mix(in srgb,var(--n) 30%,transparent);background:color-mix(in srgb,var(--n) 6%,transparent)">${esc(c.clase)} · ${c.dias.map(d=>sc(DIAS_NAMES[d])).join('/')}${c.entrenaMismoDia?' +gym':''}</span>`).join('')}</div>`:''}
         ${puedeEd?`<div class="sd-acts"><button type="button" class="sd-b" onclick="abrirEditarSocio('${s.code}')">Editar datos</button></div>`:''}
@@ -8774,11 +8900,6 @@ function staffRenderContent(s){
         </div>`)}
 
       ${pane('progresion',bloqueProgresionTab(s))}
-
-      ${puedeEd?`<div class="sd-danger">
-        <div><b>Zona de peligro</b><p>Eliminar borra su rutina e historial. No se puede deshacer.</p></div>
-        <button type="button" onclick="confirmarEliminarSocio('${s.code}')">Eliminar socio</button>
-      </div>`:''}
 
       <div class="sd-bar">
         ${isPend?`<button type="button" class="sd-pri ghost" onclick="staffAprobar('${s.code}')">Aprobar plan</button>`:''}
@@ -9133,6 +9254,166 @@ function bloqueRecordatorioFilosofia(){
   </div>`;
 }
 
+
+// ═════════════════════════════════════════
+// SUBMENÚ DEL ESTADO (solo director): pago, fecha de renovación, activo / inactivo, recordatorio y eliminar
+// ═════════════════════════════════════════
+function membBadgeHTML(s,puedeEd){
+  const e=membEstado(s), cls=membBadgeCls(e), txt=membBadgeTxt(e);
+  return puedeEd?`<button type="button" class="sl-st ${cls}" onclick="membAbrir('${esc(s.code)}')" aria-label="Estado y mensualidad">${txt}</button>`:`<span class="sl-st ${cls}">${txt}</span>`;
+}
+let MB={code:null,vista:'menu'};
+function membAbrir(code,vista){
+  if(staffRol!=='coordinador'){ showToast('Solo el director maneja las mensualidades'); return; }
+  MB={code,vista:vista||'menu'}; membRender();
+  document.getElementById('modal-memb').classList.add('open');
+}
+function membCerrar(){ document.getElementById('modal-memb').classList.remove('open'); }
+function membGuardar(s,campos){
+  guardarLocal();
+  try{ pqGuardarStaff(s,campos||['membresia','status']); }catch(e){ console.warn(e); }
+  staffRenderList(); if(staffActivoId===s.code) staffRenderContent(s);
+}
+function membRender(){
+  const s=getSocio(MB.code), b=document.getElementById('memb-body'); if(!s||!b) return;
+  const e=membEstado(s), m=s.membresia||{}, hoy=fechaISO(new Date());
+  const cab=`<div class="m-title" style="margin-bottom:10px">${esc(tc(s.nombre))}</div>`;
+  if(MB.vista==='pago'){
+    const prev=membSiguienteVence(s,hoy);
+    b.innerHTML=cab+`<div class="mb-h" style="margin-top:0">Registrar pago de mensualidad</div>
+      <div class="f-row">
+        <div class="f-grp"><label class="f-lbl" for="mbp-f">Fecha de pago</label><input type="date" class="ti" id="mbp-f" value="${hoy}" onchange="membPrevPago()"></div>
+        <div class="f-grp"><label class="f-lbl" for="mbp-m">Monto (opcional)</label><input type="number" inputmode="decimal" class="ti" id="mbp-m" placeholder="$"></div>
+      </div>
+      <div class="f-row">
+        <div class="f-grp"><label class="f-lbl" for="mbp-t">Forma de pago</label><select class="ti" id="mbp-t"><option>Efectivo</option><option>Transferencia</option><option>Tarjeta</option><option>Otro</option></select></div>
+        <div class="f-grp"><label class="f-lbl" for="mbp-n">Nota (opcional)</label><input class="ti" id="mbp-n" maxlength="60" placeholder="Ej. mes de noviembre"></div>
+      </div>
+      <div class="mb-prev" id="mbp-prev"></div>
+      <div style="display:flex;gap:10px;margin-top:14px"><button type="button" class="sd-b" style="flex:1" onclick="MB.vista='menu';membRender()">Volver</button><button type="button" class="sd-pri" style="flex:1" onclick="membRegistrarPago()">Registrar pago</button></div>`;
+    membPrevPago(); return;
+  }
+  if(MB.vista==='fecha'){
+    b.innerHTML=cab+`<div class="mb-h" style="margin-top:0">Fecha de renovación</div>
+      <p style="font-size:14px;color:var(--mu);line-height:1.5;margin-bottom:10px">Es el día en que debe pagar su siguiente mensualidad. Úsala para configurar a un socio que ya estaba o para corregir una fecha.</p>
+      <div class="f-grp"><label class="f-lbl" for="mbf-f">Renueva el</label><input type="date" class="ti" id="mbf-f" value="${m.vence||isoMasMeses(hoy,1)}" onchange="membPrevFecha()"></div>
+      <div class="mb-prev" id="mbf-prev"></div>
+      <div style="display:flex;gap:10px;margin-top:14px"><button type="button" class="sd-b" style="flex:1" onclick="MB.vista='menu';membRender()">Volver</button><button type="button" class="sd-pri" style="flex:1" onclick="membGuardarFecha()">Guardar fecha</button></div>`;
+    membPrevFecha(); return;
+  }
+  // menú principal
+  const pagos=comoArray(m.pagos).filter(Boolean).slice(-4).reverse();
+  const inact=e.estado==='inactivo';
+  const wa=membMensaje(s);
+  b.innerHTML=cab+`
+    <div class="mb-sum"><span class="sl-st ${membBadgeCls(e)}" style="display:inline-block">${membBadgeTxt(e)}</span><br><b>${esc(membTxt(s))}</b>
+      ${e.estado==='tolerancia'?'<br>Al terminar la tolerancia pasa solo a inactivo y ya no podrá entrar a su plan.':''}
+      ${e.sinFecha&&e.estado==='activo'?'<br>Sin fecha de renovación no se le bloquea el acceso nunca.':''}</div>
+    <button type="button" class="mb-opt" onclick="MB.vista='pago';membRender()"><span class="em">💳</span><span>Registrar pago<small>Renueva su mensualidad y lo deja activo</small></span></button>
+    <button type="button" class="mb-opt" onclick="MB.vista='fecha';membRender()"><span class="em">📅</span><span>Fecha de renovación<small>${m.vence?'Actual: '+esc(fmtFC(m.vence))+' · tolerancia de '+MEMB_TOL+' días':'Configúrala para empezar a cobrar mes a mes'}</small></span></button>
+    <div class="mb-h">Estado</div>
+    <button type="button" class="mb-opt${!inact?' on':''}" onclick="membActivar('${esc(s.code)}')"><span class="em">✅</span><span>Activo<small>Puede entrar a su plan y registrar entrenamientos</small></span></button>
+    <button type="button" class="mb-opt${inact?' on':''}" onclick="membInactivar('${esc(s.code)}')"><span class="em">⏸</span><span>Inactivo<small>Al poner su código verá "usuario inactivo". No se borra nada</small></span></button>
+    ${(e.estado!=='pendiente')?`<div class="mb-h">Recordatorio</div>
+    <div class="f-grp"><label class="f-lbl" for="mb-tel">WhatsApp del socio (10 dígitos)</label><input class="ti" id="mb-tel" inputmode="tel" value="${esc(s.telefono||'')}" placeholder="449 000 0000" onchange="membTel('${esc(s.code)}',this.value)"></div>
+    <button type="button" class="mb-opt" onclick="membWhatsApp('${esc(s.code)}')"><span class="em">💬</span><span>Enviar recordatorio por WhatsApp<small>Abre WhatsApp con el mensaje listo: ${esc(wa.slice(0,60))}…</small></span></button>`:''}
+    ${pagos.length?`<div class="mb-h">Últimos pagos</div>${pagos.map(p=>`<div class="mb-pago"><b>${esc(fmtFC(p.fecha))}${p.monto?' · $'+esc(p.monto):''}</b><span>${esc(p.metodo||'')} → renueva ${esc(fmtFC(p.despues))}</span></div>`).join('')}
+      <button type="button" class="mb-opt" style="min-height:44px;margin-top:6px" onclick="membDeshacerPago('${esc(s.code)}')"><span class="em">↩</span><span>Deshacer el último pago<small>Si lo registraste por error</small></span></button>`:''}
+    <div class="mb-sep"></div>
+    <button type="button" class="mb-opt danger" onclick="membCerrar();confirmarEliminarSocio('${esc(s.code)}')"><span class="em">🗑</span><span>Eliminar socio<small>Borra su rutina e historial. Pide confirmación doble</small></span></button>`;
+}
+function membPrevPago(){
+  const s=getSocio(MB.code), f=document.getElementById('mbp-f').value, el=document.getElementById('mbp-prev'); if(!s||!f||!el) return;
+  const nv=membSiguienteVence(s,f), m=s.membresia||{};
+  const sigue=m.vence && isoDias(m.vence,f)<MEMB_TOL;
+  el.className='mb-prev'; el.innerHTML=`Su siguiente renovación será el <b>${esc(fmtFC(nv))}</b>.<br><span style="color:var(--mu);font-size:13px">${sigue?'Continúa su ciclo mensual (mismo día cada mes).':'Es un ciclo nuevo: cuenta desde el día del pago.'}</span>`;
+}
+function membRegistrarPago(){
+  const s=getSocio(MB.code); if(!s) return;
+  const f=document.getElementById('mbp-f').value; if(!f){ showToast('Elige la fecha del pago'); return; }
+  const m=s.membresia=s.membresia||{};
+  const antes=m.vence||'', anclaAntes=m.ancla||null;
+  const nv=membSiguienteVence(s,f);
+  m.ancla=(antes&&isoDias(antes,f)<MEMB_TOL)?(m.ancla||isoP(antes).d):isoP(f).d;
+  m.vence=nv; m.suspendido=false;
+  const pagos=comoArray(m.pagos).filter(Boolean);
+  pagos.push({fecha:f,monto:(document.getElementById('mbp-m').value||'').trim(),metodo:document.getElementById('mbp-t').value,nota:limpiarTexto(document.getElementById('mbp-n').value),antes,anclaAntes,despues:nv,por:pqStaffNombre()});
+  m.pagos=pagos.slice(-24);
+  if(s.status==='inactivo') s.status='activo';
+  membGuardar(s,['membresia','status']); membCerrar();
+  showToast('💳 Pago registrado · renueva el '+fmtFC(nv)+' · '+tc(s.nombre));
+}
+function membDeshacerPago(code){
+  const s=getSocio(code), m=s&&s.membresia; const pagos=comoArray(m&&m.pagos).filter(Boolean); if(!pagos.length) return;
+  const u=pagos[pagos.length-1];
+  uiConfirm('¿Deshacer el pago del '+fmtFC(u.fecha)+'?\nLa renovación vuelve al '+(u.antes?fmtFC(u.antes):'estado sin fecha')+'.',()=>{
+    m.vence=u.antes||''; m.ancla=u.anclaAntes||null; m.pagos=pagos.slice(0,-1);
+    membGuardar(s,['membresia','status']); membRender(); showToast('↩ Pago deshecho');
+  },{label:'Deshacer pago'});
+}
+function membPrevFecha(){
+  const s=getSocio(MB.code), f=document.getElementById('mbf-f').value, el=document.getElementById('mbf-prev'); if(!s||!f||!el) return;
+  const hoy=fechaISO(new Date()), dV=isoDias(f,hoy);
+  let t, warn=false;
+  if(dV<0) t='Quedará <b>activo</b> hasta el '+fmtFC(isoSumDias(f,-1))+'. Renueva el '+fmtFC(f)+'.';
+  else if(dV<MEMB_TOL){ t='Con esa fecha quedaría <b>en tolerancia</b> (le quedan '+(MEMB_TOL-dV)+' día'+((MEMB_TOL-dV)===1?'':'s')+').'; warn=true; }
+  else { t='Con esa fecha quedaría <b>inactivo</b> (ya pasó la tolerancia).'; warn=true; }
+  el.className='mb-prev'+(warn?' warn':''); el.innerHTML=t;
+}
+function membGuardarFecha(){
+  const s=getSocio(MB.code); if(!s) return;
+  const f=document.getElementById('mbf-f').value; if(!f){ showToast('Elige la fecha'); return; }
+  const m=s.membresia=s.membresia||{}; m.vence=f; m.ancla=isoP(f).d;
+  membGuardar(s,['membresia','status']); membCerrar(); showToast('📅 Renueva el '+fmtFC(f)+' · '+tc(s.nombre));
+}
+function membActivar(code){
+  const s=getSocio(code); if(!s) return;
+  const m=s.membresia=s.membresia||{}; m.suspendido=false;
+  if(s.status==='inactivo') s.status='activo';
+  const e=membEstado(s);
+  if(e.estado==='inactivo'){   // sigue vencido: hay que registrar el pago para que no vuelva a inactivarse solo
+    membGuardar(s,['membresia','status']);
+    showToast('La mensualidad está vencida: registra el pago para dejarlo activo'); MB.vista='pago'; membRender(); return;
+  }
+  membGuardar(s,['membresia','status']); membCerrar(); showToast('✅ '+tc(s.nombre)+' está activo');
+}
+function membInactivar(code){
+  const s=getSocio(code); if(!s) return;
+  uiConfirm('¿Poner inactivo a '+tc(s.nombre)+'?\nNo podrá entrar a su plan hasta que lo actives o registres su pago. No se borra nada.',()=>{
+    const m=s.membresia=s.membresia||{}; m.suspendido=true; s.status='inactivo';
+    membGuardar(s,['membresia','status']); membCerrar(); showToast('⏸ '+tc(s.nombre)+' quedó inactivo');
+  },{label:'Poner inactivo',danger:true});
+}
+function membTel(code,v){ const s=getSocio(code); if(!s) return; s.telefono=String(v||'').replace(/[^\d+]/g,'').slice(0,15); guardarLocal(); try{ pqGuardarStaff(s,['telefono']); }catch(e){} }
+function membMensaje(s){
+  const e=membEstado(s), n=tc(s.nombre).split(' ')[0];
+  if(e.estado==='tolerancia') return `Hola ${n}, tu mensualidad venció el ${fmtFC(e.vence)}. Tienes hasta el ${fmtFC(e.limite)} para renovar y continuar con tu programa de entrenamiento. ¡Te esperamos!`;
+  if(e.estado==='inactivo') return `Hola ${n}, tu acceso a tu programa de entrenamiento está inactivo porque no se registró tu mensualidad. Cuando la renueves lo reactivamos al instante.`;
+  if(e.vence) return `Hola ${n}, te recordamos que tu mensualidad se renueva el ${fmtFC(e.vence)}. ¡Gracias por entrenar con nosotros!`;
+  return `Hola ${n}, te escribimos de tu gimnasio sobre tu mensualidad.`;
+}
+function membWhatsApp(code){
+  const s=getSocio(code); if(!s) return;
+  const el=document.getElementById('mb-tel'); if(el) membTel(code,el.value);
+  let t=String(s.telefono||'').replace(/\D/g,'');
+  if(t.length<10){ showToast('Escribe el WhatsApp del socio (10 dígitos)'); if(el) el.focus(); return; }
+  if(t.length===10) t='52'+t;
+  window.open('https://wa.me/'+t+'?text='+encodeURIComponent(membMensaje(s)),'_blank');
+}
+// Lado del socio: aviso de tolerancia y bloqueo cuando está inactivo
+function membBloqueoSocio(s){
+  const e=membEstado(s);
+  if(e.estado!=='inactivo') return false;
+  return true;
+}
+const MEMB_MSG_INACTIVO='Usuario inactivo. Tu mensualidad no está vigente; acércate a recepción o con tu entrenador para renovarla y volver a entrar a tu plan.';
+function membAvisoSocioHTML(s){
+  const e=membEstado(s);
+  if(e.estado==='tolerancia') return `<div class="memb-aviso-socio"><b>⏳ Tu mensualidad venció el ${esc(fmtFC(e.vence))}</b>Tienes ${e.restan} día${e.restan===1?'':'s'} (hasta el ${esc(fmtFC(e.limite))}) para renovar y continuar con tu programa. Después tu acceso quedará inactivo.</div>`;
+  if(e.estado==='activo' && e.porVencer) return `<div class="memb-aviso-socio" style="background:var(--gl);border-color:var(--b2)"><b>💳 Tu mensualidad se renueva el ${esc(fmtFC(e.vence))}</b>${e.faltan===1?'Es mañana.':'Faltan '+e.faltan+' días.'}</div>`;
+  return '';
+}
+
 function diaIntercambiar(code,k1,k2){
   if(!k2){ showToast('Elige con qué día intercambiar'); return; }
   const s=getSocio(code); if(!s) return;
@@ -9197,6 +9478,7 @@ function staffAprobar(code){
   if(s.asignado==='—') s.asignado=document.getElementById('staff-nombre').textContent||'Staff';
   dbSaveStaff(s.code); staffRenderList(); staffRenderContent(s);
   showToast('✓ Plan aprobado y activado — el socio ya puede entrenar');
+  if(staffRol==='coordinador' && !(s.membresia&&s.membresia.vence)) setTimeout(()=>membAbrir(s.code,'pago'),400);   // empieza su mensualidad
 }
 function staffGuardar(code){
   const s=getSocio(code); if(!s) return;
@@ -9769,7 +10051,7 @@ function calcResumen(){
     const k=s.entrenadorId||'_sin';
     if(!porEnt[k]) porEnt[k]={nombre:k==='_sin'?'Sin asignar':(getEntrenador(k)?.nombre||s.asignado||k),total:0,activos:0,pend:0,adh:[]};
     const e=porEnt[k]; e.total++;
-    if(s.status==='activo'){ e.activos++; e.adh.push(calcEvolucion(s).adherencia); } else e.pend++;
+    if(s.status==='activo'){ e.activos++; e.adh.push(calcEvolucion(s).adherencia); } else if(s.status!=='inactivo') e.pend++;
   });
   const plantilla=socios.filter(s=>s.origenRutina==='plantilla').length;
   const hace30=Date.now()-30*86400000, cambios={}, horas={};
@@ -10867,6 +11149,14 @@ if('serviceWorker' in navigator){
 
 
 <!-- ═══ MODAL CONOCIMIENTO (agregar / editar) ═══ -->
+<!-- ═══ MODAL MENSUALIDAD / ESTADO DEL SOCIO (director) ═══ -->
+<div class="modal" id="modal-memb" onclick="if(event.target===this)membCerrar()">
+  <div class="mbox">
+    <div class="mx" onclick="membCerrar()">✕</div>
+    <div id="memb-body"></div>
+  </div>
+</div>
+
 <!-- ═══ MODAL SELECTOR DE EJERCICIOS (staff) ═══ -->
 <div class="modal" id="modal-ejpick" onclick="if(event.target===this)epCerrar()">
   <div class="mbox">

@@ -1,3 +1,27 @@
+# Cambios — v8.0 · Mensualidad, estado del socio y tolerancia
+
+## Botón de estado (solo director)
+- El "Activo" de la ficha ahora es un botón. Abre un submenú con: **Registrar pago**, **Fecha de renovación**, **Activo / Inactivo**, **Recordatorio por WhatsApp**, últimos pagos (con "Deshacer el último pago") y, hasta abajo, **Eliminar socio** (con la misma confirmación doble). Se quitó la "Zona de peligro" del final de la ficha.
+- Los entrenadores ven el estado pero no pueden cambiarlo.
+
+## Cómo funciona la mensualidad
+- Cada socio tiene una **fecha de renovación** (mismo día cada mes; si el mes no tiene ese día, se usa el último: 31 ene → 28 feb → 31 mar).
+- Mientras no llega esa fecha: **Activo**. Desde el día de renovación hay **3 días de tolerancia** (ej. renueva 1 nov: tolerancia 1, 2 y 3 nov). El socio puede seguir entrando y ve un aviso: "tienes N días para renovar y continuar con tu programa".
+- Pasada la tolerancia queda **Inactivo** solo: al poner su código ve "Usuario inactivo…" y no entra (tampoco con la sesión ya abierta). No se borra nada.
+- **Registrar pago:** si paga a tiempo o dentro de la tolerancia, sigue su ciclo (1 nov → 1 dic). Si ya estaba inactivo, el ciclo empieza el día del pago. Se guarda fecha, monto (opcional), forma de pago y nota.
+- **Inactivo a mano** nunca se reactiva solo; **Activar** a un socio vencido abre el registro de pago.
+- Los socios que ya existían **no tienen fecha de renovación y no se bloquean nunca** hasta que les pongas una en "Fecha de renovación". Al aprobar el plan de un socio nuevo se abre el registro de pago para empezar su mensualidad.
+
+## Avisos para el director
+- En la lista: filtros **⏳ Tolerancia** e **Inactivos**, insignias de color (Activo / Tolerancia · N d / Inactivo), los de tolerancia arriba y un resumen "🔔 Mensualidades" que además avisa a los que renuevan en 3 días o menos.
+- Aviso al abrir el panel cuando hay socios en tolerancia o que se inactivaron.
+- Botón de **WhatsApp** con el mensaje listo según el estado (guarda el número del socio).
+- Nota: no hay servidor, así que los avisos y la inactivación se calculan al abrir la app con la fecha del dispositivo; no se mandan mensajes solos.
+- "Editar datos" ahora también permite el estado Inactivo.
+- Service worker: `fitnesspro-v27`.
+
+---
+
 # Cambios — v7.9 · Panel del director / entrenador reorganizado
 
 ## Ficha del socio en pestañas
