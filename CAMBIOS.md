@@ -1,3 +1,43 @@
+# Cambios — v7.8 · Movilidad explicada
+
+## Cada ejercicio de movilidad ahora le explica al socio:
+- **¿Qué es?** movilidad dinámica (se mueve) o estiramiento (postura sostenida).
+- **¿Por qué está en tu plan?** y **qué trabajas** (qué músculo o articulación se suelta).
+- **Cuándo** hacerla (antes de cargar o al final / día de descanso).
+- **Movimientos o posturas** con su dosis y cómo hacerlos (solo en las rutinas completas).
+- Se puede prescribir por **rondas** o por **tiempo**: "2 rondas · 6 movimientos" o "10 min · 7 movimientos". Las filas de registro dicen "Ronda completa" o "Secuencia completa · ~10 min".
+- Tres rutinas completas en el catálogo (`KB_MOVILIDAD` en conocimiento.js): Movilidad articular dinámica (2 rondas, 6 movimientos; el texto se ajusta si el día es de pierna o de tren superior), Movilidad de cadera y hombro (~8 min) y Movilidad y estiramiento (~10 min, 7 posturas de 30–45 s).
+- Los demás (estiramientos sueltos, protocolos de rehabilitación, plan de flexibilidad) se explican automáticamente según la zona: cuádriceps, femorales, flexores de cadera, aductores, pantorrilla/tobillo, hombro, cuello/trapecio, espalda alta, columna, cadera, muñeca.
+- El coordinador puede escribir su propia explicación en el campo **"Para qué es esta movilidad"** del editor (vacío = automática) y esa tiene prioridad.
+- Para agregar otra rutina de movilidad basta con sumar una entrada a `KB_MOVILIDAD`.
+- Service worker: `fitnesspro-v25`.
+
+---
+
+# Cambios — v7.7 · Cardio por minutos fijos, rondas con frecuencia cardíaca y movilidad sin peso
+
+## Cardio continuo (caminadora, bici, elíptica, remo ergómetro...)
+- El **tiempo ya viene en el plan** (ej. 12 min) y se quitó el campo "Tiempo" que llenaba el socio. Solo registra su frecuencia cardíaca promedio y marca completado.
+- La **FC objetivo** se calcula con la edad (FC máx = 208 − 0.7 × edad) y el objetivo del socio: perder peso 65–75%, resistencia/rendimiento 70–82%, ganar músculo/fuerza 60–70%. Si el coordinador escribe su propio rango (ej. "70–80% FCmáx") se respeta.
+- Si el plan no trae minutos, se asignan por objetivo y nivel (10–25 min). Se acabó el texto "8 reps — potencia · Moderado 55% 1RM" en el cardio.
+- Las alternativas por área ocupada (bici, elíptica...) siguen igual.
+
+## Cardio por rondas (burpees, jumping jacks, escaladores, cuerdas de batalla, trineo, cuerda de salto)
+- Se prescriben como **rondas × repeticiones** (o segundos / metros) y en lugar del peso se anota la **FC al terminar cada ronda**.
+- Zonas más altas que en cardio continuo (perder peso 75–88%, resistencia 78–90%, ganar músculo 70–85%).
+- **Progresión automática**: al guardar la sesión se compara el promedio de FC con la meta. La siguiente vez, si quedó abajo, la ficha propone subir repeticiones (+2, o +5 seg/m); si quedó arriba, bajar; si estuvo en zona, mantener. No modifica la rutina guardada, solo lo que se pide ese día.
+- La sesión guarda los minutos de cardio del día.
+
+## Movilidad / calentamiento
+- Ya no pide kg ni lleva método de intensidad: solo rondas con palomita.
+- Los métodos de intensidad (tempo, pirámide, etc.) ya no se asignan a cardio, rondas ni movilidad, y se ocultan en rutinas ya existentes.
+
+## Editor del coordinador
+- Cardio continuo y por rondas tienen su propia etiqueta; el campo de peso pasa a "FC objetivo" (vacío = automático).
+- Service worker: `fitnesspro-v24`.
+
+---
+
 # Cambios — v7.6 · Catálogo ampliado, isométricos por tiempo y carga del día
 
 ## Catálogo de ejercicios: de 96 a 226

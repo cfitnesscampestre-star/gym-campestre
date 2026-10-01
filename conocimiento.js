@@ -534,7 +534,7 @@ const KB_EJERCICIOS = [
   {id:'woodchop_liga', nm:'Leñador con banda', ms:'Oblicuos · Core', z:'liga', t:'a', enf:'core', ev:[],
    alt:{core:['woodchop_polea','farmer_unilateral','escaladores']}, aka:[], tip:'Banda anclada alta; baja en diagonal girando el tronco y controla el regreso.', lado:true},
   {id:'escaladores', nm:'Escaladores', ms:'Core · Hombro', z:'corporal', t:'a', enf:'core', ev:[],
-   alt:{core:['pallof_liga','farmer_unilateral','woodchop_polea']}, aka:['mountain climber'], tip:'Cadera nivelada y abdomen firme; lleva las rodillas al pecho alternando a ritmo constante.'},
+   alt:{core:['pallof_liga','farmer_unilateral','woodchop_polea']}, aka:['mountain climber'], tip:'Cadera nivelada y abdomen firme; lleva las rodillas al pecho alternando a ritmo constante.', rondas:true, rx:{u:'seg',v:[20,30,40]}},
   {id:'crunch_bicicleta', nm:'Crunch bicicleta', ms:'Oblicuos · Abdomen', z:'corporal', t:'a', enf:'abdomen', ev:[],
    alt:{abdomen:['crunch_maquina','crunch','elev_rodillas_banco']}, aka:['bicycle crunch'], tip:'Lleva el codo hacia la rodilla contraria rotando el torso, sin jalar el cuello.'},
   {id:'tijeras_abd', nm:'Tijeras (flutter kicks)', ms:'Abdomen bajo', z:'corporal', t:'a', enf:'abdomen', ev:['lumbar'],
@@ -550,15 +550,15 @@ const KB_EJERCICIOS = [
   {id:'ski_erg', nm:'Esquiadora (ski erg)', ms:'Sistema cardiovascular · Dorsal', z:'cardio', t:'c', enf:'cardio', ev:[],
    alt:{cardio:['trineo','caminadora_incl','eliptica']}, aka:['ski erg'], tip:'Jala con el dorsal y la cadera, no solo con los brazos; ritmo constante.', nv:2},
   {id:'cuerda_salto', nm:'Salto de cuerda', ms:'Sistema cardiovascular', z:'corporal', t:'c', enf:'cardio', ev:['rodilla'],
-   alt:{cardio:['eliptica','trineo']}, aka:['saltar la cuerda'], tip:'Saltos cortos sobre el antepié con las muñecas haciendo el giro; aterriza suave.'},
+   alt:{cardio:['eliptica','trineo']}, aka:['saltar la cuerda'], tip:'Saltos cortos sobre el antepié con las muñecas haciendo el giro; aterriza suave.', rondas:true, rx:{u:'seg',v:[30,45,60]}},
   {id:'cuerdas_batalla', nm:'Cuerdas de batalla', ms:'Sistema cardiovascular · Hombro', z:'funcional', t:'c', enf:'cardio', ev:['hombro'],
-   alt:{cardio:['caminadora_incl','eliptica','bici']}, aka:['battle ropes'], tip:'Rodillas flexionadas y core firme; ondas alternas desde el hombro, sin encoger el cuello.', nv:2},
+   alt:{cardio:['caminadora_incl','eliptica','bici']}, aka:['battle ropes'], tip:'Rodillas flexionadas y core firme; ondas alternas desde el hombro, sin encoger el cuello.', nv:2, rondas:true, rx:{u:'seg',v:[20,30,40]}},
   {id:'burpee', nm:'Burpees', ms:'Sistema cardiovascular · Cuerpo completo', z:'corporal', t:'c', enf:'cardio', ev:['hombro','rodilla'],
-   alt:{cardio:['bici_aire','trineo']}, aka:['burpee'], tip:'Pecho al piso, salto controlado al final; mantén el abdomen firme y regula el ritmo.', nv:2},
+   alt:{cardio:['bici_aire','trineo']}, aka:['burpee'], tip:'Pecho al piso, salto controlado al final; mantén el abdomen firme y regula el ritmo.', nv:2, rondas:true, rx:{u:'reps',v:[8,10,12]}},
   {id:'trineo', nm:'Empuje de trineo', ms:'Sistema cardiovascular · Piernas', z:'funcional', t:'c', enf:'cardio', ev:[],
-   alt:{cardio:['caminadora_incl','eliptica','bici']}, aka:['sled push'], tip:'Torso inclinado, brazos estirados y pasos potentes; empuja con las piernas todo el tiempo.'},
+   alt:{cardio:['caminadora_incl','eliptica','bici']}, aka:['sled push'], tip:'Torso inclinado, brazos estirados y pasos potentes; empuja con las piernas todo el tiempo.', rondas:true, rx:{u:'m',v:[15,20,30]}},
   {id:'jumping_jacks', nm:'Jumping jacks', ms:'Sistema cardiovascular', z:'corporal', t:'c', enf:'cardio', ev:['rodilla'],
-   alt:{cardio:['escaladora','trineo']}, aka:['saltos de tijera'], tip:'Aterriza suave y coordina brazos y piernas; ideal de calentamiento o circuito.'},
+   alt:{cardio:['escaladora','trineo']}, aka:['saltos de tijera'], tip:'Aterriza suave y coordina brazos y piernas; ideal de calentamiento o circuito.', rondas:true, rx:{u:'seg',v:[30,40,45]}},
 ];
 
 /* ── CLASES GRUPALES DEL CLUB ──
@@ -602,6 +602,52 @@ const KB_CLASES_GRUPALES = [
 ];
 const KB_CLASES_IDX = {};
 KB_CLASES_GRUPALES.forEach(c=>{ KB_CLASES_IDX[c.nm]=c; KB_CLASES_IDX[c.id]=c; });
+
+/* ── MOVILIDAD: qué es, para qué sirve, qué movimientos/posturas incluye y cuánto dura ──
+   tipo: dinamica (se mueve) | estatico (postura sostenida)   forma: rondas | tiempo
+   Para agregar otra rutina basta con sumar una entrada aquí (claves = palabras del nombre).      */
+const KB_MOVILIDAD = [
+  {id:'mov_dinamica', claves:['movilidad articular dinamica','movilidad dinamica'], nm:'Movilidad articular dinámica',
+   tipo:'dinamica', forma:'rondas', series:2, reps:'8-10 reps por movimiento',
+   que:'Un circuito de movimientos suaves y continuos que lleva cada articulación por todo su rango. No se sostienen posturas: se mueve.',
+   porque:'Calienta y lubrica las articulaciones, sube la temperatura del cuerpo y prepara el patrón de movimiento antes de cargar peso. No es para estirar ni para cansarte: es para entrar al entrenamiento con más rango y menos riesgo de molestias.',
+   suelta:'Articulaciones de hombro, espalda alta, cadera y tobillo.',
+   cuando:'Al inicio, antes de las series de fuerza.',
+   pasos:[
+    {nm:'Círculos de hombro', dosis:'10 hacia atrás', como:'De pie, brazos sueltos; dibuja círculos amplios con los hombros sin tensar el cuello.'},
+    {nm:'Rotación de espalda alta en cuatro apoyos', dosis:'8 por lado', como:'Una mano en la nuca; gira abriendo el codo hacia el techo y regresa. Se mueve la espalda alta, no la baja.'},
+    {nm:'Gato–camello', dosis:'10 lentas', como:'En cuatro apoyos, redondea y arquea la espalda poco a poco, vértebra por vértebra.'},
+    {nm:'Círculos de cadera (hidrante)', dosis:'8 por lado', como:'En cuatro apoyos, eleva una rodilla al costado y dibuja círculos amplios; la pelvis no gira.'},
+    {nm:'Sentadilla profunda con pausa', dosis:'6 reps · pausa 3 s abajo', como:'Pies un poco más abiertos que los hombros; empuja las rodillas hacia afuera con los codos y mantén los talones en el piso.'},
+    {nm:'Círculos de tobillo', dosis:'10 por lado', como:'Apoya la punta del pie y dibuja círculos amplios y lentos.'}]},
+  {id:'mov_cadera_hombro', claves:['movilidad de cadera y hombro'], nm:'Movilidad de cadera y hombro',
+   tipo:'mixto', forma:'tiempo', series:1, reps:'8 min',
+   que:'Una secuencia de unos 8 minutos que combina movimientos activos con algunas posturas sostenidas, enfocada en cadera y hombro.',
+   porque:'Cadera y hombro son las articulaciones que más rango pierden por pasar horas sentado. Recuperar rango activo mejora la sentadilla, la bisagra de cadera y los press, y descarga la espalda baja y el cuello.',
+   suelta:'Rotadores y flexores de cadera, pecho, hombro y espalda alta.',
+   cuando:'Como calentamiento largo o en día ligero; sin buscar fatiga, el objetivo es soltar.',
+   pasos:[
+    {nm:'Cadera 90/90', dosis:'8 rotaciones por lado', como:'Sentado con ambas rodillas dobladas a 90° hacia el mismo lado; gira las piernas al otro lado sin ayudarte con las manos.'},
+    {nm:'Zancada baja con rotación de torso', dosis:'6 por lado', como:'Zancada profunda, mano interna en el piso; gira el brazo de afuera hacia el techo siguiéndolo con la mirada.'},
+    {nm:'Flexor de cadera en media rodilla', dosis:'30 s por lado', como:'Rodilla trasera en el piso, glúteo apretado y cadera hacia adelante; la tensión va al frente de la cadera.'},
+    {nm:'Paso de banda (o palo) sobre la cabeza', dosis:'10 reps', como:'Brazos rectos, agarre amplio; pasa la banda por encima de la cabeza hasta atrás y regresa sin doblar los codos.'},
+    {nm:'Deslizamiento en pared', dosis:'10 reps', como:'Espalda y antebrazos pegados a la pared; sube y baja los brazos sin despegar nada.'},
+    {nm:'Postura del niño con brazos al frente', dosis:'45 s', como:'Cadera hacia los talones y brazos largos adelante; respira hacia la espalda y suelta el cuello.'}]},
+  {id:'mov_estiramiento', claves:['movilidad y estiramiento'], nm:'Movilidad y estiramiento',
+   tipo:'estatico', forma:'tiempo', series:1, reps:'10 min',
+   que:'Posturas sostenidas: llevas cada músculo a una tensión moderada (nunca dolor) y respiras lento hasta sentirlo ceder.',
+   porque:'Baja la tensión acumulada del entrenamiento, ayuda a mantener el rango de movimiento y favorece la recuperación. Se hace al final porque estirar fuerte antes de cargar pesado resta fuerza y estabilidad.',
+   suelta:'Flexores de cadera, femorales, glúteo, aductores, pecho y espalda.',
+   cuando:'Al final del entrenamiento o en día de descanso. No antes de series pesadas.',
+   pasos:[
+    {nm:'Flexor de cadera en zancada baja', dosis:'30 s por lado', como:'Rodilla trasera al piso, glúteo apretado y cadera al frente; siente el frente de la cadera.'},
+    {nm:'Isquiotibiales sentado', dosis:'30 s por lado', como:'Una pierna estirada y la otra doblada; inclínate desde la cadera con la espalda larga.'},
+    {nm:'Figura 4 acostado (glúteo)', dosis:'30 s por lado', como:'Cruza el tobillo sobre la rodilla contraria y acerca el muslo al pecho; la tensión va al glúteo.'},
+    {nm:'Aductores en mariposa', dosis:'30 s', como:'Plantas de los pies juntas y rodillas hacia afuera; espalda recta y sin rebotar.'},
+    {nm:'Apertura de pecho en marco de puerta', dosis:'30 s por lado', como:'Antebrazo apoyado en el marco y paso adelante; la tensión va al pecho y al frente del hombro.'},
+    {nm:'Postura del niño', dosis:'45 s', como:'Cadera hacia los talones y brazos largos; estira dorsal y espalda baja respirando lento.'},
+    {nm:'Torsión acostado', dosis:'30 s por lado', como:'Rodillas dobladas caen a un lado con los hombros pegados al piso; suelta la espalda baja.'}]},
+];
 
 /* Utilidades de catálogo (sin dependencias) */
 function kbNorm(t){ return String(t||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\(.*?\)/g,'').replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim(); }

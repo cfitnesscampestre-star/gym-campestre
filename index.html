@@ -555,7 +555,7 @@ const KB_EJERCICIOS = [
   {id:'woodchop_liga', nm:'Leñador con banda', ms:'Oblicuos · Core', z:'liga', t:'a', enf:'core', ev:[],
    alt:{core:['woodchop_polea','farmer_unilateral','escaladores']}, aka:[], tip:'Banda anclada alta; baja en diagonal girando el tronco y controla el regreso.', lado:true},
   {id:'escaladores', nm:'Escaladores', ms:'Core · Hombro', z:'corporal', t:'a', enf:'core', ev:[],
-   alt:{core:['pallof_liga','farmer_unilateral','woodchop_polea']}, aka:['mountain climber'], tip:'Cadera nivelada y abdomen firme; lleva las rodillas al pecho alternando a ritmo constante.'},
+   alt:{core:['pallof_liga','farmer_unilateral','woodchop_polea']}, aka:['mountain climber'], tip:'Cadera nivelada y abdomen firme; lleva las rodillas al pecho alternando a ritmo constante.', rondas:true, rx:{u:'seg',v:[20,30,40]}},
   {id:'crunch_bicicleta', nm:'Crunch bicicleta', ms:'Oblicuos · Abdomen', z:'corporal', t:'a', enf:'abdomen', ev:[],
    alt:{abdomen:['crunch_maquina','crunch','elev_rodillas_banco']}, aka:['bicycle crunch'], tip:'Lleva el codo hacia la rodilla contraria rotando el torso, sin jalar el cuello.'},
   {id:'tijeras_abd', nm:'Tijeras (flutter kicks)', ms:'Abdomen bajo', z:'corporal', t:'a', enf:'abdomen', ev:['lumbar'],
@@ -571,15 +571,15 @@ const KB_EJERCICIOS = [
   {id:'ski_erg', nm:'Esquiadora (ski erg)', ms:'Sistema cardiovascular · Dorsal', z:'cardio', t:'c', enf:'cardio', ev:[],
    alt:{cardio:['trineo','caminadora_incl','eliptica']}, aka:['ski erg'], tip:'Jala con el dorsal y la cadera, no solo con los brazos; ritmo constante.', nv:2},
   {id:'cuerda_salto', nm:'Salto de cuerda', ms:'Sistema cardiovascular', z:'corporal', t:'c', enf:'cardio', ev:['rodilla'],
-   alt:{cardio:['eliptica','trineo']}, aka:['saltar la cuerda'], tip:'Saltos cortos sobre el antepié con las muñecas haciendo el giro; aterriza suave.'},
+   alt:{cardio:['eliptica','trineo']}, aka:['saltar la cuerda'], tip:'Saltos cortos sobre el antepié con las muñecas haciendo el giro; aterriza suave.', rondas:true, rx:{u:'seg',v:[30,45,60]}},
   {id:'cuerdas_batalla', nm:'Cuerdas de batalla', ms:'Sistema cardiovascular · Hombro', z:'funcional', t:'c', enf:'cardio', ev:['hombro'],
-   alt:{cardio:['caminadora_incl','eliptica','bici']}, aka:['battle ropes'], tip:'Rodillas flexionadas y core firme; ondas alternas desde el hombro, sin encoger el cuello.', nv:2},
+   alt:{cardio:['caminadora_incl','eliptica','bici']}, aka:['battle ropes'], tip:'Rodillas flexionadas y core firme; ondas alternas desde el hombro, sin encoger el cuello.', nv:2, rondas:true, rx:{u:'seg',v:[20,30,40]}},
   {id:'burpee', nm:'Burpees', ms:'Sistema cardiovascular · Cuerpo completo', z:'corporal', t:'c', enf:'cardio', ev:['hombro','rodilla'],
-   alt:{cardio:['bici_aire','trineo']}, aka:['burpee'], tip:'Pecho al piso, salto controlado al final; mantén el abdomen firme y regula el ritmo.', nv:2},
+   alt:{cardio:['bici_aire','trineo']}, aka:['burpee'], tip:'Pecho al piso, salto controlado al final; mantén el abdomen firme y regula el ritmo.', nv:2, rondas:true, rx:{u:'reps',v:[8,10,12]}},
   {id:'trineo', nm:'Empuje de trineo', ms:'Sistema cardiovascular · Piernas', z:'funcional', t:'c', enf:'cardio', ev:[],
-   alt:{cardio:['caminadora_incl','eliptica','bici']}, aka:['sled push'], tip:'Torso inclinado, brazos estirados y pasos potentes; empuja con las piernas todo el tiempo.'},
+   alt:{cardio:['caminadora_incl','eliptica','bici']}, aka:['sled push'], tip:'Torso inclinado, brazos estirados y pasos potentes; empuja con las piernas todo el tiempo.', rondas:true, rx:{u:'m',v:[15,20,30]}},
   {id:'jumping_jacks', nm:'Jumping jacks', ms:'Sistema cardiovascular', z:'corporal', t:'c', enf:'cardio', ev:['rodilla'],
-   alt:{cardio:['escaladora','trineo']}, aka:['saltos de tijera'], tip:'Aterriza suave y coordina brazos y piernas; ideal de calentamiento o circuito.'},
+   alt:{cardio:['escaladora','trineo']}, aka:['saltos de tijera'], tip:'Aterriza suave y coordina brazos y piernas; ideal de calentamiento o circuito.', rondas:true, rx:{u:'seg',v:[30,40,45]}},
 ];
 
 /* ── CLASES GRUPALES DEL CLUB ──
@@ -626,6 +626,52 @@ const KB_CLASES_GRUPALES = [
 ];
 const KB_CLASES_IDX = {};
 KB_CLASES_GRUPALES.forEach(c=>{ KB_CLASES_IDX[c.nm]=c; KB_CLASES_IDX[c.id]=c; });
+
+/* ── MOVILIDAD: qué es, para qué sirve, qué movimientos/posturas incluye y cuánto dura ──
+   tipo: dinamica (se mueve) | estatico (postura sostenida)   forma: rondas | tiempo
+   Para agregar otra rutina basta con sumar una entrada aquí (claves = palabras del nombre).      */
+const KB_MOVILIDAD = [
+  {id:'mov_dinamica', claves:['movilidad articular dinamica','movilidad dinamica'], nm:'Movilidad articular dinámica',
+   tipo:'dinamica', forma:'rondas', series:2, reps:'8-10 reps por movimiento',
+   que:'Un circuito de movimientos suaves y continuos que lleva cada articulación por todo su rango. No se sostienen posturas: se mueve.',
+   porque:'Calienta y lubrica las articulaciones, sube la temperatura del cuerpo y prepara el patrón de movimiento antes de cargar peso. No es para estirar ni para cansarte: es para entrar al entrenamiento con más rango y menos riesgo de molestias.',
+   suelta:'Articulaciones de hombro, espalda alta, cadera y tobillo.',
+   cuando:'Al inicio, antes de las series de fuerza.',
+   pasos:[
+    {nm:'Círculos de hombro', dosis:'10 hacia atrás', como:'De pie, brazos sueltos; dibuja círculos amplios con los hombros sin tensar el cuello.'},
+    {nm:'Rotación de espalda alta en cuatro apoyos', dosis:'8 por lado', como:'Una mano en la nuca; gira abriendo el codo hacia el techo y regresa. Se mueve la espalda alta, no la baja.'},
+    {nm:'Gato–camello', dosis:'10 lentas', como:'En cuatro apoyos, redondea y arquea la espalda poco a poco, vértebra por vértebra.'},
+    {nm:'Círculos de cadera (hidrante)', dosis:'8 por lado', como:'En cuatro apoyos, eleva una rodilla al costado y dibuja círculos amplios; la pelvis no gira.'},
+    {nm:'Sentadilla profunda con pausa', dosis:'6 reps · pausa 3 s abajo', como:'Pies un poco más abiertos que los hombros; empuja las rodillas hacia afuera con los codos y mantén los talones en el piso.'},
+    {nm:'Círculos de tobillo', dosis:'10 por lado', como:'Apoya la punta del pie y dibuja círculos amplios y lentos.'}]},
+  {id:'mov_cadera_hombro', claves:['movilidad de cadera y hombro'], nm:'Movilidad de cadera y hombro',
+   tipo:'mixto', forma:'tiempo', series:1, reps:'8 min',
+   que:'Una secuencia de unos 8 minutos que combina movimientos activos con algunas posturas sostenidas, enfocada en cadera y hombro.',
+   porque:'Cadera y hombro son las articulaciones que más rango pierden por pasar horas sentado. Recuperar rango activo mejora la sentadilla, la bisagra de cadera y los press, y descarga la espalda baja y el cuello.',
+   suelta:'Rotadores y flexores de cadera, pecho, hombro y espalda alta.',
+   cuando:'Como calentamiento largo o en día ligero; sin buscar fatiga, el objetivo es soltar.',
+   pasos:[
+    {nm:'Cadera 90/90', dosis:'8 rotaciones por lado', como:'Sentado con ambas rodillas dobladas a 90° hacia el mismo lado; gira las piernas al otro lado sin ayudarte con las manos.'},
+    {nm:'Zancada baja con rotación de torso', dosis:'6 por lado', como:'Zancada profunda, mano interna en el piso; gira el brazo de afuera hacia el techo siguiéndolo con la mirada.'},
+    {nm:'Flexor de cadera en media rodilla', dosis:'30 s por lado', como:'Rodilla trasera en el piso, glúteo apretado y cadera hacia adelante; la tensión va al frente de la cadera.'},
+    {nm:'Paso de banda (o palo) sobre la cabeza', dosis:'10 reps', como:'Brazos rectos, agarre amplio; pasa la banda por encima de la cabeza hasta atrás y regresa sin doblar los codos.'},
+    {nm:'Deslizamiento en pared', dosis:'10 reps', como:'Espalda y antebrazos pegados a la pared; sube y baja los brazos sin despegar nada.'},
+    {nm:'Postura del niño con brazos al frente', dosis:'45 s', como:'Cadera hacia los talones y brazos largos adelante; respira hacia la espalda y suelta el cuello.'}]},
+  {id:'mov_estiramiento', claves:['movilidad y estiramiento'], nm:'Movilidad y estiramiento',
+   tipo:'estatico', forma:'tiempo', series:1, reps:'10 min',
+   que:'Posturas sostenidas: llevas cada músculo a una tensión moderada (nunca dolor) y respiras lento hasta sentirlo ceder.',
+   porque:'Baja la tensión acumulada del entrenamiento, ayuda a mantener el rango de movimiento y favorece la recuperación. Se hace al final porque estirar fuerte antes de cargar pesado resta fuerza y estabilidad.',
+   suelta:'Flexores de cadera, femorales, glúteo, aductores, pecho y espalda.',
+   cuando:'Al final del entrenamiento o en día de descanso. No antes de series pesadas.',
+   pasos:[
+    {nm:'Flexor de cadera en zancada baja', dosis:'30 s por lado', como:'Rodilla trasera al piso, glúteo apretado y cadera al frente; siente el frente de la cadera.'},
+    {nm:'Isquiotibiales sentado', dosis:'30 s por lado', como:'Una pierna estirada y la otra doblada; inclínate desde la cadera con la espalda larga.'},
+    {nm:'Figura 4 acostado (glúteo)', dosis:'30 s por lado', como:'Cruza el tobillo sobre la rodilla contraria y acerca el muslo al pecho; la tensión va al glúteo.'},
+    {nm:'Aductores en mariposa', dosis:'30 s', como:'Plantas de los pies juntas y rodillas hacia afuera; espalda recta y sin rebotar.'},
+    {nm:'Apertura de pecho en marco de puerta', dosis:'30 s por lado', como:'Antebrazo apoyado en el marco y paso adelante; la tensión va al pecho y al frente del hombro.'},
+    {nm:'Postura del niño', dosis:'45 s', como:'Cadera hacia los talones y brazos largos; estira dorsal y espalda baja respirando lento.'},
+    {nm:'Torsión acostado', dosis:'30 s por lado', como:'Rodillas dobladas caen a un lado con los hombros pegados al piso; suelta la espalda baja.'}]},
+];
 
 /* Utilidades de catálogo (sin dependencias) */
 function kbNorm(t){ return String(t||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\(.*?\)/g,'').replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim(); }
@@ -1131,6 +1177,16 @@ canvas.chart{width:100%;height:170px;display:block;}
 .m-sub{font-size:14px;color:var(--mu);margin-bottom:18px;}
 .m-sets{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;}
 .set-r{display:grid;grid-template-columns:26px 1fr 104px 40px;align-items:center;gap:8px;padding:10px 12px;background:var(--gl);border:1px solid var(--b);border-radius:var(--r-md);}
+.m-mov{margin:2px 0 14px;padding:14px 15px;border-radius:var(--r-md);background:color-mix(in srgb,var(--v2) 9%,transparent);border-left:4px solid var(--v2);font-size:14px;line-height:1.55}
+.mv-tipo{display:inline-block;font-size:11.5px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--v2);margin-bottom:6px}
+.mv-t{font-weight:700;margin-top:10px;font-size:13.5px}
+.mv-p{color:var(--tx)}
+.mv-ol{margin:6px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:9px}
+.mv-ol li{font-size:14px}
+.mv-ol li span{font-weight:700;color:var(--v2);font-size:13px;margin-left:4px}
+.mv-ol li div{color:var(--mu);font-size:13px;line-height:1.45;margin-top:1px}
+.set-r.fcr{grid-template-columns:24px 1fr 84px 40px;gap:8px;}
+.set-r.mov{grid-template-columns:26px 1fr 40px;}
 .set-r.iso{grid-template-columns:22px 1fr 58px 64px 40px;gap:6px;padding:10px 8px;}
 .set-r.iso .set-i{font-size:13px;}
 .set-n{font-family:var(--fd);font-weight:800;font-size:20px;color:var(--mu);}
@@ -2501,6 +2557,7 @@ input[type=range]::-webkit-slider-thumb{background:var(--lime);border-color:var(
     <div class="m-tag" id="m-tag">Ejercicio</div>
     <div class="m-title" id="m-title">—</div>
     <div class="m-sub" id="m-sub">—</div>
+    <div id="m-mov" class="m-mov" style="display:none"></div>
     <div id="m-sets-head">
       <div style="display:flex;justify-content:flex-end;padding:2px 11px 6px">
         <div class="unit-toggle" id="unit-toggle" onclick="toggleUnidadPeso()">
@@ -4343,6 +4400,7 @@ function mostrarPreview(data){
     const semillaP=(qAnswers.nombre||'')+Date.now();
     if(data.origen==='plantilla') diversificarSemana(data.semana, ctxP, entP&&entP.filosofia, semillaP);
     ajustarIsometricos(data.semana, ctxP);
+    ajustarCardioRondas(data.semana, {edad:qAnswers.edad, objetivo:qAnswers.objetivo, nivel:qAnswers.nivel});
     enriquecerSemana(data.semana, ctxP, semillaP);
   }
   catch(e){ console.warn('No se pudo enriquecer la rutina',e); }
@@ -4415,7 +4473,7 @@ function renderPreview(rutina){
             <div style="font-family:var(--fd);font-size:15px;color:var(--v)">${String(ei+1).padStart(2,'0')}</div>
             <div>
               <div style="font-size:12px;font-weight:600">${esc(e.nm||e.nombre)}</div>
-              <div style="font-size:12px;color:var(--mu);font-family:var(--fb)">${e.series} × ${e.reps} · ${esEjCardio(e)?(e.peso||''):(pct1RM(e.peso)?'Esfuerzo moderado — 2 reps en reserva':e.peso)}</div>
+              <div style="font-size:12px;color:var(--mu);font-family:var(--fb)">${esc(rxTexto(e,qAnswers).sr)} · ${esc(rxTexto(e,qAnswers).carga)}</div>
               <div style="font-size:12px;color:var(--v);margin-top:2px">${e.ms||e.musculo||''}${e.descanso?' · descanso '+esc(e.descanso):''}</div>
               ${e.metodo?`<div style="font-size:12px;margin-top:3px;color:var(--p)">${e.grupo?'<b>'+esc(e.grupo)+'</b> · ':''}⚡ ${esc(e.metodo.nm)}${e.metodo.detalle?' — '+esc(e.metodo.detalle):''}</div>`:''}
               ${(e.alternativas||[]).length?`<div style="font-size:12px;margin-top:3px;color:var(--mu)">⇄ Si está ocupado: ${e.alternativas.map(a=>esc(a.nm)).join(' · ')}</div>`:''}
@@ -5582,8 +5640,8 @@ async function generarPDFRutina(){
         doc.setFont('helvetica','bold'); doc.setFontSize(8);
         const nameLines=isDup?[ej.nm||'']:doc.splitTextToSize(ej.nm||'', NAME_WRAP_W);
         doc.setFont('helvetica','normal'); doc.setFontSize(7.4);
-        const srLines=doc.splitTextToSize(`${ej.series}×${ej.reps}`, SR_W-1.5);
-        const pesoLines=doc.splitTextToSize(String(esEjCardio(ej)?(ej.peso||'—'):(pct1RM(ej.peso)?'Moderado — 2 reps en reserva':(ej.peso||'—'))), PESO_W-1.5);
+        const rxP=rxTexto(ej,s); const srLines=doc.splitTextToSize((esEjCardio(ej)||esEjRondas(ej)||esEjMovilidad(ej))?rxP.sr.replace(' × ','×'):`${ej.series}×${ej.reps}`, SR_W-1.5);
+        const pesoLines=doc.splitTextToSize(String((esEjCardio(ej)||esEjRondas(ej)||esEjMovilidad(ej))?rxP.carga:(pct1RM(ej.peso)?'Moderado — 2 reps en reserva':(ej.peso||'—'))), PESO_W-1.5);
         let tipLines=[];
         if(!isDup && (ej.tip || ej.metodo || (ej.alternativas||[]).length)){
           doc.setFont('helvetica','italic'); doc.setFontSize(7);
@@ -7376,12 +7434,157 @@ function datosEj(e){
   const tipo=(kb&&kb.t) || (/press|sentadilla|remo|jal[oó]n|peso muerto|dominad|prensa|desplante|zancad|hip thrust/i.test(e.nm||e.nombre||'')?'c':'a');
   return {kb,enf,tipo};
 }
-// Detección compartida de ejercicios aeróbicos (elíptica, remo, bici, caminadora, etc.)
-// para mostrar tiempo + frecuencia cardíaca en vez de series/repeticiones/peso.
+// ═════════════════════════════════════════
+// CARDIO — dos formas de prescribirlo
+//  · CONTINUO (caminadora, bici, elíptica, remo ergómetro…): minutos FIJOS del plan + FC objetivo.
+//    El socio solo registra su frecuencia cardíaca; el tiempo ya viene en el plan.
+//  · POR RONDAS (burpees, saltos, escaladores, cuerdas, trineo…): rondas × repeticiones (o segundos),
+//    con la FC al terminar cada ronda en lugar del peso. Si la FC queda bajo la meta se sube el volumen.
+// La FC objetivo sale de la edad (FC máx = 208 − 0.7 × edad) y del objetivo del socio.
+// ═════════════════════════════════════════
+function esEjRondas(e){ const kb=kbBuscar(e.nm||e.nombre); return !!(kb&&kb.rondas); }
 function esEjCardio(e){
+  if(esEjRondas(e)) return false;
   const nm=e.nm||e.nombre||'';
   const d=datosEj(e);
   return d.enf==='cardio' || /cardio|caminad|bici|el[ií]ptica|trote|correr|remo erg[oó]?metro/i.test(nm);
+}
+function esEjMovilidad(e){
+  const nm=e.nm||e.nombre||'';
+  return /movilidad|estiramient|calentamiento|c[ií]rculos de/i.test(nm) || /^movilidad/i.test(String(e.ms||e.musculo||''));
+}
+
+// ═════════════════════════════════════════
+// MOVILIDAD — se le explica al socio qué es, para qué está en su plan, qué músculo o
+// articulación se suelta, qué movimientos o posturas incluye y cuánto dura.
+// Rutinas conocidas salen de KB_MOVILIDAD; el resto (estiramientos sueltos, rehabilitación,
+// plan de flexibilidad) se explica según su nombre. El coordinador puede escribir su propia
+// explicación en el campo "Para qué es" (e.porque) y esa manda.
+// ═════════════════════════════════════════
+const MOV_ZONAS=[
+  [/cuadriceps/,'frente del muslo (cuádriceps)','Reduce la tensión que el cuádriceps le pone a la rodilla y mantiene el rango para sentadillas y zancadas.'],
+  [/isquio|femoral/,'parte trasera del muslo (isquiotibiales)','Un femoral corto jala la pelvis y carga la espalda baja; soltarlo mejora la bisagra de cadera y el peso muerto.'],
+  [/flexor.*cadera|psoas/,'frente de la cadera (psoas)','Estar sentado acorta el psoas y tira de la espalda baja; abrirlo le da espacio a la cadera y descarga la zona lumbar.'],
+  [/aductor/,'cara interna del muslo (aductores)','Da rango a la sentadilla profunda y a las aperturas de piernas, y protege la ingle.'],
+  [/gemelo|soleo|pantorrilla|tobillo|plantar/,'pantorrilla y tobillo','Un tobillo con poco rango hace que rodilla y cadera compensen en la sentadilla y al caminar.'],
+  [/hombro/,'hombro y escápula','Más rango y control del hombro facilita press, jalones y trabajo sobre la cabeza sin pinzar.'],
+  [/cuello|trapecio|elevador|inclinacion lateral/,'cuello y trapecio','El trapecio se tensa por postura, estrés o compensación cuando algo más duele; soltarlo baja la tensión de cuello y cabeza.'],
+  [/toracic/,'espalda alta (columna torácica)','Si la espalda alta no rota, la espalda baja compensa; recuperar el giro protege la lumbar.'],
+  [/columna|gato/,'columna, vértebra por vértebra','Reparte el movimiento a lo largo de toda la columna y reduce la rigidez.'],
+  [/cadera/,'articulación de la cadera','Más rango activo de cadera mejora sentadilla, bisagra y zancada, y reduce molestias de rodilla y lumbar.'],
+  [/muneca|antebrazo|dedos/,'muñeca y antebrazo','Mantiene el rango de muñeca y antebrazo y reduce la carga en agarres y apoyos.'],
+];
+function movInfo(e,dia){
+  const nm=e.nm||e.nombre||'', n=kbNorm(nm);
+  const kb=KB_MOVILIDAD.find(m=>m.claves.some(c=>n.includes(c)))||null;
+  let info;
+  if(kb){
+    info={kb, tipo:kb.tipo, forma:kb.forma, que:kb.que, porque:kb.porque, suelta:kb.suelta, cuando:kb.cuando, pasos:kb.pasos};
+    const t=kbNorm((dia&&dia.tipo)||'');
+    if(kb.id==='mov_dinamica'){
+      if(/pierna|gluteo|full|cuerpo/.test(t)) info.hoy='Hoy toca pierna o cuerpo completo: dale más atención a cadera y tobillo.';
+      else if(/torso|pecho|espalda|hombro|brazo/.test(t)) info.hoy='Hoy toca tren superior: dale más atención a hombro y espalda alta.';
+    }
+  } else {
+    const estatico=/estiramiento/.test(n);
+    const z=MOV_ZONAS.find(x=>x[0].test(n));
+    info={kb:null, tipo:estatico?'estatico':'dinamica', forma:'rondas',
+      que: estatico?'Postura sostenida: llevas el músculo a una tensión moderada (nunca dolor) y respiras lento hasta sentirlo ceder. Sin rebotes.'
+                   :'Movimiento suave, continuo y controlado que lleva la articulación por todo su rango. No se sostiene la posición: se mueve.',
+      porque: z?z[2]:'Prepara el cuerpo y mantiene el rango de movimiento para que el entrenamiento se sienta mejor.',
+      suelta: z?z[1]:'articulaciones y músculos de la zona',
+      cuando: estatico?'Al final del entrenamiento o en día de descanso; no antes de series pesadas.':'Al inicio, antes de cargar peso, o en día de recuperación activa.',
+      pasos:null};
+  }
+  if(e.porque && String(e.porque).trim()) info.porque=String(e.porque).trim();
+  info.tipoTxt={dinamica:'Movilidad dinámica · se mueve',estatico:'Estiramiento · postura sostenida',mixto:'Movilidad + posturas'}[info.tipo];
+  return info;
+}
+// Prescripción de movilidad: rondas o tiempo, según la rutina
+function movRx(e,dia){
+  const i=movInfo(e,dia), kb=i.kb;
+  const m=String(e.reps||'').match(/(\d+)\s*min/i);
+  const min=m?+m[1]:(kb&&kb.forma==='tiempo'?parseInt(kb.reps):0);
+  const ser=Math.max(1,Math.min(5,parseInt(e.series)||(kb?kb.series:2)));
+  const np=i.pasos?i.pasos.length:0;
+  if(kb && kb.forma==='tiempo') return {forma:'tiempo',min,series:1,np,sr:min+' min'+(np?' · '+np+' movimientos':'')};
+  if(kb) return {forma:'rondas',min:0,series:ser,np,sr:ser+' rondas'+(np?' · '+np+' movimientos':'')};
+  return {forma:'rondas',min:0,series:ser,np:0,sr:ser+' × '+limpiarReps(e.reps||'30 seg')};
+}
+function movBloqueHTML(e,dia){
+  const i=movInfo(e,dia), r=movRx(e,dia), E=esc;
+  const sec=(t,c)=>`<div class="mv-t">${t}</div><div class="mv-p">${c}</div>`;
+  let h=`<div class="mv-tipo">${E(i.tipoTxt)}</div>`;
+  h+=sec('¿Qué es?',E(i.que));
+  h+=sec('¿Por qué está en tu plan?',E(i.porque)+(i.hoy?'<br><b>'+E(i.hoy)+'</b>':''));
+  h+=sec('Qué trabajas',E(i.suelta.charAt(0).toUpperCase()+i.suelta.slice(1)));
+  h+=sec('Cuándo',E(i.cuando));
+  if(i.pasos){
+    h+=`<div class="mv-t">${r.forma==='tiempo'?'Posturas y movimientos · ~'+r.min+' min en total':'Movimientos de cada ronda'}</div><ol class="mv-ol">`+
+       i.pasos.map(p=>`<li><b>${E(p.nm)}</b> <span>${E(p.dosis)}</span><div>${E(p.como)}</div></li>`).join('')+'</ol>';
+  }
+  return h;
+}
+const FC_ZONA_CONT ={PERDER:[65,75],RESIST:[70,82],MASA:[60,70],DEF:[60,70]};
+const FC_ZONA_RONDA={PERDER:[75,88],RESIST:[78,90],MASA:[70,85],DEF:[65,80]};
+const MIN_CONT={PERDER:[15,20,25],RESIST:[15,20,25],MASA:[10,12,15],DEF:[10,12,15]};
+function claveObjFc(o){ o=String(o||'').toUpperCase();
+  if(/PERDER|COMPOSICI/.test(o)) return 'PERDER'; if(/RESISTENCIA|RENDIMIENTO/.test(o)) return 'RESIST';
+  if(/GANAR|FUERZA/.test(o)) return 'MASA'; return 'DEF'; }
+function fcMaxSocio(sx){ const ed=parseInt(sx&&sx.edad)||35; return Math.round(208-0.7*ed); }
+function zonaFc(e,sx,tipo){
+  const k=claveObjFc(sx&&sx.objetivo), fcmax=fcMaxSocio(sx);
+  let [a,b]=(tipo==='ronda'?FC_ZONA_RONDA:FC_ZONA_CONT)[k];
+  const m=String(e.peso||'').match(/(\d{2,3})\s*[–-]\s*(\d{2,3})\s*%/);   // el coordinador puede fijar su propio rango
+  if(m && /FC/i.test(e.peso) && +m[2]>+m[1] && +m[2]<=100){ a=+m[1]; b=+m[2]; }
+  return {loPct:a,hiPct:b,lo:Math.round(fcmax*a/100),hi:Math.round(fcmax*b/100),fcmax};
+}
+function cardioRx(e,sx){
+  const nv=nivelNum(sx&&sx.nivel), k=claveObjFc(sx&&sx.objetivo);
+  const m=String(e.reps||'').match(/(\d+)\s*min/i);
+  const per=m?+m[1]:MIN_CONT[k][Math.max(0,Math.min(2,nv-1))];
+  const bloques=m?Math.max(1,parseInt(e.series)||1):1;
+  return Object.assign({per,bloques,total:per*bloques,minTxt:bloques>1?bloques+' × '+per+' min':per+' min'}, zonaFc(e,sx,'cont'));
+}
+function rondasRx(e,sx){
+  const kb=kbBuscar(e.nm||e.nombre)||{}, rx=kb.rx||{u:'reps',v:[8,10,12]}, nv=nivelNum(sx&&sx.nivel);
+  const ser=Math.max(2,Math.min(6,parseInt(e.series)||[3,4,4][nv-1]));
+  const m=String(e.reps||'').match(/(\d+)\s*(reps?|seg|m)\b/i);
+  const u1=m?(/^rep/i.test(m[2])?'reps':m[2].toLowerCase()):'';
+  const base=(m&&u1===rx.u)?+m[1]:rx.v[Math.max(0,Math.min(2,nv-1))];
+  return Object.assign({series:ser,u:rx.u,base,paso:rx.u==='reps'?2:5}, zonaFc(e,sx,'ronda'));
+}
+function txtUnidad(n,u){ return n+' '+(u==='reps'?'reps':u==='seg'?'seg':'m'); }
+function limpiarReps(r){ return String(r||'').replace(/\s*·\s*tempo[^—]*/i,'').replace(/\s*—\s*(potencia|fuerza|hipertrofia|resistencia|control)/i,'').trim(); }
+// Resultado de la última vez que el socio hizo este ejercicio (FC promedio vs meta)
+function ultimoFc(sx,nm){
+  const ses=(sx&&sx.logs&&sx.logs.sesiones)||[];
+  for(let i=ses.length-1;i>=0;i--){ const d=(ses[i].detalle||[]).find(x=>(x.alt||x.n)===nm||x.n===nm); if(d&&d.fc) return d; }
+  return null;
+}
+// Texto corto de la prescripción (lista del día, vista previa, PDF)
+function rxTexto(e,sx){
+  const base=sx||((typeof activeSocio!=='undefined'&&activeSocio)?activeSocio:qAnswers);
+  if(esEjCardio(e)){ const r=cardioRx(e,base); return {sr:r.minTxt, carga:'FC objetivo '+r.lo+'–'+r.hi+' lpm'}; }
+  if(esEjRondas(e)){ const r=rondasRx(e,base); return {sr:r.series+' rondas × '+txtUnidad(r.base,r.u), carga:'FC objetivo '+r.lo+'–'+r.hi+' lpm'}; }
+  if(esEjMovilidad(e)) return {sr:movRx(e).sr, carga:'Sin carga'};
+  return {sr:e.series+' × '+e.reps, carga:(pct1RM(e.peso)?'Esfuerzo moderado — deja 2 reps en reserva':(e.peso||''))};
+}
+// Al generar una rutina: deja escrito en el plan el tiempo fijo / rondas y la FC objetivo
+function ajustarCardioRondas(semana,sx){
+  (semana||[]).forEach(d=>{ if(!d||!Array.isArray(d.ejercicios)) return;
+    d.ejercicios.forEach(e=>{
+      if(!e.nm&&e.nombre) e.nm=e.nombre;
+      if(esEjCardio(e)){ const r=cardioRx(e,sx); e.series=r.bloques; e.reps=r.per+' min'; e.peso='FC objetivo '+r.lo+'–'+r.hi+' lpm'; delete e.metodo; delete e.grupo; }
+      else if(esEjRondas(e)){ const r=rondasRx(e,sx); e.series=r.series; e.reps=txtUnidad(r.base,r.u); e.peso='FC objetivo '+r.lo+'–'+r.hi+' lpm'; delete e.metodo; delete e.grupo; }
+      else if(esEjMovilidad(e)){
+        const mi=movInfo(e,d), mm=String(e.reps||'').match(/(\d+)\s*min/i);
+        e.peso='Sin carga'; delete e.metodo; delete e.grupo;
+        if(mi.kb){ e.series=mi.kb.series; e.reps=mm?mm[0]:mi.kb.reps; } else e.reps=limpiarReps(e.reps)||'30 seg';
+      }
+    });
+  });
+  return semana;
 }
 // ═════════════════════════════════════════
 // ISOMÉTRICOS — se miden por TIEMPO (rondas × segundos), nunca por repeticiones.
@@ -7391,7 +7594,7 @@ function esEjCardio(e){
 function esEjIsometrico(e){
   const reps=String(e.reps||''), nm=e.nm||e.nombre||'';
   if(/isom[eé]tric/i.test(reps) || /isom[eé]tric/i.test(nm)) return true;
-  if(esEjCardio(e)) return false;
+  if(esEjCardio(e)||esEjRondas(e)) return false;
   const kb=kbBuscar(nm); if(kb && kb.iso) return true;
   return /\d\s*seg\b/i.test(reps) && !/rep/i.test(reps);
 }
@@ -7462,11 +7665,11 @@ function diversificarSemana(semana,ctx,filo,semilla){
   (semana||[]).forEach(d=>{
     if(!d||!Array.isArray(d.ejercicios)||/descanso|complemento/i.test(d.tipo||'')) return;
     d.ejercicios.forEach(e=>{
-      const nm=e.nm||e.nombre; if(!nm||esEjCardio(e)) return;
+      const nm=e.nm||e.nombre; if(!nm||esEjCardio(e)||esEjRondas(e)||esEjMovilidad(e)) return;
       const kb=kbBuscar(nm); if(!kb||!kb.enf||kb.enf==='cardio') return;
       const prohibido=nunca.some(n=>kbNorm(nm).includes(n));
       const esFirma=firma.some(n=>kbNorm(nm).includes(n));
-      const cands=KB_EJERCICIOS.filter(x=>x.enf===kb.enf && x.id!==kb.id && x.t===kb.t && !!x.iso===!!kb.iso && !usados.has(x.id)
+      const cands=KB_EJERCICIOS.filter(x=>x.enf===kb.enf && x.id!==kb.id && x.t===kb.t && !!x.iso===!!kb.iso && !x.rondas && !usados.has(x.id)
         && !ctx.les.some(l=>(x.ev||[]).includes(l)) && (x.nv||1)<=ctx.nivel
         && !nunca.some(n=>kbNorm(x.nm).includes(n)));
       if(!cands.length || (!prohibido && (esFirma || rnd()>pCambio))){ usados.add(kb.id); return; }
@@ -7543,9 +7746,9 @@ function enriquecerDia(ejs, ctx, seed){
   // 2) Métodos de intensidad
   const perm=metodosPermitidos(ctx);
   const valido=id=>perm.includes(id);
-  ejs.forEach(e=>{ if(e.metodo && !KB_METODOS[e.metodo.id]) delete e.metodo; });
+  ejs.forEach(e=>{ if(e.metodo && (!KB_METODOS[e.metodo.id] || esEjCardio(e) || esEjRondas(e) || esEjMovilidad(e))) delete e.metodo; });
   let faltan=cuantosMetodos(ctx,ejs.length)-ejs.filter(e=>e.metodo).length;
-  const libre=i=>ejs[i] && !ejs[i].metodo && !/cardio/.test(ds[i].enf);
+  const libre=i=>ejs[i] && !ejs[i].metodo && !/cardio/.test(ds[i].enf) && !esEjCardio(ejs[i]) && !esEjRondas(ejs[i]) && !esEjMovilidad(ejs[i]);
   // Sobre la zona lesionada solo métodos de baja carga (la fase manda: isométrico → resistencia → hipertrofia)
   const SEGUROS_LESION=['tempo','pausa','superserie_ant','biserie','circuito'];
   const esIsom=i=>/seg|isom|min/i.test(String(ejs[i].reps||'')+' '+(ejs[i].nm||''));
@@ -7701,9 +7904,9 @@ function openDay(key){
           <div class="ej-pic">${pic(basesEjercicioMini(ej),'dumbbell','thumb')}<span class="ej-n">${ej.grupo?esc(ej.grupo):String(idx+1)}</span></div>
           <div class="ej-i">
             <div class="ej-nm" id="ejnm-${idx}">${esc(ej.nm)}</div>
-            <div class="ej-dt">${ej.series} × ${esc(ej.reps)} · ${esc(esEjCardio(ej)?ej.peso:(pct1RM(ej.peso)?'Esfuerzo moderado — deja 2 reps en reserva':ej.peso))}${ej.descanso?' · '+esc(ej.descanso):''}</div>
+            <div class="ej-dt">${esc(rxTexto(ej).sr)} · ${esc(rxTexto(ej).carga)}${ej.descanso?' · '+esc(ej.descanso):''}</div>
             <div class="ej-ms">${esc(ej.ms)}</div>
-            ${(ej.metodo||(ej.alternativas||[]).length)?`<div class="ej-extra">${ej.metodo?`<span class="ej-met">${ico('bolt')}${esc(ej.metodo.nm)}</span>`:''}${(ej.alternativas||[]).length?`<span class="ej-alt">${ej.alternativas.length} ${ej.alternativas.length>1?'opciones':'opción'} por área ocupada</span>`:''}</div>`:''}
+            ${((ej.metodo&&!esEjCardio(ej)&&!esEjRondas(ej)&&!esEjMovilidad(ej))||(ej.alternativas||[]).length)?`<div class="ej-extra">${(ej.metodo&&!esEjCardio(ej)&&!esEjRondas(ej)&&!esEjMovilidad(ej))?`<span class="ej-met">${ico('bolt')}${esc(ej.metodo.nm)}</span>`:''}${(ej.alternativas||[]).length?`<span class="ej-alt">${ej.alternativas.length} ${ej.alternativas.length>1?'opciones':'opción'} por área ocupada</span>`:''}</div>`:''}
           </div>
           <div class="ej-r">
             <div class="ck" id="ejk-${idx}" onclick="event.stopPropagation();toggleEjDone(${idx})" role="checkbox" aria-label="Marcar como hecho">${ico('check')}</div>
@@ -7859,14 +8062,16 @@ function openModal(idx){
   const nmHoy=alt?alt.nm:ej.nm;
   document.getElementById('m-tag').textContent=((alt?alt.ms:ej.ms)||'Ejercicio')+(ej.grupo?' · grupo '+ej.grupo:'');
   document.getElementById('m-title').textContent=nmHoy;
-  document.getElementById('m-sub').textContent = esEjCardio(ej)
-    ? `${ej.reps}${ej.peso?' · Meta FC: '+ej.peso:''}`
-    : `${ej.series} series · ${pct1RM(ej.peso)?'Esfuerzo moderado — deja 2 reps en reserva':ej.peso}${ej.descanso?' · descanso '+ej.descanso:''}`;
+  { const rt=rxTexto(ej,s);
+    document.getElementById('m-sub').textContent = esEjCardio(ej)||esEjRondas(ej)
+      ? `${rt.sr} · ${rt.carga}`
+      : esEjMovilidad(ej) ? `${rt.sr} · sin carga`
+      : `${ej.series} series · ${rt.carga}${ej.descanso?' · descanso '+ej.descanso:''}`; }
   const tipTxt=(alt?'⇄ Opción en lugar de '+ej.nm+'. Busca la misma sensación: ':'💡 ')+(ej.tip||'Siente este músculo durante el movimiento.');
   document.getElementById('m-musculo').innerHTML=ejImagenHTML(alt||ej, esc(tipTxt));
 
   const mm=document.getElementById('m-metodo');
-  if(ej.metodo && KB_METODOS[ej.metodo.id]){
+  if(ej.metodo && KB_METODOS[ej.metodo.id] && !esEjCardio(ej) && !esEjRondas(ej) && !esEjMovilidad(ej)){
     const M=KB_METODOS[ej.metodo.id];
     mm.style.display='block';
     mm.innerHTML=`<div class="m-metodo-nm">⚡ ${esc(M.nm)}${ej.grupo?` <span>grupo ${esc(ej.grupo)}</span>`:''}</div><div>${esc(M.como)}</div>${ej.metodo.detalle?`<div class="m-metodo-det">${esc(ej.metodo.detalle)}</div>`:''}`;
@@ -7915,17 +8120,59 @@ function openModal(idx){
   if(!sesionTemp.ej[idx]) sesionTemp.ej[idx]={done:false,sets:[]};
   const saved=sesionTemp.ej[idx].sets;
   const head=document.getElementById('m-sets-head');
+  { const mv0=document.getElementById('m-mov'); if(mv0){ mv0.style.display='none'; mv0.innerHTML=''; } }
+  const cap=t=>`<div style="font-size:12.5px;color:var(--mu);font-family:var(--fb);line-height:1.5;padding:0 4px 8px">${t}</div>`;
+  const msgFc=(ult,tipo,r)=>{
+    if(!ult||!ult.fc) return '';
+    const lo=ult.fcMeta?ult.fcMeta[0]:r.lo, hi=ult.fcMeta?ult.fcMeta[1]:r.hi;
+    const ev=ult.fc<lo?'bajo':ult.fc>hi?'alto':'ok';
+    const acc= tipo==='ronda'
+      ? (ev==='bajo'?'Hoy sube '+r.paso+' '+(r.u==='reps'?'repeticiones':r.u==='seg'?'segundos':'metros')+' por ronda para llegar a la zona.':ev==='alto'?'Hoy baja '+r.paso+' '+(r.u==='reps'?'repeticiones':r.u==='seg'?'segundos':'metros')+' por ronda.':'Mantén el volumen de la vez pasada.')
+      : (ev==='bajo'?'Sube un poco la velocidad o la resistencia.':ev==='alto'?'Baja un poco el ritmo para quedarte en zona.':'Mantén el ritmo.');
+    return cap(`📊 Última vez: <b>${ult.fc} lpm</b> promedio (meta ${lo}–${hi}) — ${ev==='ok'?'en zona':ev==='bajo'?'por debajo de la meta':'por encima de la meta'}. ${acc}`);
+  };
   if(esEjCardio(ej)){
     if(head) head.style.display='none';
-    const s0=saved[0]||{};
+    const s0=saved[0]||{}, r=cardioRx(ej,s);
     document.getElementById('m-sets').innerHTML=`
     <div class="cardio-log">
-      <label>Tiempo (min)<input class="sf-in" type="number" inputmode="numeric" placeholder="Ej. 20"
-        value="${s0.min!=null?s0.min:''}" onchange="setCardioMin(${idx},this.value)" onclick="event.stopPropagation()"></label>
-      <label>Frecuencia cardíaca (lpm)<input class="sf-in" type="number" inputmode="numeric" placeholder="Opcional"
+      ${cap(`⏱ <b>${r.minTxt}</b> continuos, según tu plan.<br>💓 Mantén <b>${r.lo}–${r.hi} lpm</b> (${r.loPct}–${r.hiPct}% de tu FC máx ≈ ${r.fcmax} lpm).`)}
+      ${msgFc(ultimoFc(s,nmHoy),'cont',r)}
+      <label>Tu frecuencia cardíaca promedio (lpm)<input class="set-kg" type="number" inputmode="numeric" placeholder="Opcional"
         value="${s0.fc!=null?s0.fc:''}" onchange="setCardioFc(${idx},this.value)" onclick="event.stopPropagation()"></label>
       <div class="set-d cardio-ok ${s0.ok?'ok':''}" onclick="setCardioOk(${idx},this)">${s0.ok?'✓ Completado':'Marcar como completado'}</div>
     </div>`;
+    document.getElementById('modal-ej').classList.add('open');
+    return;
+  }
+  if(esEjRondas(ej)){
+    if(head) head.style.display='none';
+    const r=rondasRx(ej,s), ult=ultimoFc(s,nmHoy);
+    let obj=r.base;
+    if(ult&&ult.fc){ const lo=ult.fcMeta?ult.fcMeta[0]:r.lo, hi=ult.fcMeta?ult.fcMeta[1]:r.hi; if(ult.fc<lo) obj=r.base+r.paso; else if(ult.fc>hi) obj=Math.max(r.paso,r.base-r.paso); }
+    document.getElementById('m-sets').innerHTML=
+      cap(`💓 Al terminar <b>cada ronda</b> anota tu frecuencia cardíaca. Meta: <b>${r.lo}–${r.hi} lpm</b> (${r.loPct}–${r.hiPct}% de tu FC máx ≈ ${r.fcmax} lpm).`)+msgFc(ult,'ronda',r)+
+      Array.from({length:r.series},(_,i)=>`
+      <div class="set-r fcr">
+        <div class="set-n">${i+1}</div>
+        <div class="set-i">${esc(txtUnidad(obj,r.u))}</div>
+        <input class="set-kg" type="number" inputmode="numeric" placeholder="lpm" title="Frecuencia cardíaca al terminar la ronda"
+          value="${saved[i]?.fc!=null?saved[i].fc:''}" onchange="setFcRonda(${idx},${i},this.value)" onclick="event.stopPropagation()">
+        <div class="set-d ${saved[i]?.ok?'ok':''}" onclick="setOk(${idx},${i},this)">${saved[i]?.ok?'✓':''}</div>
+      </div>`).join('');
+    document.getElementById('modal-ej').classList.add('open');
+    return;
+  }
+  if(esEjMovilidad(ej)){
+    if(head) head.style.display='none';
+    const mr=movRx(ej,d), mi=movInfo(ej,d);
+    const mv=document.getElementById('m-mov'); mv.innerHTML=movBloqueHTML(ej,d); mv.style.display='block';
+    const lab=mi.kb
+      ? (mr.forma==='tiempo' ? 'Secuencia completa · ~'+mr.min+' min' : 'Ronda completa · '+mr.np+' movimientos')
+      : (limpiarReps(ej.reps)||'30 seg');
+    document.getElementById('m-sets').innerHTML=cap('Sin carga — marca cada '+(mr.forma==='tiempo'?'secuencia':'ronda')+' al terminarla.')+Array.from({length:mr.series},(_,i)=>`
+      <div class="set-r mov"><div class="set-n">${i+1}</div><div class="set-i">${esc(lab)}</div>
+      <div class="set-d ${saved[i]?.ok?'ok':''}" onclick="setOk(${idx},${i},this)">${saved[i]?.ok?'✓':''}</div></div>`).join('');
     document.getElementById('modal-ej').classList.add('open');
     return;
   }
@@ -7970,6 +8217,11 @@ function setCardioOk(idx,el){
   el.classList.toggle('ok',on); el.textContent=on?'✓ Completado':'Marcar como completado';
   sesionTemp.ej[idx].sets[0].ok=on;
 }
+function setFcRonda(idx,i,v){
+  if(!sesionTemp.ej[idx]) sesionTemp.ej[idx]={done:false,sets:[]};
+  if(!sesionTemp.ej[idx].sets[i]) sesionTemp.ej[idx].sets[i]={};
+  sesionTemp.ej[idx].sets[i].fc = (v===''||+v<=0)?null:Math.round(+v);
+}
 function setKg(idx,i,v){
   if(!sesionTemp.ej[idx]) sesionTemp.ej[idx]={done:false,sets:[]};
   if(!sesionTemp.ej[idx].sets[i]) sesionTemp.ej[idx].sets[i]={};
@@ -7996,7 +8248,7 @@ function finalizarSesion(){
   if(!s0){ showToast('⚠ Vuelve a entrar con tu código para registrar la sesión'); return; }
   if(!sesionTemp){ showToast('⚠ Abre el día desde tu rutina para registrar la sesión'); return; }
   const idxs0=Object.keys(sesionTemp.ej);
-  const hechos0=idxs0.filter(i=>sesionTemp.ej[i].done || (sesionTemp.ej[i].sets||[]).some(x=>x&&(x.ok||x.kg||x.seg))).length;
+  const hechos0=idxs0.filter(i=>sesionTemp.ej[i].done || (sesionTemp.ej[i].sets||[]).some(x=>x&&(x.ok||x.kg||x.seg||x.fc))).length;
   if(hechos0===0) uiConfirm('No marcaste ningún ejercicio. ¿Registrar la sesión de todas formas?',finalizarSesionConfirmada,{label:'Registrar de todas formas'});
   else finalizarSesionConfirmada();
 }
@@ -8008,7 +8260,7 @@ function finalizarSesionConfirmada(reemplazar){
     const d=s.rutina[sesionTemp.diaKey];
     if(!d){ showToast('⚠ No se encontró la rutina de ese día'); return; }
     const idxs=Object.keys(sesionTemp.ej);
-    const hechos=idxs.filter(i=>sesionTemp.ej[i].done || (sesionTemp.ej[i].sets||[]).some(x=>x&&(x.ok||x.kg||x.seg))).length;
+    const hechos=idxs.filter(i=>sesionTemp.ej[i].done || (sesionTemp.ej[i].sets||[]).some(x=>x&&(x.ok||x.kg||x.seg||x.fc))).length;
     const hoy=fechaISO(new Date());
     const previa=s.logs.sesiones.find(x=>x.fecha===hoy);
     if(previa && !reemplazar){
@@ -8019,7 +8271,7 @@ function finalizarSesionConfirmada(reemplazar){
     if(previa) s.logs.sesiones=s.logs.sesiones.filter(x=>x.fecha!==hoy);
 
     // Volumen y PRs
-    let volumen=0, tutSes=0; const cambios=[], detalle=[];
+    let volumen=0, tutSes=0, cardioMinSes=0; const cambios=[], detalle=[];
     idxs.forEach(i=>{
       const ej=d.ejercicios[i]; if(!ej) return;
       const alt=ejEjecutado(ej,i);
@@ -8028,7 +8280,7 @@ function finalizarSesionConfirmada(reemplazar){
       // Detalle por ejercicio: peso máximo y series hechas (para proponer la progresión)
       const sets=(sesionTemp.ej[i].sets||[]).filter(Boolean);
       const kgs=sets.map(x=>+x.kg||0).filter(x=>x>0);
-      const hechas=sets.filter(x=>x.ok||x.kg>0||x.seg>0).length || (sesionTemp.ej[i].done?(parseInt(ej.series)||0):0);
+      const hechas=sets.filter(x=>x.ok||x.kg>0||x.seg>0||x.fc>0).length || (sesionTemp.ej[i].done?(parseInt(ej.series)||0):0);
       // Isométricos: cuentan por TIEMPO. Segundos reales si los anotó; si solo marcó ✓, la meta de la ronda.
       const esIsoEj=esEjIsometrico(ej);
       let segsEj=[];
@@ -8042,7 +8294,16 @@ function finalizarSesionConfirmada(reemplazar){
           if(x.kg>0 && sg>0){ volumen += x.kg*sg*multI/3;
             const k=prKey(nmHecho), pr=s.logs.prs[k]; if(!pr || x.kg>pr.kg) s.logs.prs[k]={kg:x.kg,fecha:hoy}; } });
       }
-      if(hechas||kgs.length||segsEj.length){ const reg={n:ej.nm, s:hechas, p:parseInt(ej.series)||hechas}; if(kgs.length) reg.kg=Math.max(...kgs); if(segsEj.length) reg.seg=Math.max(...segsEj); if(alt) reg.alt=alt.nm; detalle.push(reg); }
+      // Cardio: FC promedio vs zona objetivo (para proponer más o menos volumen la próxima vez)
+      let fcInfo=null;
+      if(esEjCardio(ej)||esEjRondas(ej)){
+        const rxC=esEjCardio(ej)?cardioRx(ej,s):rondasRx(ej,s);
+        const fcs=sets.map(x=>x.fc).filter(x=>x>0);
+        if(esEjCardio(ej) && sets[0] && sets[0].ok) cardioMinSes += rxC.total;
+        if(fcs.length){ const prom=Math.round(fcs.reduce((a,b)=>a+b,0)/fcs.length);
+          fcInfo={fc:prom, fcMeta:[rxC.lo,rxC.hi], fcEval:prom<rxC.lo?'bajo':prom>rxC.hi?'alto':'ok'}; }
+      }
+      if(hechas||kgs.length||segsEj.length||fcInfo){ const reg={n:ej.nm, s:hechas, p:parseInt(ej.series)||hechas}; if(kgs.length) reg.kg=Math.max(...kgs); if(segsEj.length) reg.seg=Math.max(...segsEj); if(fcInfo) Object.assign(reg,fcInfo); if(alt) reg.alt=alt.nm; detalle.push(reg); }
       if(esIsoEj) return;
       (sesionTemp.ej[i].sets||[]).forEach((set,si)=>{
         if(set&&set.kg>0){
@@ -8063,12 +8324,12 @@ function finalizarSesionConfirmada(reemplazar){
 
     s.logs.sesiones.push({
       fecha:hoy, ts:Date.now(), diaKey:sesionTemp.diaKey,
-      tipo:d.tipo, ejercicios:hechos||d.ejercicios.length, volumen:Math.round(volumen), tut:Math.round(tutSes),
+      tipo:d.tipo, ejercicios:hechos||d.ejercicios.length, volumen:Math.round(volumen), tut:Math.round(tutSes), cardioMin:Math.round(cardioMinSes),
       hora:new Date().toTimeString().substring(0,5), cambios, detalle
     });
     dbSave(s.code);
     sesionTemp=null;
-    showToast('✓ Sesión guardada'+(volumen>0?' · '+Math.round(volumen).toLocaleString()+' kg de volumen':'')+(tutSes>=20?' · '+fmtTut(tutSes)+' de isométricos':''));
+    showToast('✓ Sesión guardada'+(volumen>0?' · '+Math.round(volumen).toLocaleString()+' kg de volumen':'')+(tutSes>=20?' · '+fmtTut(tutSes)+' de isométricos':'')+(cardioMinSes>0?' · '+cardioMinSes+' min de cardio':''));
     go('s-dash'); refreshDash(); dashTab('progreso');
   }catch(e){
     console.error('finalizarSesion',e);
@@ -8379,13 +8640,14 @@ function staffRenderContent(s){
           <input class="sf-in" value="${esc(e.nm||'')}" placeholder="Nombre del ejercicio" list="kb-nombres" onchange="staffUpdNombreEj('${s.code}','${k}',${ei},this.value)">
           <button type="button" class="ej-ed-x" onclick="staffDelEj('${s.code}','${k}',${ei})" aria-label="Quitar ejercicio">✕</button>
         </div>
-        ${esEjCardio(e)?'<div class="ej-ed-cardio-tag">💓 Aeróbico — tiempo y frecuencia cardíaca en vez de series/peso</div>':(esEjIsometrico(e)?'<div class="ej-ed-cardio-tag">⏱ Isométrico — se mide por tiempo: rondas × segundos por ronda</div>':'')}
+        ${esEjCardio(e)?'<div class="ej-ed-cardio-tag">💓 Aeróbico continuo — minutos fijos del plan; la FC objetivo se calcula con la edad y el objetivo del socio</div>':(esEjRondas(e)?'<div class="ej-ed-cardio-tag">💓 Por rondas — repeticiones (o segundos) y FC al terminar cada ronda en lugar de peso</div>':(esEjIsometrico(e)?'<div class="ej-ed-cardio-tag">⏱ Isométrico — se mide por tiempo: rondas × segundos por ronda</div>':''))}
         <div class="ej-ed-r3">
           <label>${esEjCardio(e)?'Bloques':(esEjIsometrico(e)?'Rondas':'Series')}<input class="sf-in" inputmode="numeric" value="${esc(e.series??'')}" ${fld(s.code,k,ei,'series')}></label>
           <label>${esEjCardio(e)?'Tiempo':(esEjIsometrico(e)?'Tiempo por ronda':'Repeticiones')}<input class="sf-in" placeholder="${esEjCardio(e)?'Ej. 20 min — zona 2':(esEjIsometrico(e)?'Ej. 30 seg — isométrico':'')}" value="${esc(e.reps||'')}" ${fld(s.code,k,ei,'reps')}></label>
-          <label>${esEjCardio(e)?'Frecuencia cardíaca':'Peso'}<input class="sf-in" placeholder="${esEjCardio(e)?'Ej. 65–75% FCmáx':''}" value="${esc(e.peso||'')}" ${fld(s.code,k,ei,'peso')}></label>
+          <label>${esEjCardio(e)||esEjRondas(e)?'FC objetivo':'Peso'}<input class="sf-in" placeholder="${esEjCardio(e)||esEjRondas(e)?'Vacío = automático (edad y objetivo)':''}" value="${esc(e.peso||'')}" ${fld(s.code,k,ei,'peso')}></label>
         </div>
         <label class="ej-ed-l">Nota propioceptiva<input class="sf-in" value="${esc(e.tip||'')}" placeholder="Dónde y cómo sentir el estímulo" ${fld(s.code,k,ei,'tip')}></label>
+        ${esEjMovilidad(e)?`<label class="ej-ed-l">Para qué es esta movilidad (se muestra al socio)<input class="sf-in" value="${esc(e.porque||'')}" placeholder="${esc(movInfo(e,d).porque.slice(0,70))}…  (vacío = explicación automática)" ${fld(s.code,k,ei,'porque')}></label>`:''}
         <details class="ej-ed-more">
           <summary>Método, grupo, descanso y opciones</summary>
           <label class="ej-ed-l">Método de intensidad
