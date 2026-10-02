@@ -544,7 +544,7 @@
   <div class="tb" style="position:sticky;top:0;z-index:100;">
     <div class="tb-logo"><div class="lm"><img src="icons/icon-192.png" data-gym-alt alt="Gimnasio"></div><div class="ln">Tu plan</div></div>
     <div class="tb-r">
-      <div class="tb-btn" style="color:var(--v);border-color:color-mix(in srgb, var(--v) 30%, transparent);background:var(--gl2)" onclick="confirmarRutina()">Confirmar y guardar ✓</div>
+      <div class="tb-btn" style="color:var(--v);border-color:color-mix(in srgb, var(--v) 30%, transparent);background:var(--gl2)" onclick="if(privCasilleroOk())confirmarRutina()" class="tb-btn priv-btn">Confirmar y guardar ✓</div>
     </div>
   </div>
   <div style="max-width:680px;margin:0 auto;padding:24px 20px 80px;width:100%;">
@@ -572,7 +572,13 @@
         Tu entrenador revisará este plan y hará ajustes personalizados antes de activarlo.
       </div>
     </div>
-    <button onclick="confirmarRutina()" style="width:100%;height:50px;background:var(--v);border:none;border-radius:11px;font-family:var(--fd);font-size:19px;letter-spacing:.02em;color:var(--btn-tx);cursor:pointer;">CONFIRMAR MI PLAN →</button>
+    <div id="priv-box" style="margin:0 0 14px;padding:14px 16px;border:1px solid var(--b2);border-radius:14px;background:var(--gl)">
+      <label style="display:flex;gap:12px;align-items:flex-start;cursor:pointer;font-family:var(--fb);font-size:13px;line-height:1.55;color:var(--tx)">
+        <input type="checkbox" id="priv-chk" onchange="privCasilleroCambio()" style="width:22px;height:22px;flex:none;margin-top:1px;accent-color:var(--v)">
+        <span>He leído el <a href="#" onclick="abrirAvisoPrivacidad('lectura');return false" style="color:var(--v);font-weight:700;text-decoration:underline">Aviso de Privacidad</a> y doy mi <b>consentimiento expreso</b> para el tratamiento de mis datos personales, incluidos mis datos de salud. Si soy menor de edad, lo acepta mi madre, padre o tutor.</span>
+      </label>
+    </div>
+    <button class="priv-btn" onclick="if(privCasilleroOk())confirmarRutina()" style="width:100%;height:50px;background:var(--v);border:none;border-radius:11px;font-family:var(--fd);font-size:19px;letter-spacing:.02em;color:var(--btn-tx);cursor:pointer;">CONFIRMAR MI PLAN →</button>
   </div>
 </div>
 
@@ -778,7 +784,21 @@
 <script src="js/26-nutricion-staff.js"></script>
 <script src="js/27-seleccion-entrenador.js"></script>
 <script src="js/28-pwa.js"></script>
+<script src="js/29-privacidad.js"></script>
 <script src="js/99-arranque.js"></script>
+
+<!-- ═══ MODAL AVISO DE PRIVACIDAD ═══ -->
+<div class="modal" id="modal-aviso" onclick="if(event.target===this&&!PRIV_CB)cerrarAvisoPrivacidad()">
+  <div class="mbox" style="max-width:560px;display:flex;flex-direction:column;max-height:88vh">
+    <div id="aviso-cuerpo" style="overflow-y:auto;font-size:13.5px;line-height:1.65;color:var(--tx);padding-right:4px;-webkit-overflow-scrolling:touch"></div>
+    <div id="aviso-consent-txt" style="display:none;font-size:12.5px;color:var(--mu);margin:12px 0 0;line-height:1.5">Al tocar «Acepto» otorgas tu consentimiento expreso para el tratamiento de tus datos personales, incluidos los datos de salud.</div>
+    <div id="aviso-btns-lectura" style="display:flex;gap:10px;margin-top:14px"><button type="button" class="sd-pri" style="flex:1" onclick="cerrarAvisoPrivacidad()">Cerrar</button></div>
+    <div id="aviso-btns-consent" style="display:none;gap:10px;margin-top:14px">
+      <button type="button" class="sd-b" style="flex:1" onclick="avisoRechazar()">No acepto</button>
+      <button type="button" class="sd-pri" style="flex:1" onclick="avisoAceptar()">Acepto</button>
+    </div>
+  </div>
+</div>
 
 <!-- ═══ MODAL CONFIRMACIÓN (reemplaza confirm/prompt nativos) ═══ -->
 <div class="modal" id="modal-uic" onclick="if(event.target===this)uiNo()">
