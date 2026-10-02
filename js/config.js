@@ -34,7 +34,17 @@ const GYM = {
   },
 
   // ── IA de rutinas (Cloudflare Worker). Vacío = plantillas locales ──
-  aiEndpoint: ''
+  aiEndpoint: '',
+
+  // ── Aviso de privacidad (lo revisa el gimnasio con su asesor legal) ──
+  privacidad: {
+    responsable: 'Club Campestre Aguascalientes',  // razón social o nombre de quien trata los datos
+    domicilio: '',      // domicilio completo del responsable (recomendado)
+    correo: '',         // correo para derechos ARCO (recomendado)
+    telefono: '',
+    version: '1.0',     // si cambias el texto, sube la versión: se les vuelve a pedir aceptar
+    fecha: ''           // ej. 'octubre 2026'
+  }
 };
 
 /* Aplica la marca a la página: título, descripción, color y textos con data-gym.
