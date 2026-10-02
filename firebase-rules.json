@@ -1,22 +1,33 @@
 {
   "rules": {
+    "roles": {
+      "$uid": {
+        ".read": "auth != null && (auth.uid === $uid || root.child('roles').child(auth.uid).val() === 'coordinador')",
+        ".write": "auth != null && root.child('roles').child(auth.uid).val() === 'coordinador'",
+        ".validate": "newData.val() === 'coordinador' || newData.val() === 'entrenador'"
+      }
+    },
     "socios": {
-      ".read": true,
+      ".read": "auth != null && root.child('roles').child(auth.uid).exists()",
       "$code": {
-        ".write": true,
+        ".read": "auth != null",
+        ".write": "auth != null && (root.child('roles').child(auth.uid).exists() || newData.exists())",
         ".validate": "newData.hasChildren(['nombre','objetivo'])"
       }
     },
     "entrenadores": {
-      ".read": true,
+      ".read": "auth != null",
       "$id": {
-        ".write": true
+        ".write": "auth != null && (root.child('roles').child(auth.uid).val() === 'coordinador' || (root.child('roles').child(auth.uid).exists() && data.child('uid').val() === auth.uid && newData.exists()))",
+        "uid": { ".validate": "root.child('roles').child(auth.uid).val() === 'coordinador' || newData.val() === data.val()" },
+        "rol": { ".validate": "root.child('roles').child(auth.uid).val() === 'coordinador' || newData.val() === data.val()" },
+        "pass": { ".validate": false }
       }
     },
     "config": {
-      ".read": true,
+      ".read": "auth != null",
       "$k": {
-        ".write": true
+        ".write": "auth != null && root.child('roles').child(auth.uid).exists()"
       }
     }
   }

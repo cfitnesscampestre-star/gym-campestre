@@ -1,0 +1,23 @@
+{
+  "rules": {
+    "socios": {
+      ".read": true,
+      "$code": {
+        ".write": true,
+        ".validate": "newData.hasChildren(['nombre','objetivo'])"
+      }
+    },
+    "entrenadores": {
+      ".read": true,
+      "$id": {
+        ".write": true
+      }
+    },
+    "config": {
+      ".read": true,
+      "$k": {
+        ".write": true
+      }
+    }
+  }
+}

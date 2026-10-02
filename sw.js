@@ -8,10 +8,41 @@
    → Los datos de Firebase NUNCA pasan por aquí (van directo).
    → Al desplegar cambios, sube CACHE_VERSION.
    ════════════════════════════════════════════════════════ */
-const CACHE_VERSION = 'fitnesspro-v29';
+const CACHE_VERSION = 'fitnesspro-v31';
 const PRECACHE_LOCAL = [
   './',
   './index.html',
+  './css/estilos.css',
+  './js/00-conocimiento.js',
+  './js/01-datos-firebase.js',
+  './js/02-mensualidad.js',
+  './js/03-nutricion-motor.js',
+  './js/04-estadisticas.js',
+  './js/05-seed-demo.js',
+  './js/06-geofence-sesion-login.js',
+  './js/07-quiz.js',
+  './js/08-rutinas-ia-fallback.js',
+  './js/09-pdf-rutina.js',
+  './js/10-tema-fondo.js',
+  './js/11-composicion-rehab.js',
+  './js/12-deportes-club.js',
+  './js/13-avatar-3d.js',
+  './js/14-motor-rutinas.js',
+  './js/15-registro-sesion.js',
+  './js/16-socios-admin.js',
+  './js/17-panel-staff.js',
+  './js/18-editor-ejercicios.js',
+  './js/19-ficha-socio-estado.js',
+  './js/20-dialogos.js',
+  './js/21-progresion.js',
+  './js/22-resumen-coordinacion.js',
+  './js/23-conocimiento-staff.js',
+  './js/24-filosofia-entrenador.js',
+  './js/25-entrenadores-admin.js',
+  './js/26-nutricion-staff.js',
+  './js/27-seleccion-entrenador.js',
+  './js/28-pwa.js',
+  './js/99-arranque.js',
   './manifest.json',
   './icons/icon-192.png',
   './icons/icon-512.png',
@@ -114,7 +145,26 @@ self.addEventListener('fetch', (e) => {
     return;
   }
 
-  // 2) Todo lo demás (fotos, íconos, librerías, tipografías):
+  // 2) El código de la app (js/ y css/): red primero (máx. 4 s) y si no hay internet, la copia guardada.
+  //    Así los módulos siempre salen de la misma versión que index.html (nunca mezcla versiones).
+  if (propio && /\.(js|css)$/.test(url.pathname)) {
+    e.respondWith(new Promise((resolve) => {
+      let listo = false;
+      const timer = setTimeout(() => {
+        caches.match(req).then((r) => { if (r && !listo) { listo = true; resolve(r); } });
+      }, 4000);
+      fetch(req).then((res) => {
+        guardar(req, res);
+        if (!listo) { listo = true; clearTimeout(timer); resolve(res); }
+      }).catch(() => {
+        clearTimeout(timer);
+        caches.match(req).then((r) => { if (!listo) { listo = true; resolve(r || Response.error()); } });
+      });
+    }));
+    return;
+  }
+
+  // 3) Todo lo demás (fotos, íconos, librerías, tipografías):
   //    desde el dispositivo al instante y se actualiza en segundo plano
   e.respondWith(
     caches.match(req).then((cached) => {
