@@ -1,3 +1,13 @@
+# Cambios — v8.4 · Configuración por gimnasio (base del alta de clientes)
+- Nuevo `js/config.js`: nombre, nombre corto, título, siglas, prefijo de ID, texto del PDF, color principal, ubicación, Firebase y endpoint de IA de cada gimnasio. Es el único archivo de código que cambia entre clientes.
+- Se quitaron las referencias fijas al Club Campestre de `index.html`, PDF, resumen del director, prompt de IA, geocerca, IDs de socio y conexión a Firebase. Los valores actuales del Club quedaron como configuración por defecto: la app del Club se ve y funciona igual.
+- Color principal opcional (`colorPrincipal`): cambia acentos, botones y gráficas en los temas Día y Noche; el texto del botón se ajusta solo (oscuro o blanco).
+- `manifest.json`, `icons/`, `video/` e `img/hero/` siguen siendo por gimnasio (se reemplazan al dar de alta).
+- Guía: `docs/ALTA-GIMNASIO.md` y plantilla `docs/config-plantilla.js`.
+- Service worker: `fitnesspro-v32`.
+
+---
+
 # Cambios — v8.3 · Proyecto separado en módulos
 - `index.html` pasó de ~800 KB a ~70 KB: los estilos viven en `css/estilos.css` y el código en 30 archivos dentro de `js/` (ver `docs/ESTRUCTURA.md`).
 - **No cambia nada de lo que hace la app**: es el mismo código reorganizado. Se verificó contra la versión anterior: las 640 funciones y variables globales son idénticas (mismo código) y la página queda igual; el login de socio, director y coach se probó de nuevo.

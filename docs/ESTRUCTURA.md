@@ -1,4 +1,4 @@
-# Estructura del proyecto (v8.3)
+# Estructura del proyecto (v8.4)
 
 ```
 index.html          Solo la estructura de pantallas y las etiquetas que cargan todo
@@ -17,6 +17,7 @@ Los archivos de `js/` son scripts normales y comparten el mismo ámbito global; 
 
 | Archivo | Qué contiene |
 |---|---|
+| `js/config.js` | **Datos de cada gimnasio** (nombre, color, siglas, ubicación, Firebase, IA). Se carga primero. |
 | `js/00-conocimiento.js` | Catálogo: ejercicios, clases grupales, enfoques musculares (KB_*). |
 | `js/01-datos-firebase.js` | Datos, autenticación (staff y socios), bandeja de cambios sin conexión y fusión de datos. |
 | `js/02-mensualidad.js` | Fecha de renovación, tolerancia de 3 días y estado activo/inactivo. |
@@ -49,6 +50,7 @@ Los archivos de `js/` son scripts normales y comparten el mismo ámbito global; 
 | `js/99-arranque.js` | Ajustes finales que dependen de funciones de varios módulos (siempre al final). |
 
 ## Agregar o cambiar algo
+- **Alta de un gimnasio nuevo:** ver `docs/ALTA-GIMNASIO.md`.
 - **Cambiar un texto o estilo:** `css/estilos.css` o el módulo del tema.
 - **Un módulo nuevo:** crea `js/NN-nombre.js`, agrégalo en `index.html` (en el orden correcto) y en la lista `PRECACHE_LOCAL` de `sw.js`.
 - **Después de cualquier cambio publicado:** sube el número de `CACHE_VERSION` en `sw.js`.
