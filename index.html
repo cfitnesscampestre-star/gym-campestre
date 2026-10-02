@@ -18,6 +18,7 @@
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js" crossorigin="anonymous"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js" crossorigin="anonymous"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js" crossorigin="anonymous"></script>
 <script>
 /* ════════════════════════════════════════════════════════════════════
    BASE DE CONOCIMIENTO — Fitness System Pro · Club Campestre Aguascalientes
@@ -2816,7 +2817,7 @@ function initFirebase(cfg){
   if(typeof firebase==='undefined'){
     if(fbIntentos < 6){
       fbIntentos++;
-      setTimeout(()=>{ if(!fbListo && initFirebase(cfg)){ fbEscuchar(); actualizarFbBadge(); }}, 800);
+      setTimeout(()=>{ if(!fbListo && initFirebase(cfg)){ fbArrancar(); actualizarFbBadge(); }}, 800);
     } else {
       console.warn('Firebase SDK no disponible — trabajando con datos locales');
     }
@@ -2825,8 +2826,51 @@ function initFirebase(cfg){
   try{
     if(!firebase.apps.length) firebase.initializeApp(cfg);
     fbApp=firebase.app(); fbDB=firebase.database(); fbListo=true;
+    try{ fbAuth=firebase.auth(); }catch(e){ console.warn('Auth no disponible',e); }
     return true;
   }catch(e){ console.warn('Firebase init error',e); return false; }
+}
+
+// ═════════════════════════════════════════
+// AUTENTICACIÓN (v8.2) — staff con correo/contraseña de Firebase, socios con sesión anónima
+// El rol del staff vive en /roles/<uid> ("coordinador" o "entrenador"). Los socios solo leen su propio registro.
+// ═════════════════════════════════════════
+const STAFF_DOM='@staff.fitnesspro.app';
+let fbAuth=null, fbUid=null, fbRolDB=null, fbEsStaff=false, fbRolListo=false, fbArrancando=false;
+let fbWaiters=[], fbPrimerEstado=null, fbPrimerResolver=null;
+fbPrimerEstado=new Promise(r=>{ fbPrimerResolver=r; });
+function fbConUsuario(ms){
+  const esp=new Promise(res=>{ if(fbAuth&&fbAuth.currentUser&&fbRolListo) res(true); else fbWaiters.push(res); });
+  return Promise.race([esp,new Promise(r=>setTimeout(()=>r(false),ms||6000))]);
+}
+async function fbCargarRol(user){
+  fbRolListo=false; fbRolDB=null; fbEsStaff=false;
+  if(user && !user.isAnonymous){
+    try{ const r=await fbDB.ref('/roles/'+user.uid).once('value'); fbRolDB=r.val()||null; fbEsStaff=!!fbRolDB; }catch(e){ console.warn('Sin rol',e); }
+  }
+  fbRolListo=true;
+  return fbRolDB;
+}
+function fbArrancar(){
+  if(!fbListo || !fbAuth || fbArrancando) return;
+  fbArrancando=true;
+  fbAuth.onAuthStateChanged(async u=>{
+    if(!u){
+      fbUid=null; fbRolDB=null; fbEsStaff=false; fbRolListo=false;
+      fbDetenerStaff();
+      if(fbPrimerResolver){ fbPrimerResolver({user:null,rol:null}); fbPrimerResolver=null; }
+      try{ await fbAuth.signInAnonymously(); }catch(e){ console.warn('Sesión anónima no disponible',e); }
+      return;
+    }
+    fbUid=u.uid;
+    await fbCargarRol(u);
+    if(!fbEsStaff) fbDetenerStaff();
+    fbEscuchar();                       // /config y /entrenadores (una sola vez)
+    if(fbEsStaff) fbEscucharStaff();    // todos los socios, solo para el staff
+    const w=fbWaiters; fbWaiters=[]; w.forEach(f=>f(true));
+    if(fbPrimerResolver){ fbPrimerResolver({user:u,rol:fbRolDB}); fbPrimerResolver=null; }
+    actualizarFbBadge();
+  });
 }
 
 function fbEscuchar(){
@@ -2837,6 +2881,27 @@ function fbEscuchar(){
     if(fbConectado){ fbYaConecto=true; vaciarBandeja(); }
     actualizarPillSync();
   });
+  fbDB.ref('/config').on('value', snap=>{ DB.config=aplicarPendientes('/config', snap.val()||{}); kbAplicarExtra(); guardarLocal(); if(document.getElementById('s-panel')?.classList.contains('on') && document.querySelector('#staff-content')) { /* sin refrescar la ficha abierta */ } actualizarContadorSocios(); }, ()=>{});
+
+  fbDB.ref('/entrenadores').on('value', snap=>{
+    const raw=snap.val();
+    const data=aplicarPendientes('/entrenadores', raw||{});
+    if(Object.keys(data).length){
+      DB.entrenadores=data;
+      guardarLocal();
+    } else if(!raw) {
+      seedEntrenadores(); // solo local: nunca escribe contraseñas en Firebase
+    }
+    if(document.getElementById('s-quiz')?.classList.contains('on')) renderTrainerPicker();
+  }, ()=>{});
+  vaciarBandeja();   // subir lo que quedó pendiente de antes (aunque se haya cerrado la app)
+}
+
+// ── Staff: escucha TODA la lista de socios ──
+let fbStaffEscuchando=false;
+function fbEscucharStaff(){
+  if(fbStaffEscuchando || !fbListo || !fbEsStaff) return;
+  fbStaffEscuchando=true;
   fbDB.ref('/socios').on('value', snap=>{
     const raw=snap.val();
     // Huella de lo confirmado por Firebase (solo socios sin cambios pendientes en este dispositivo)
@@ -2855,22 +2920,53 @@ function fbEscuchar(){
       DB.socios={};
       if(document.getElementById('s-panel')?.classList.contains('on')) staffRenderList();
     }
-  }, ()=>{ const l=lsLoad(); if(l) DB=l; });
+    // Contador público (lo leen los socios sin descargar la lista)
+    const n=Object.keys(srv).length;
+    if(fbEsStaff && DB.config && DB.config.totalSocios!==n){ DB.config.totalSocios=n; fbDB.ref('/config/totalSocios').set(n).catch(()=>{}); }
+  }, ()=>{ fbStaffEscuchando=false; const l=lsLoad(); if(l) DB=l; });
+}
+function fbDetenerStaff(){
+  if(!fbStaffEscuchando) return;
+  try{ fbDB.ref('/socios').off('value'); }catch(e){}
+  fbStaffEscuchando=false;
+}
 
-  fbDB.ref('/config').on('value', snap=>{ DB.config=aplicarPendientes('/config', snap.val()||{}); kbAplicarExtra(); guardarLocal(); if(document.getElementById('s-panel')?.classList.contains('on') && document.querySelector('#staff-content .kb-h')) abrirConocimiento(); }, ()=>{});
-
-  fbDB.ref('/entrenadores').on('value', snap=>{
-    const raw=snap.val();
-    const data=aplicarPendientes('/entrenadores', raw||{});
-    if(Object.keys(data).length){
-      DB.entrenadores=data;
+// ── Socio: escucha SOLO su propio registro ──
+let fbSocioCode=null;
+function fbEscucharSocio(code){
+  if(!fbListo || !code) return;
+  if(fbSocioCode && fbSocioCode!==code){ try{ fbDB.ref('/socios/'+fbSocioCode).off('value'); }catch(e){} fbSocioCode=null; }
+  if(fbSocioCode===code) return;
+  fbConUsuario().then(ok=>{
+    if(!ok || fbEsStaff || fbSocioCode===code) return;
+    fbSocioCode=code;
+    fbDB.ref('/socios/'+code).on('value', snap=>{
+      const raw=snap.val();
+      if(!raw){
+        if(tienePendiente(code)) return;
+        delete BASE[code]; baseGuardar();
+        if(DB.socios[code]){
+          delete DB.socios[code]; guardarLocal();
+          if(activeSocio && activeSocio.code===code){ logoutSocio(); showToast('Tu acceso fue dado de baja. Habla con recepción.'); }
+        }
+        return;
+      }
+      if(!tienePendiente(code)) BASE[code]=baseDeSocio(raw);
+      baseGuardar();
+      const data={}; data[code]=asegurarLogs(raw);
+      aplicarSnapshotSocios(aplicarPendientes('/socios', data));
       guardarLocal();
-    } else if(!raw) {
-      seedEntrenadores(); // solo escribe si la rama está vacía (ver seedEntrenadores)
-    }
-    if(document.getElementById('s-quiz')?.classList.contains('on')) renderTrainerPicker();
-  }, ()=>{});
-  vaciarBandeja();   // subir lo que quedó pendiente de antes (aunque se haya cerrado la app)
+      OUTBOX.forEach(en=>{ if(en.tipo==='socio' && !enVuelo.has(en.id)) enviar(en); });
+    }, ()=>{ fbSocioCode=null; });
+  });
+}
+function fbDetenerSocio(){
+  if(fbSocioCode){ try{ fbDB.ref('/socios/'+fbSocioCode).off('value'); }catch(e){} fbSocioCode=null; }
+}
+function actualizarContadorSocios(){
+  const el=document.getElementById('inicio-socios'); if(!el) return;
+  const t=DB.config&&DB.config.totalSocios;
+  el.textContent = 100 + (typeof t==='number' ? t : Object.keys(DB.socios||{}).length);
 }
 
 // ── Sincronización segura ──
@@ -2933,7 +3029,7 @@ function fbErrorMsg(e){
 // (transacción), así no se pisan datos registrados desde otro dispositivo.
 // ═════════════════════════════════════════
 const LS_OUT='fitkiosk_outbox_v1', LS_BASE='fitkiosk_base_v1';
-const FB_SDK=['https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js','https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js'];
+const FB_SDK=['https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js','https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js','https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js'];
 let OUTBOX=(()=>{ try{ const o=JSON.parse(localStorage.getItem(LS_OUT)); return Array.isArray(o)?o:[]; }catch(e){ return []; } })();
 let BASE=(()=>{ try{ return JSON.parse(localStorage.getItem(LS_BASE))||{}; }catch(e){ return {}; } })(); // huella de lo último CONFIRMADO por Firebase, por socio y campo
 const enVuelo=new Set(), OUT_CB={};
@@ -3120,8 +3216,8 @@ window.addEventListener('online', ()=>{
   if(fbListo) return;
   // La app abrió sin internet y sin SDK de Firebase: cargarlo ahora y subir lo pendiente
   const cfg=leerFbConfig(); if(!cfg) return;
-  const carga = (typeof firebase==='undefined') ? cargarScript(FB_SDK[0]).then(()=>cargarScript(FB_SDK[1])) : Promise.resolve();
-  carga.then(()=>{ fbIntentos=0; if(initFirebase(cfg)){ fbEscuchar(); if(typeof actualizarFbBadge==='function') actualizarFbBadge(); } }).catch(()=>{});
+  const carga = (typeof firebase==='undefined') ? cargarScript(FB_SDK[0]).then(()=>cargarScript(FB_SDK[1])).then(()=>cargarScript(FB_SDK[2])) : Promise.resolve();
+  carga.then(()=>{ fbIntentos=0; if(initFirebase(cfg)){ fbArrancar(); if(typeof actualizarFbBadge==='function') actualizarFbBadge(); } }).catch(()=>{});
 });
 
 function dbSave(socioCode){
@@ -3142,7 +3238,8 @@ function dbSaveEntrenador(entId){
   guardarLocal();
   if(!entId){ console.warn('dbSaveEntrenador sin id bloqueado'); return; }
   if(!DB.entrenadores[entId]) return;
-  fbEncolar('/entrenadores/'+entId,'set',DB.entrenadores[entId]);
+  const d=Object.assign({},DB.entrenadores[entId]); delete d.pass;   // v8.2: nunca se guardan contraseñas en la base
+  fbEncolar('/entrenadores/'+entId,'set',d);
 }
 
 function getEntrenador(id){ return DB.entrenadores[id]||null; }
@@ -3653,7 +3750,7 @@ function seedDB(){
 function seedEntrenadores(){
   const ents = {
     entrenador1:{
-      id:'entrenador1', pass:'1234', rol:'entrenador', nombre:'Beto R.',
+      id:'entrenador1', rol:'entrenador', nombre:'Beto R.',
       especialidades:['Fuerza','Rendimiento deportivo','Gimnasia'],
       filosofia:{
         tagline:'Construyo fuerza real antes que estética — el físico llega solo.',
@@ -3666,7 +3763,7 @@ function seedEntrenadores(){
       }
     },
     entrenador2:{
-      id:'entrenador2', pass:'1234', rol:'entrenador', nombre:'Mariana G.',
+      id:'entrenador2', rol:'entrenador', nombre:'Mariana G.',
       especialidades:['Funcional','Movilidad','Pádel','Fútbol'],
       filosofia:{
         tagline:'Cada sesión debe sentirse distinta — el cuerpo se adapta cuando lo sorprendes.',
@@ -3679,7 +3776,7 @@ function seedEntrenadores(){
       }
     },
     entrenador3:{
-      id:'entrenador3', pass:'1234', rol:'entrenador', nombre:'Hugo T.',
+      id:'entrenador3', rol:'entrenador', nombre:'Hugo T.',
       especialidades:['Rehabilitación','Natación','Tenis','Movilidad'],
       filosofia:{
         tagline:'Técnica impecable primero, cargas después. Sin atajos.',
@@ -3692,12 +3789,11 @@ function seedEntrenadores(){
       }
     },
     coordinador1:{
-      id:'coordinador1', pass:'1234', rol:'coordinador', nombre:'Fer C.',
+      id:'coordinador1', rol:'coordinador', nombre:'Fer C.',
       especialidades:['Coordinación general'],
       filosofia:null
     }
   };
-  try{ if(fbListo) Object.keys(ents).forEach(id=>fbDB.ref('/entrenadores/'+id).set(ents[id]).catch(()=>{})); }catch(e){}
   DB.entrenadores = ents;
   guardarLocal();
   return ents;
@@ -3799,6 +3895,18 @@ window.addEventListener('load', ()=>{
   else { DB = seedDB(); }
   if(!DB.entrenadores || !Object.keys(DB.entrenadores).length){ DB.entrenadores = seedEntrenadores(); }
   DB.config = DB.config || {};
+  // v8.2: este dispositivo ya no guarda la lista completa de socios salvo que sea del staff
+  { const ses0=leerSesion();
+    if(!ses0 || ses0.tipo!=='staff'){
+      const guardar=new Set(OUTBOX.filter(x=>x.tipo==='socio').map(x=>x.code));
+      if(ses0 && ses0.tipo==='socio') guardar.add(ses0.code);
+      const dejar={}; Object.keys(DB.socios||{}).forEach(c=>{ if(guardar.has(c)) dejar[c]=DB.socios[c]; });
+      DB.socios=dejar;
+      Object.keys(BASE).forEach(c=>{ if(!guardar.has(c)) delete BASE[c]; }); baseGuardar();
+    }
+    Object.values(DB.entrenadores||{}).forEach(e=>{ if(e && e.uid && e.pass!==undefined) delete e.pass; });
+    guardarLocal();
+  }
   Object.values(DB.socios||{}).forEach(asegurarLogs);
   kbAplicarExtra();
 
@@ -3819,7 +3927,7 @@ window.addEventListener('load', ()=>{
   if(!ok){
     // Sin Firebase: ya tenemos la caché local cargada arriba
   } else {
-    fbEscuchar();
+    fbArrancar();
   }
   initGeofence();
   restaurarSesion();
@@ -3829,7 +3937,7 @@ window.addEventListener('load', ()=>{
   const n = new Date();
   const sem = Math.ceil((((n - new Date(n.getFullYear(),0,1)) / 86400000) + new Date(n.getFullYear(),0,1).getDay()+1)/7);
   document.getElementById('inicio-fecha').textContent = 'Semana '+sem+' · '+n.getFullYear();
-  document.getElementById('inicio-socios').textContent = 100 + Object.keys(DB.socios).length;
+  actualizarContadorSocios();
 });
 
 // ═════════════════════════════════════════
@@ -3847,6 +3955,7 @@ function restaurarSesion(){
     if(!socio){ borrarSesion(); return; }
     if(membBloqueoSocio(socio)){ borrarSesion(); return; }
     activeSocio=socio;
+    fbEscucharSocio(ses.code);
     // Recuperar el check-in de hoy si ya existe; si no, registrarlo
     const hoy=fechaISO(new Date());
     const existente=(socio.logs?.asistencia||[]).find(r=>r.fecha===hoy);
@@ -3856,22 +3965,42 @@ function restaurarSesion(){
     dashTab('inicio');
     go('s-dash');
   } else if(ses.tipo==='staff'){
-    let acc=STAFF_USERS[ses.user]; let entId=null;
-    if(!acc){
-      const ent=DB.entrenadores && DB.entrenadores[ses.user];
-      if(ent){ acc={rol:ent.rol||'entrenador', nombre:ent.nombre}; entId=ses.user; }
-    }
-    if(!acc){ borrarSesion(); return; }
-    staffRol=acc.rol;
-    staffActivoEntId=entId;
-    const badge=document.getElementById('staff-role-badge');
-    badge.style.display='inline-block'; badge.textContent=sc((acc.rol==='coordinador'?'director':acc.rol).toUpperCase());
-    document.getElementById('staff-nombre').textContent=acc.nombre;
-    staffActivoId=null;
-    staffRenderList();
-    go('s-panel'); staffVista('lista');
-    actualizarBotonMiFilosofia();
+    restaurarStaff(ses);
   }
+}
+async function restaurarStaff(ses){
+  if(!fbListo || !fbAuth){ return; }     // sin Firebase no se puede verificar al staff: se queda en el inicio
+  const est=await Promise.race([fbPrimerEstado,new Promise(r=>setTimeout(()=>r(null),6000))]);
+  if(!est || !est.user || est.user.isAnonymous || !est.rol){ borrarSesion(); return; }
+  entrarComoStaff(ses.user, est.rol);
+}
+function entrarComoStaff(usuario, rolDB){
+  const esCoord = rolDB==='coordinador';
+  const entObj = DB.entrenadores && DB.entrenadores[usuario];
+  staffRol = esCoord ? 'coordinador' : ((entObj&&entObj.rol&&entObj.rol!=='coordinador')?entObj.rol:'entrenador');
+  staffActivoEntId = esCoord ? null : (entObj?usuario:null);
+  const badge=document.getElementById('staff-role-badge');
+  badge.style.display='inline-block';
+  badge.textContent=sc((entObj&&!esCoord?entTipoLabel(entObj):(esCoord?'director':staffRol)).toUpperCase());
+  document.getElementById('staff-nombre').textContent=(entObj&&entObj.nombre)||(esCoord?'Director':usuario);
+  staffActivoId=null;
+  staffRenderList();
+  go('s-panel'); staffVista('lista');
+  actualizarFbBadge();
+  actualizarBotonMiFilosofia();
+  if(esCoord){
+    // Borra de Firebase las contraseñas antiguas en texto (ya no sirven: el acceso es por Firebase Authentication)
+    Object.keys(DB.entrenadores||{}).forEach(id=>{
+      const e=DB.entrenadores[id];
+      if(e && e.pass!==undefined){ delete e.pass; try{ fbDB.ref('/entrenadores/'+id+'/pass').remove().catch(()=>{}); }catch(x){} }
+    });
+    guardarLocal();
+    avisarEntrenadoresSinAcceso();
+  }
+}
+function avisarEntrenadoresSinAcceso(){
+  const n=Object.values(DB.entrenadores||{}).filter(e=>e && e.rol!=='coordinador' && !e.uid).length;
+  if(n) setTimeout(()=>showToast('🔐 '+n+' entrenador(es) aún sin acceso seguro: abre Entrenadores → Editar y crea su contraseña (mín. 6)'),1200);
 }
 
 // ═════════════════════════════════════════
@@ -3894,10 +4023,10 @@ function updateTb(id){
     tba.innerHTML = `<div class="tb-btn" onclick="logoutSocio()"><svg class="ico" aria-hidden="true"><use href="#i-logout"/></svg>Salir</div>`;
   } else if(id==='s-inicio'||id==='s-login'){
     tba.innerHTML = `<div class="live-tag"><span class="dot-pulse"></span>Kiosco activo</div>`;
-    if(id==='s-inicio') document.getElementById('inicio-socios').textContent = 100 + Object.keys(DB.socios).length;
+    if(id==='s-inicio') actualizarContadorSocios();
   } else { tba.innerHTML=''; }
 }
-function logoutSocio(){ av3dDestruir(); activeSocio=null; borrarSesion(); ['cd1','cd2','cd3','cd4'].forEach(i=>document.getElementById(i).value=''); go('s-inicio'); }
+function logoutSocio(){ av3dDestruir(); fbDetenerSocio(); activeSocio=null; borrarSesion(); ['cd1','cd2','cd3','cd4'].forEach(i=>document.getElementById(i).value=''); go('s-inicio'); }
 
 // ═════════════════════════════════════════
 // LOGIN SOCIO
@@ -3908,15 +4037,35 @@ cds.forEach((d,i)=>{
   d.addEventListener('keydown',e=>{ if(e.key==='Backspace'&&!d.value&&i>0) cds[i-1].focus(); });
 });
 
-function doLogin(){
+async function doLogin(){
   const code = ['cd1','cd2','cd3','cd4'].map(id=>document.getElementById(id).value).join('');
-  const socio = getSocio(code);
   const errEl=document.getElementById('login-err');
+  let socio = getSocio(code);
+  if(/^\d{4}$/.test(code) && fbListo && fbAuth && navigator.onLine){
+    try{
+      if(await fbConUsuario()){
+        const snap=await fbDB.ref('/socios/'+code).once('value');
+        const v=snap.val();
+        if(v){
+          asegurarLogs(v);
+          const previo=DB.socios[code];
+          DB.socios[code]=(previo && tienePendiente(code)) ? fusionarSocio(code,previo,v) : v;
+          if(!tienePendiente(code)){ BASE[code]=baseDeSocio(v); baseGuardar(); }
+          guardarLocal();
+          socio=DB.socios[code];
+        } else {
+          if(DB.socios[code] && !tienePendiente(code)){ delete DB.socios[code]; guardarLocal(); }
+          socio=tienePendiente(code)?DB.socios[code]:null;
+        }
+      }
+    }catch(e){ console.warn('Consulta de socio sin conexión',e); }
+  }
   if(!socio){ errEl.textContent='No encontramos ese código. Revisa tus 4 dígitos.'; errEl.classList.remove('inact'); errEl.style.display='block'; return; }
   if(membBloqueoSocio(socio)){ errEl.textContent=MEMB_MSG_INACTIVO; errEl.classList.add('inact'); errEl.style.display='block'; return; }
   errEl.style.display='none';
   activeSocio = socio;
   guardarSesion({tipo:'socio', code});
+  fbEscucharSocio(code);
   const { registro, yaRegistrado } = registrarAsistencia(socio);
   socio._asistHoy = registro;
   socio._yaRegistrado = yaRegistrado;
@@ -4658,12 +4807,22 @@ function renderPreview(rutina){
 }
 
 // ── Confirmar: crea socio persistente con código único ──
-function confirmarRutina(){
+async function fbCodigoLibre(){
+  for(let i=0;i<15;i++){
+    const c=String(Math.floor(1000+Math.random()*9000));
+    if(DB.socios[c]) continue;
+    if(fbListo && fbAuth && navigator.onLine){
+      try{ if(await fbConUsuario(4000)){ const sn=await fbDB.ref('/socios/'+c).once('value'); if(sn.exists()) continue; } }catch(e){}
+    }
+    return c;
+  }
+  return String(Math.floor(1000+Math.random()*9000));
+}
+async function confirmarRutina(){
   const rutina=window._rutinaTemp;
   if(!rutina){ go('s-inicio'); return; }
 
-  let code;
-  do { code=String(Math.floor(1000+Math.random()*9000)); } while(DB.socios[code]);
+  const code=await fbCodigoLibre();
   document.getElementById('pend-code').textContent=code;
 
   const keys=['lun','mar','mie','jue','vie','sab','dom'];
@@ -8612,9 +8771,7 @@ function confirmarEliminarSocioFinal(code){
 // ═════════════════════════════════════════
 // PANEL STAFF — conectado a la misma DB
 // ═════════════════════════════════════════
-const STAFF_USERS={
-  'coordinador1':{pass:'1234',rol:'coordinador',nombre:'Fer C.'},
-};
+const STAFF_USERS={};   // v8.2: el acceso del staff vive en Firebase Authentication (ya no hay contraseñas en el código)
 let staffRol='entrenador', staffActivoId=null, staffFilterVal='todos', staffSearchVal='';
 let staffActivoEntId=null; // id del entrenador logueado (para su propia filosofía)
 
@@ -8623,33 +8780,34 @@ function staffSelRol(el,rol){
   el.classList.add('sel'); staffRol=rol;
   // ya no se autocompletan usuarios demo
 }
-function doStaffLogin(){
-  const u=document.getElementById('staff-user').value.trim();
-  const p=document.getElementById('staff-pass').value;
-  // 1) Usuarios fijos de coordinación · 2) Entrenadores dados de alta dinámicamente (DB.entrenadores)
-  let acc = STAFF_USERS[u];
-  let entId = null, entObj=null;
-  if(!acc){
-    const ent = DB.entrenadores && DB.entrenadores[u];
-    if(ent && ent.pass===p){ acc={pass:ent.pass, rol:ent.rol||'entrenador', nombre:ent.nombre}; entId=u; entObj=ent; }
-  }
-  if(!acc||acc.pass!==p){ document.getElementById('staff-err').style.display='block'; return; }
-  document.getElementById('staff-err').style.display='none';
-  guardarSesion({tipo:'staff', user:u});
-  staffRol=acc.rol;
-  staffActivoEntId=entId;
-  const badge=document.getElementById('staff-role-badge');
-  badge.style.display='inline-block';
-  badge.textContent=sc((entObj?entTipoLabel(entObj):(acc.rol==='coordinador'?'director':acc.rol)).toUpperCase());
-  document.getElementById('staff-nombre').textContent=acc.nombre;
-  staffActivoId=null;
-  staffRenderList();
-  go('s-panel'); staffVista('lista');
-  actualizarFbBadge();
-  actualizarBotonMiFilosofia();
+async function doStaffLogin(){
+  const u=document.getElementById('staff-user').value.trim().toLowerCase().replace(/[^a-z0-9_]/g,'');
+  const pw=document.getElementById('staff-pass').value;
+  const err=document.getElementById('staff-err');
+  const fallo=(t)=>{ err.textContent=t||'Usuario o contraseña incorrectos.'; err.style.display='block'; };
+  if(!u||!pw){ fallo(); return; }
+  if(!fbListo||!fbAuth){ fallo('Necesitas conexión a internet para entrar al panel.'); return; }
+  const btn=document.querySelector('#s-staff .btn-main, .btn-main[onclick="doStaffLogin()"]');
+  if(btn) btn.disabled=true;
+  try{
+    const cred=await fbAuth.signInWithEmailAndPassword(u+STAFF_DOM, pw);
+    const rol=await fbCargarRol(cred.user);
+    if(!rol){ await fbAuth.signOut(); fallo('Esta cuenta no tiene permiso para el panel. Habla con el director.'); return; }
+    err.style.display='none';
+    guardarSesion({tipo:'staff', user:u});
+    if(rol==='coordinador'){ fbEscuchar(); }
+    fbEscucharStaff();
+    entrarComoStaff(u, rol);
+    document.getElementById('staff-pass').value='';
+  }catch(e){
+    const c=String(e&&e.code||'');
+    if(c.includes('network')) fallo('Sin conexión con Firebase. Revisa tu internet.');
+    else if(c.includes('too-many')) fallo('Demasiados intentos. Espera unos minutos e inténtalo de nuevo.');
+    else fallo();
+  }finally{ if(btn) btn.disabled=false; }
 }
 
-function staffLogout(){ borrarSesion(); staffActivoId=null; staffActivoEntId=null; go('s-inicio'); }
+function staffLogout(){ borrarSesion(); staffActivoId=null; staffActivoEntId=null; staffRol='entrenador'; try{ if(fbAuth) fbAuth.signOut(); }catch(e){} fbDetenerStaff(); go('s-inicio'); }
 
 // las secciones que se abren en el área de contenido pasan a la vista de detalle en celular
 ['abrirConocimiento','abrirResumen','abrirEntrenadores','abrirLugares'].forEach(n=>{
@@ -8673,7 +8831,7 @@ function fbConectar(){
   document.getElementById('fb-err').style.display='none';
   if(!initFirebase(cfg)){ document.getElementById('fb-err').textContent='❌ No se pudo conectar. Revisa el databaseURL.'; document.getElementById('fb-err').style.display='block'; return; }
   guardarFbConfig(cfg);
-  fbEscuchar();
+  fbArrancar();
   actualizarFbBadge();
   showToast('🔥 Firebase conectado correctamente');
   go('s-inicio');
@@ -10479,7 +10637,7 @@ function abrirMiFilosofia(idAjeno){
 // Guarda automáticamente el avance en cada paso, para no perderlo si se cierra el cuestionario a medias
 function filoGuardarProgreso(){
   if(!filoEditId) return;
-  if(!DB.entrenadores[filoEditId]) DB.entrenadores[filoEditId]={id:filoEditId,nombre:document.getElementById('staff-nombre')?.textContent||filoEditId,rol:'entrenador',pass:'1234',especialidades:[]};
+  if(!DB.entrenadores[filoEditId]) DB.entrenadores[filoEditId]={id:filoEditId,nombre:document.getElementById('staff-nombre')?.textContent||filoEditId,rol:'entrenador',especialidades:[]};
   DB.entrenadores[filoEditId].filosofia = JSON.parse(JSON.stringify(filoDraft));
   dbSaveEntrenador(filoEditId);
 }
@@ -10649,17 +10807,39 @@ function crearNuevoEntrenador(){
   const usuario=document.getElementById('ne-usuario').value.trim().toLowerCase().replace(/[^a-z0-9_]/g,'');
   const pass=document.getElementById('ne-pass').value;
   const funciones=[document.getElementById('ne-func-ent').classList.contains('ck')?'entrenamiento':null, document.getElementById('ne-func-nut').classList.contains('ck')?'nutricion':null].filter(Boolean);
-  if(!nombre||!usuario||!pass||!funciones.length||STAFF_USERS[usuario]||(DB.entrenadores&&DB.entrenadores[usuario])){
-    document.getElementById('ne-err').style.display='block'; return;
+  if(!nombre||!usuario||!pass||pass.length<6||!funciones.length||STAFF_USERS[usuario]||(DB.entrenadores&&DB.entrenadores[usuario])){
+    document.getElementById('ne-err').textContent='❌ Completa nombre, usuario, contraseña (mín. 6) y elige al menos una función. El usuario ya podría estar en uso.'; document.getElementById('ne-err').style.display='block'; return;
   }
   // Evitar duplicados accidentales: si ya existe alguien con ese nombre, confirmar antes de crear otro
   const yaExiste=Object.values(DB.entrenadores||{}).some(e=>e && e.nombre && e.nombre.trim().toLowerCase()===nombre.toLowerCase());
   if(yaExiste) uiConfirm('Ya existe un entrenador llamado "'+nombre+'". ¿Seguro que quieres crear OTRA cuenta con el mismo nombre? (si el usuario anterior fue un error, ciérralo con 🗑 Eliminar en vez de crear uno nuevo)',()=>crearNuevoEntrenadorFinal(usuario,pass,nombre,funciones),{label:'Crear de todas formas',danger:true});
   else crearNuevoEntrenadorFinal(usuario,pass,nombre,funciones);
 }
-function crearNuevoEntrenadorFinal(usuario,pass,nombre,funciones){
+// Crea la cuenta en Firebase Authentication (con una app secundaria para no cerrar la sesión del director) y le da rol
+async function fbCrearAccesoStaff(usuario, pass, rol){
+  if(!fbListo||!fbAuth||!fbEsStaff||fbRolDB!=='coordinador') throw new Error('permiso');
+  let sec; try{ sec=firebase.app('sec'); }catch(e){ sec=firebase.initializeApp(fbApp.options,'sec'); }
+  const sa=sec.auth();
+  const cred=await sa.createUserWithEmailAndPassword(usuario+STAFF_DOM, pass);
+  const uid=cred.user.uid;
+  try{ await sa.signOut(); }catch(e){}
+  await fbDB.ref('/roles/'+uid).set(rol||'entrenador');
+  return uid;
+}
+function msgErrorAcceso(e){
+  const c=String(e&&e.code||e&&e.message||'');
+  if(c.includes('email-already-in-use')) return 'Ese usuario ya tiene cuenta en Firebase. Elige otro usuario o bórrala en Authentication.';
+  if(c.includes('weak-password')) return 'La contraseña debe tener al menos 6 caracteres.';
+  if(c.includes('network')) return 'Sin conexión. Conéctate para crear el acceso.';
+  if(c.includes('permission')||c==='permiso') return 'No tienes permiso para crear accesos (solo el director, conectado).';
+  return 'No se pudo crear el acceso: '+(e&&e.message||e);
+}
+async function crearNuevoEntrenadorFinal(usuario,pass,nombre,funciones){
   const especialidades=[...document.querySelectorAll('#ne-especialidades .chk.ck')].map(e=>e.textContent.trim());
-  DB.entrenadores[usuario]={ id:usuario, pass, rol:'entrenador', nombre, especialidades, funciones, filosofia:null };
+  let uid;
+  try{ uid=await fbCrearAccesoStaff(usuario,pass,'entrenador'); }
+  catch(e){ const er=document.getElementById('ne-err'); er.textContent='❌ '+msgErrorAcceso(e); er.style.display='block'; return; }
+  DB.entrenadores[usuario]={ id:usuario, uid, rol:'entrenador', nombre, especialidades, funciones, filosofia:null };
   dbSaveEntrenador(usuario);
   cerrarModalNuevoEnt();
   showToast('✓ '+(entTipoLabel(DB.entrenadores[usuario]))+' creado: usuario "'+usuario+'"'+(funciones.includes('entrenamiento')?' — al iniciar sesión le pedirá su filosofía':''));
@@ -10866,7 +11046,7 @@ function abrirEditarEntrenador(id){
   document.getElementById('modal-editar-ent').classList.add('open');
 }
 function cerrarModalEditarEnt(){ document.getElementById('modal-editar-ent').classList.remove('open'); }
-function guardarEdicionEntrenador(){
+async function guardarEdicionEntrenador(){
   const id=document.getElementById('ee-id').value;
   const t=DB.entrenadores[id]; if(!t) return;
   const nombre=limpiarTexto(document.getElementById('ee-nombre').value);
@@ -10874,8 +11054,15 @@ function guardarEdicionEntrenador(){
   const funciones=[document.getElementById('ee-func-ent').classList.contains('ck')?'entrenamiento':null, document.getElementById('ee-func-nut').classList.contains('ck')?'nutricion':null].filter(Boolean);
   if(!funciones.length){ showToast('Elige al menos una función: entrenamiento o nutrición'); return; }
   t.nombre=nombre; t.funciones=funciones;
-  const pass=document.getElementById('ee-pass').value;
-  if(pass.trim()) t.pass=pass.trim();
+  const pass=document.getElementById('ee-pass').value.trim();
+  if(pass){
+    if(t.uid){ showToast('ℹ️ La contraseña de un acceso existente se cambia en Firebase → Authentication'); }
+    else if(pass.length<6){ showToast('La contraseña debe tener al menos 6 caracteres'); return; }
+    else{
+      try{ t.uid=await fbCrearAccesoStaff(id,pass,'entrenador'); delete t.pass; showToast('🔐 Acceso seguro creado para '+nombre); }
+      catch(e){ showToast('❌ '+msgErrorAcceso(e)); return; }
+    }
+  }
   const marcadas=[...document.querySelectorAll('#ee-especialidades .chk.ck')].map(e=>e.textContent.trim());
   const otras=limpiarTexto(document.getElementById('ee-otras').value).split(',').map(x=>x.trim()).filter(Boolean);
   t.especialidades=[...marcadas,...otras];
@@ -10903,6 +11090,7 @@ function confirmarEliminarEntrenadorFinal(id){
   delete DB.entrenadores[id];
   guardarLocal();
   OUTBOX=OUTBOX.filter(x=>!(x.path==='/entrenadores/'+id && x.op==='set')); outGuardar();
+  if(t.uid && fbListo){ fbDB.ref('/roles/'+t.uid).remove().catch(()=>{}); }   // revoca el acceso al panel
   fbEncolar('/entrenadores/'+id,'remove',null);
   abrirEntrenadores();
   showToast('🗑 Entrenador eliminado'+(socios.length?' — reasigna a sus socios cuando puedas':''));
@@ -11018,7 +11206,7 @@ if('serviceWorker' in navigator){
     <input type="hidden" id="ee-id">
     <div style="display:flex;flex-direction:column;gap:10px">
       <input type="text" class="ti" id="ee-nombre" placeholder="Nombre completo">
-      <input type="text" class="ti" id="ee-pass" placeholder="Nueva contraseña (déjalo vacío para no cambiarla)">
+      <input type="text" class="ti" id="ee-pass" placeholder="Contraseña de acceso (mín. 6) — vacío = sin cambios">
       <div class="q-sub" style="margin:2px 0 4px">¿Qué da? (elige al menos una)</div>
       <div class="chk-grid" style="grid-template-columns:1fr 1fr">
         <div class="chk" id="ee-func-ent" onclick="this.classList.toggle('ck')">🏋️ Entrenamiento</div>
