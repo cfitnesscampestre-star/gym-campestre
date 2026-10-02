@@ -3,22 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>FITNESS SYSTEM PRO — Club Campestre</title>
+<title>Fitness System Pro</title>
 <meta name="theme-color" content="#EEF1F4">
 <meta name="color-scheme" content="light dark">
 <script>(function(){var t="light";try{t=localStorage.getItem("fitkiosk_theme");if(t!=="light"&&t!=="dark"&&t!=="light2"){t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";}}catch(e){t="light";}document.documentElement.setAttribute("data-theme",t);})();</script>
-<meta name="description" content="Rutinas personalizadas, evolución y nutrición — Club Campestre Aguascalientes">
+<meta name="description" content="Rutinas personalizadas, evolución y nutrición">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
 <!-- iOS: instalable desde Safari → Compartir → Agregar a inicio -->
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Gimnasio CC">
+<meta name="apple-mobile-web-app-title" content="Gimnasio">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js" crossorigin="anonymous"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js" crossorigin="anonymous"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js" crossorigin="anonymous"></script>
+<script src="js/config.js"></script>
 <script src="js/00-conocimiento.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,600;0,700;0,800;1,700;1,800&family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet" crossorigin="anonymous">
@@ -117,7 +118,7 @@
 <!-- ═══ TOPBAR GLOBAL ═══ -->
 <div class="tb" id="global-tb">
   <div class="tb-logo">
-    <div class="lm"><video src="video/logo-animado.mp4" autoplay muted loop playsinline disablepictureinpicture aria-label="Gimnasio CC"></video></div>
+    <div class="lm"><video src="video/logo-animado.mp4" autoplay muted loop playsinline disablepictureinpicture data-gym-label aria-label="Gimnasio"></video></div>
     <div style="display:flex;flex-direction:column;gap:1px;min-width:0">
       <div class="ln">Fitness <span class="ln-x">System </span>Pro</div>
       <div class="tb-stat"><span id="inicio-socios">—</span> socios activos</div>
@@ -136,7 +137,7 @@
     <div class="wc-ov"></div>
     <div class="wc-top" style="position:relative">
       <div style="display:flex;flex-direction:column;align-items:flex-start;gap:6px">
-        <div class="ib-tag on-photo"><span class="dot-pulse"></span>Club Campestre Aguascalientes</div>
+        <div class="ib-tag on-photo"><span class="dot-pulse"></span><span data-gym="nombre"></span></div>
       </div>
       <div class="ib-tag on-photo" style="position:absolute;top:0;right:0"><span class="dot-pulse"></span><span id="inicio-fecha">—</span></div>
     </div>
@@ -541,7 +542,7 @@
 <!-- ═══ S4: PREVIEW RUTINA ═══ -->
 <div class="sc" id="s-preview">
   <div class="tb" style="position:sticky;top:0;z-index:100;">
-    <div class="tb-logo"><div class="lm"><img src="icons/icon-192.png" alt="Gimnasio CC"></div><div class="ln">Tu plan</div></div>
+    <div class="tb-logo"><div class="lm"><img src="icons/icon-192.png" data-gym-alt alt="Gimnasio"></div><div class="ln">Tu plan</div></div>
     <div class="tb-r">
       <div class="tb-btn" style="color:var(--v);border-color:color-mix(in srgb, var(--v) 30%, transparent);background:var(--gl2)" onclick="confirmarRutina()">Confirmar y guardar ✓</div>
     </div>
@@ -693,7 +694,7 @@
 <div class="sc" id="s-panel" style="flex-direction:column;">
   <div class="tb staff-topbar" style="position:sticky;top:0;z-index:100;">
     <div class="tb-logo">
-      <div class="lm"><img src="icons/icon-192.png" alt="Gimnasio CC"></div>
+      <div class="lm"><img src="icons/icon-192.png" data-gym-alt alt="Gimnasio"></div>
       <div class="ln">Fitness <span class="ln-x">System </span>Pro</div>
     </div>
     <div class="staff-tb-actions">
