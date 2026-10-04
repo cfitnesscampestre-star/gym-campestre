@@ -16,7 +16,7 @@ function pqLogros(s,desde,hasta){
 function pqRutinaLogrosHTML(rut,logros){
   return DIAS_ORDER.map(k=>{ const d=rut&&rut[k]; const ej=comoArray(d&&d.ejercicios); if(!ej.length) return '';
     return `<div class="pg-dia">${esc(sc(DIAS_NAMES[k]).substring(0,3))} · ${esc(sc(d.tipo||''))}</div>`+ej.map(e=>{
-      const l=logros&&logros[e.nm]; const t=l?(l.kg?'logró '+l.kg+' kg':l.fc?'FC '+l.fc+' lpm':l.seg?l.seg+' s':''):'';
+      const l=logros&&logros[e.nm]; const t=l?(l.kg?'logró '+(Math.round(l.kg*10)/10)+' kg':l.fc?'FC '+l.fc+' lpm':l.seg?l.seg+' s':''):'';
       return `<div class="pg-mini"><span>${esc(e.nm)}</span><b>${esc(pqEjTxt(e))}${t?`<span class="pg-logro">${esc(t)}</span>`:''}</b></div>`; }).join('');
   }).join('')||'<p class="pg-p">Este bloque no tiene ejercicios registrados.</p>';
 }
@@ -130,6 +130,7 @@ function membRender(){
     <div class="mb-sum"><span class="sl-st ${membBadgeCls(e)}" style="display:inline-block">${membBadgeTxt(e)}</span><br><b>${esc(membTxt(s))}</b>
       ${e.estado==='tolerancia'?'<br>Al terminar la tolerancia pasa solo a inactivo y ya no podrá entrar a su plan.':''}
       ${e.sinFecha&&e.estado==='activo'?'<br>Sin fecha de renovación no se le bloquea el acceso nunca.':''}</div>
+    <div style="font-size:12px;color:var(--mu);margin:0 0 10px;line-height:1.5">🔒 ${s.consentimiento&&s.consentimiento.fecha?'Aviso de privacidad aceptado el '+esc(fmtFC(String(s.consentimiento.fecha).slice(0,10)))+' (v'+esc(s.consentimiento.aviso||'')+')':'Aún no ha aceptado el aviso de privacidad (lo hará al entrar)'}</div>
     <button type="button" class="mb-opt" onclick="MB.vista='pago';membRender()"><span class="em">💳</span><span>Registrar pago<small>Renueva su mensualidad y lo deja activo</small></span></button>
     <button type="button" class="mb-opt" onclick="MB.vista='fecha';membRender()"><span class="em">📅</span><span>Fecha de renovación<small>${m.vence?'Actual: '+esc(fmtFC(m.vence))+' · tolerancia de '+MEMB_TOL+' días':'Configúrala para empezar a cobrar mes a mes'}</small></span></button>
     <div class="mb-h">Estado</div>

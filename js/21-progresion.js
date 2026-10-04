@@ -75,14 +75,45 @@ function pqAlternativa(e,de,molestias,usados,rnd){
   return lista[Math.floor(rnd()*Math.min(3,lista.length))];
 }
 
+// ── Estrategias de progresión ──
+// La primera propuesta usa la estrategia "carga" (sube el peso según lo que el socio registró).
+// Cada vez que el entrenador presiona Regenerar se aplica una estrategia DIFERENTE sobre la
+// misma rutina actual y los mismos registros reales del socio.
+const PQ_ESTRATEGIAS={
+  carga:{nm:'Carga progresiva', d:'sube el peso de cada ejercicio a partir de lo que realmente registró'},
+  reps:{nm:'Doble progresión', d:'mantiene el peso que ya levanta y sube repeticiones; el peso sube en el siguiente bloque'},
+  volumen:{nm:'Más volumen', d:'+1 serie en los ejercicios principales con el mismo peso; los accesorios suben poco'},
+  estimulo:{nm:'Cambio de estímulo', d:'tempo o pausa en ejercicios clave, con subida de peso ligera en el resto'},
+  mixta:{nm:'Mixta', d:'los ejercicios principales suben peso y los accesorios suben repeticiones'}
+};
+function pqOrdenEstrategias(s,r,suave){
+  if(suave) return ['carga','estimulo'];
+  const st=pqStatsBloque(s);
+  let lista=['carga','reps','volumen','estimulo','mixta'];
+  // Más volumen solo si asiste bien, se recupera bien y no pidió sesiones cortas
+  if(st.adherencia<65 || r.asistencia==='mitad' || r.asistencia==='poco' || r.recuperacion==='cansado' || r.recuperacion==='dolor' || r.enfoque==='tiempo') lista=lista.filter(x=>x!=='volumen');
+  // Si tiene ejercicios estancados (3 sesiones con el mismo peso), el cambio de estímulo va primero entre las alternativas
+  try{ if(analisisSocio(s).estancados.length>=2) lista=['carga','estimulo'].concat(lista.filter(x=>x!=='carga'&&x!=='estimulo')); }catch(_){}
+  return lista;
+}
+function pqEstrategia(s,r,variante){
+  const obj=s.objetivo||'', suave=obj==='REHABILITACIÓN'||obj==='FLEXIBILIDAD';
+  let lista=pqOrdenEstrategias(s,r,suave);
+  // No repetir la estrategia con la que se hizo el bloque anterior
+  const h=comoArray(s.historialRutinas).filter(Boolean), prev=h.length?h[h.length-1].estrategia:null;
+  if(prev && lista.length>1 && lista[0]===prev) lista=lista.slice(1).concat(lista[0]);
+  return lista[(variante||0)%lista.length];
+}
+
 // ── Motor de progresión: rutina actual + registros del bloque + respuestas ──
-function pqMotor(s,r){
-  r=r||{};
+function pqMotor(s,r,variante){
+  r=r||{}; variante=+variante||0;
   const sinEval=!Object.keys(r).length;
   const st=pqStatsBloque(s), b=pqBloque(s);
   const obj=s.objetivo||'', letra=objLetra(obj), R=letra==='R';
   const suave=obj==='REHABILITACIÓN'||obj==='FLEXIBILIDAD';
   const res=[];
+  const est=pqEstrategia(s,r,variante), estInfo=PQ_ESTRATEGIAS[est];
   let paso={facil:7.5,adecuada:5,retadora:2.5,pesada:0}[r.intensidad]; if(paso===undefined) paso=5;
   if(r.rir==='4') paso+=2.5; else if(r.rir==='0') paso-=2.5; else if(r.rir==='no') paso=0;
   paso=Math.max(0,Math.min(10,paso));
@@ -107,12 +138,14 @@ function pqMotor(s,r){
   if(r.disponibilidad==='mas'||r.disponibilidad==='menos') res.push('⚠ Cambió su disponibilidad ('+(r.disponibilidad==='mas'?'puede más días':'puede menos días')+'): ajusta los días a mano.');
   if(r.comentario) res.push('Comentario del socio: “'+limpiarTexto(r.comentario)+'”');
 
-  const rnd=prng(s.code+'|'+b.n+'|'+(r.enfoque||''));
+  const rnd=prng(s.code+'|'+b.n+'|'+(r.enfoque||'')+'|'+variante);
   const quitar=comoArray(r.quitar);
   const rutina=JSON.parse(JSON.stringify(s.rutina||{}));
   const cambios=[];
+  const estanc=new Set(); try{ analisisSocio(s).estancados.forEach(x=>estanc.add(x)); }catch(_){}
   DIAS_ORDER.forEach(k=>{
     const d=rutina[k]; if(!d || !Array.isArray(d.ejercicios)) return;
+    let metodosDia=0;
     const usados=new Set(d.ejercicios.map(e=>String(e.nm||'').toLowerCase()));
     let variedadHecha=false;
     d.ejercicios.forEach((e,ei)=>{
@@ -145,10 +178,19 @@ function pqMotor(s,r){
         let dlt=0;
         if(menosSerieTodo) dlt-=1; else if(menosSerieAcc && !compuesto) dlt-=1;
         if(zonaEnf.includes(de.enf)) dlt+=1;
+        if(est==='volumen' && compuesto && !esCardio && !menosSerieTodo && !tocaMolestia && dlt<1){ dlt+=1; }
         const ns=Math.max(2,Math.min(5,series+dlt));
-        if(ns!==series){ e.series=ns; mot.push(ns>series?'+1 serie (zona de enfoque)':'−1 serie'); }
+        if(ns!==series){ e.series=ns; mot.push(ns>series?(est==='volumen'&&!zonaEnf.includes(de.enf)?'+1 serie (más volumen)':'+1 serie (zona de enfoque)'):'−1 serie'); }
       }
-      // 3) Carga o repeticiones
+      // 3) Carga o repeticiones — según la estrategia de esta propuesta
+      let metodoAplicado=false;
+      if(est==='estimulo' && !cambiado && !esCardio && !tocaMolestia && metodosDia<2 && !e.grupo && !esEjRondas(e) && !esEjMovilidad(e) && typeof KB_METODOS!=='undefined'){
+        const actual=e.metodo&&e.metodo.id;
+        if(!actual || actual==='tempo' || actual==='pausa'){
+          const id=compuesto?(actual==='pausa'?'tempo':'pausa'):'tempo';
+          if(id!==actual && KB_METODOS[id]){ e.reps=String(e.reps||'').replace(/\s*[—·-]\s*(tempo|temp)\s*[\d-]+/ig,'').replace(/\s*·\s*pausa[^—]*/i,'').trim(); aplicarMetodo(e,id); metodosDia++; metodoAplicado=true; mot.push('Cambio de estímulo: '+KB_METODOS[id].nm+' ('+KB_METODOS[id].reps+')'); }
+        }
+      }
       if(!cambiado && !esCardio){
         let p=paso;
         if(tocaMolestia) p=0;
@@ -157,15 +199,28 @@ function pqMotor(s,r){
         if(dat.compl!==null && dat.compl<0.75 && p>0){ p=0; mot.push('No completó todas sus series: mismo peso'); }
         if(R) p=p/2;
         const kgPlan=pqParseKg(e.peso), base=dat.kg||kgPlan;
+        const kgReal=(dat.kg && dat.kg!==kgPlan)?dat.kg:null;
+        // modo de este ejercicio: 'peso' sube la carga · 'reps' mantiene el peso y sube repeticiones
+        let modo='peso', pp=p;
+        if(est==='reps') modo='reps';
+        else if(est==='volumen'){ if(compuesto) pp=0; else pp=p/2; }
+        else if(est==='estimulo'){ pp=metodoAplicado?0:p/2; }
+        else if(est==='mixta'){ if(!compuesto) modo='reps'; }
+        if(est==='estimulo' && estanc.has(e.nm) && !metodoAplicado && pp>0){ pp=0; mot.push('Llevaba 3 sesiones con el mismo peso: se mantiene y se cambia el estímulo'); }
         if(!suave && base){
-          if(p>0){
-            let nuevo=pqRedondear(base*(1+p/100));
+          if(modo==='reps' && p>0){
+            if(kgReal) e.peso=pqFmtKg(kgReal);
+            const nr=pqSubirReps(e.reps,R||letra==='F');
+            if(nr && nr!==e.reps){ mot.push('Mismo peso'+(base?' ('+pqFmtKg(kgReal||base)+(kgReal?', según lo que registró':'')+(kgReal?')':')'):'')+' · Repeticiones: '+e.reps+' → '+nr); e.reps=nr; }
+            else if(kgReal) mot.push('Peso ajustado a lo que realmente levanta: '+pqFmtKg(kgReal));
+          } else if(pp>0){
+            let nuevo=pqRedondear(base*(1+pp/100));
             if(nuevo<=base) nuevo=base+(base>=20?2.5:1);
             e.peso=pqFmtKg(nuevo);
             mot.push(`Peso ${pqFmtKg(base)} → ${pqFmtKg(nuevo)}${dat.kg&&dat.kg!==kgPlan?' (según lo que registró)':''}`);
           } else if(dat.kg && dat.kg!==kgPlan){ e.peso=pqFmtKg(dat.kg); mot.push('Peso ajustado a lo que realmente levanta: '+pqFmtKg(dat.kg)); }
           else if(tocaMolestia) mot.push('Mismo peso por la molestia');
-        } else if(p>0 || (suave && paso>0)){
+        } else if(!metodoAplicado && (p>0 || (suave && paso>0))){
           const nr=pqSubirReps(e.reps,suave||R);
           if(nr && nr!==e.reps){ mot.push('Repeticiones: '+e.reps+' → '+nr); e.reps=nr; }
         }
@@ -173,7 +228,8 @@ function pqMotor(s,r){
       if(mot.length) cambios.push({dia:k, antes, despues:{nm:e.nm, series:e.series, reps:e.reps||'', peso:e.peso||''}, motivo:mot.join(' · ')});
     });
   });
-  return {rutina, cambios, resumen:res, fecha:fechaISO(new Date()), deBloque:b.n, sesiones:st.sesiones, adherencia:st.adherencia, sinEvaluacion:sinEval};
+  res.unshift((variante?'Propuesta alternativa '+(variante+1)+' · ':'')+'Estrategia: '+estInfo.nm+' — '+estInfo.d+'.');
+  return {rutina, cambios, resumen:res, estrategia:est, variante, fecha:fechaISO(new Date()), deBloque:b.n, sesiones:st.sesiones, adherencia:st.adherencia, sinEvaluacion:sinEval};
 }
 
 // ── Acciones del entrenador / coordinador ──
@@ -204,10 +260,12 @@ function pqGenerar(code){
 function pqGenerarFinal(code){
   const s=getSocio(code); if(!s) return;
   const P=s.progresion||{};
-  const prop=pqMotor(s,P.respuestas||null);
+  // Si ya había una propuesta, esto es "Regenerar": se aplica otra estrategia distinta a la anterior
+  const variante=(P.estado==='propuesta' && P.propuesta)?((+P.propuesta.variante||0)+1):0;
+  const prop=pqMotor(s,P.respuestas||null,variante);
   s.progresion=Object.assign({},P,{estado:'propuesta', bloque:pqBloque(s).n, propuesta:prop});
   pqGuardarStaff(s,['progresion']); pqRefrescarStaff(s);
-  showToast('✨ Propuesta lista: '+prop.cambios.length+' ajustes. Revísala antes de aprobar.');
+  showToast((variante?'🔄 Nueva propuesta · '+PQ_ESTRATEGIAS[prop.estrategia].nm+': ':'✨ Propuesta lista: ')+prop.cambios.length+' ajustes. Revísala antes de aprobar.');
 }
 function pqDescartar(code){
   const s=getSocio(code); if(!s||!s.progresion) return;
@@ -228,7 +286,7 @@ function pqAprobarFinal(code,sem){
   const s=getSocio(code); const P=s&&s.progresion; const p=P&&P.propuesta; if(!p) return;
   const b=pqBloque(s), hoy=fechaISO(new Date()), st=pqStatsBloque(s);
   const hist=comoArray(s.historialRutinas);
-  hist.push({n:b.n, desde:b.desde, hasta:hoy, semanas:b.semanas, rutina:limpio(s.rutina), sesiones:st.sesiones, adherencia:st.adherencia, respuestas:P.respuestas||null});
+  hist.push({n:b.n, desde:b.desde, hasta:hoy, semanas:b.semanas, rutina:limpio(s.rutina), sesiones:st.sesiones, adherencia:st.adherencia, estrategia:p.estrategia||null, respuestas:P.respuestas||null});
   s.historialRutinas=hist.slice(-12);
   s.rutina=JSON.parse(JSON.stringify(p.rutina));
   s.bloque={n:b.n+1, desde:hoy, semanas:sem}; staffProgSel='actual';
@@ -289,7 +347,7 @@ function pqHistorialHTML(s){
   const h=comoArray(s.historialRutinas).filter(Boolean);
   if(!h.length) return '';
   return `<div class="pg-hist-t">Bloques anteriores</div>`+h.slice().reverse().map(x=>`
-    <details class="pg-h"><summary><b>Bloque ${esc(x.n)}</b><span>${esc(fmtFecha(x.desde))} – ${esc(fmtFecha(x.hasta))} · ${esc(x.sesiones)} sesiones · ${esc(x.adherencia)}%</span></summary>
+    <details class="pg-h"><summary><b>Bloque ${esc(x.n)}</b><span>${esc(fmtFecha(x.desde))} – ${esc(fmtFecha(x.hasta))} · ${esc(x.sesiones)} sesiones · ${esc(x.adherencia)}%${x.estrategia&&PQ_ESTRATEGIAS[x.estrategia]?' · '+esc(PQ_ESTRATEGIAS[x.estrategia].nm):''}</span></summary>
       ${x.respuestas?pqRespuestasHTML(x.respuestas):''}
       ${pqRutinaMiniHTML(x.rutina)}
     </details>`).join('');
