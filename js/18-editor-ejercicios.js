@@ -134,7 +134,8 @@ function epItems(s,d){
   const les=lesionKeys(s.limitaciones||[]);
   const yaDia=new Set((d.ejercicios||[]).map(x=>kbNorm(x.nm||'')));
   const q=kbNorm(EP.q);
-  let items=KB_EJERCICIOS.map(x=>({id:x.id,nm:x.nm,ms:x.ms,z:x.z,t:x.t,enf:x.enf,iso:!!x.iso,cardio:x.enf==='cardio'||!!x.rondas,custom:!!x._custom,ev:x.ev||[],aka:x.aka||[]}));
+  const enCasa=(s.modo==='casa');   // socio con rutina en casa: se ofrece el repertorio de casa, no el del gimnasio
+  let items=(enCasa?casaPool():KB_EJERCICIOS).map(x=>({id:x.id,nm:x.nm,ms:x.ms,z:x.z,t:x.t,enf:x.enf,iso:!!x.iso,cardio:x.enf==='cardio'||!!x.rondas||!!x.cont,custom:!!x._custom,ev:x.ev||[],aka:x.aka||[],eq:x.eq||[]}));
   KB_MOVILIDAD.forEach(m=>items.push({id:m.id,nm:m.nm,ms:'Movilidad · '+m.tipo,z:'corporal',enf:'mov',mov:true,ev:[],aka:[]}));
   if(q){
     items=items.filter(x=>kbNorm(x.nm).includes(q)||kbNorm(x.ms).includes(q)||(x.aka||[]).some(a=>kbNorm(a).includes(q)));
@@ -146,7 +147,8 @@ function epItems(s,d){
   else if(EP.grupo==='propios') items=items.filter(x=>x.custom);
   else if(EP.grupo!=='todos') items=items.filter(x=>(EP_ENF[EP.grupo]||[]).includes(x.enf));
   items=items.filter(x=>epZonaOk(x.z,EP.zona));
-  items.forEach(x=>{ x.mal=x.ev.filter(l=>les.includes(l)); x.ya=yaDia.has(kbNorm(x.nm)); });
+  const tiene=new Set((enCasa&&s.casa&&s.casa.equipo)||[]);
+  items.forEach(x=>{ x.mal=x.ev.filter(l=>les.includes(l)); if(enCasa) (x.eq||[]).forEach(q=>{ if(!tiene.has(q)) x.mal.push('sin '+((CASA_EQUIPO[q]&&CASA_EQUIPO[q].nm)||q).toLowerCase()); }); x.ya=yaDia.has(kbNorm(x.nm)); });
   items.sort((a,b)=>(a.mal.length?1:0)-(b.mal.length?1:0) || (a.ya?1:0)-(b.ya?1:0) || (a.iso?1:0)-(b.iso?1:0) || ((a.t==='c')?0:1)-((b.t==='c')?0:1) || a.nm.localeCompare(b.nm,'es'));
   return items;
 }

@@ -63,9 +63,13 @@ function pqSubirReps(txt,suave){
   const inc=tiempo?(suave?5:10):(suave?1:2), tope=tiempo?90:30;
   return t.replace(/(\d+)(\s*-\s*(\d+))?/, (m,a,r,b)=>{ const na=Math.min(tope,+a+inc); return b ? na+'-'+Math.min(tope,+b+inc) : String(na); });
 }
-function pqAlternativa(e,de,molestias,usados,rnd){
+function pqAlternativa(e,de,molestias,usados,rnd,casa){
   const ok=x=>x && x.nm && !usados.has(String(x.nm).toLowerCase()) && !molestias.some(m=>(x.ev||[]).includes(m)) && !(de.kb && x.id && x.id===de.kb.id) && x.nm!==e.nm;
   const porId=id=>KB_EJERCICIOS.find(x=>x.id===id);
+  if(casa){   // socio con rutina en casa: solo ejercicios de casa con el equipo que tiene (nunca del gimnasio)
+    const pool=casaDisponibles(casa.equipo,molestias).filter(x=>ok(x) && !x.rondas && !x.cont && x.enf===de.enf && !!x.iso===!!(de.kb&&de.kb.iso));
+    return pool.length?pool[Math.floor(rnd()*Math.min(3,pool.length))]:null;
+  }
   let lista=[];
   if(de.kb){ const mapa=de.kb.alt||{}; lista=lista.concat((mapa[de.enf]||mapa[Object.keys(mapa)[0]]||[]).map(porId)); }
   lista=lista.concat(comoArray(e.alternativas).map(a=>a&&(kbBuscar(a.nm)||{nm:a.nm,ms:a.ms,enf:de.enf})));
@@ -161,7 +165,7 @@ function pqMotor(s,r,variante){
       else if(r.enfoque==='variedad' && !compuesto && ei>0 && !variedadHecha && !esCardio) razon='más variedad';
       let cambiado=false;
       if(razon){
-        const alt=pqAlternativa(e,de,molestias,usados,rnd);
+        const alt=pqAlternativa(e,de,molestias,usados,rnd,(s.modo==='casa'&&s.casa)?s.casa:null);
         if(alt){
           usados.add(String(alt.nm).toLowerCase());
           e.alternativas=[{nm:antes.nm, ms:e.ms||'', nota:'Ejercicio del bloque anterior'}].concat(comoArray(e.alternativas).filter(a=>a && a.nm!==alt.nm && a.nm!==antes.nm)).slice(0,4);

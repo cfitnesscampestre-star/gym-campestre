@@ -235,7 +235,7 @@ function staffRenderContent(s){
     : `<div class="sd-asig">${asigTxt}</div>`;
 
   ca.innerHTML=`
-    <datalist id="kb-nombres">${KB_EJERCICIOS.map(e=>`<option value="${esc(e.nm)}">`).join('')}</datalist>
+    <datalist id="kb-nombres">${casaNombresDatalist(s)}</datalist>
     <div class="sd">
       <div class="sd-head">
         <div class="sd-top">
@@ -276,8 +276,10 @@ function staffRenderContent(s){
         ${bloqueRecordatorioFilosofia()}
         <div class="sd-sec">Rutina semanal <small>Toca un día para abrirlo. Elige el ejercicio del catálogo y ajusta series, repeticiones y descanso con un toque.</small></div>
         <div class="sd-body">
+          ${casaBannerStaff(s)}
           <div class="rt-bar">
             <button type="button" class="sd-b p" onclick="staffEnriquecer('${s.code}')" title="Agrega métodos de intensidad y opciones por área ocupada donde falten, según tu filosofía">✨ Métodos y opciones</button>
+            ${casaBarraHTML(s)}
             ${staffRutBackup[s.code]?`<button type="button" class="sd-b" onclick="staffDeshacerBase('${s.code}')">↩ Deshacer rutina cargada</button>`:''}
           </div>
           ${diasHTML}

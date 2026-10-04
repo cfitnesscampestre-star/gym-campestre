@@ -1300,6 +1300,7 @@ function renderRutinaTab(){
       <div><div class="goal-k">Objetivo principal</div><div class="goal-t">${esc(sc(s.objetivo||'Entrenar'))}</div></div>
     </div>
     ${pqPlanChip(s)}
+    ${casaChipSocio(s)}
     <div class="chips3">
       <div class="ch3">${ico('calendar')}<b>${s.dias}</b><span>días por semana</span></div>
       <div class="ch3">${ico('layers')}<b>${esc(sc(s.nivel))}</b><span>nivel</span></div>

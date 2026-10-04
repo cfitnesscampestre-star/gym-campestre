@@ -464,7 +464,8 @@ function dbSaveStaff(code){
   guardarLocal();
   staffDirty.delete(code);
   const s=DB.socios[code]; if(!s) return;
-  fbEncolar('/socios/'+code,'update',{rutina:s.rutina,status:s.status,asignado:s.asignado,entrenadorId:s.entrenadorId||''});
+  fbEncolar('/socios/'+code,'update',{rutina:s.rutina,status:s.status,asignado:s.asignado,entrenadorId:s.entrenadorId||'',
+    modo:s.modo||null, casa:s.casa||null, rutinaGym:s.rutinaGym||null});   // rutina en casa: solo la define el staff
 }
 
 function dbSaveEntrenador(entId){

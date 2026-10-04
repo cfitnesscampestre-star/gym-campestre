@@ -284,7 +284,7 @@ function staffUpdAlts(code,k,ei,txt){
 function staffEnriquecer(code){
   const s=getSocio(code); if(!s) return;
   staffDirty.add(code);
-  enriquecerSocio(s);
+  if(s.modo==='casa') casaEnriquecer(s); else enriquecerSocio(s);
   staffRenderContent(s);
   showToast('✨ Métodos y opciones agregados donde faltaban — revisa y presiona GUARDAR');
 }
