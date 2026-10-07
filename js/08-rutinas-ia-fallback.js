@@ -8,7 +8,7 @@
 // ── Traduce la filosofía del entrenador elegido en instrucciones concretas para la IA ──
 // Si el socio no eligió entrenador o ese entrenador aún no llenó su filosofía,
 // se usa la base clínica del club (comportamiento histórico, sin cambios).
-function detalleFilosofiaAvanzada(ph){
+function detalleFilosofiaAvanzada(ph,objetivo){
   const L=[];
   const per={lineal:'lineal (subir carga bloque a bloque)',ondulante:'ondulante (días pesados, medios y ligeros en la misma semana)',bloques:'por bloques (acumulación → intensificación → descarga)',conjugada:'conjugada (fuerza máxima y velocidad en la misma semana)'}[ph.structure&&ph.structure.periodization];
   if(per) L.push('Periodización: '+per+'.');
@@ -34,6 +34,7 @@ function detalleFilosofiaAvanzada(ph){
   const hp=ph.horaPico||{};
   if(hp.sustitucion) L.push('Opciones por área ocupada: prefiere '+{maquina:'máquina o polea con el mismo enfoque',mancuernas:'mancuernas o zona funcional',corporal:'peso corporal y bandas',metodo:'cambiar el método con el equipo disponible'}[hp.sustitucion]+'.'+(hp.nota?' Mensaje al socio: '+hp.nota:''));
   if(ph.sampleRoutineNote) L.push('SESIÓN TÍPICA DE ESTE ENTRENADOR (imita su estilo): '+ph.sampleRoutineNote);
+  if(typeof filoModeloIA==='function'){ const mi=filoModeloIA(ph,objetivo); if(mi) L.push(mi.replace(/^   - /,'')); }   // su rutina modelo para el objetivo de este socio
   return L.map(x=>'   - '+x).join('\n');
 }
 function construirFilosofiaEntrenador(){
@@ -89,7 +90,7 @@ function construirFilosofiaEntrenador(){
    ${descansoTxt}
 
 2b. DETALLE DEL ESTILO DE ESTE ENTRENADOR
-${detalleFilosofiaAvanzada(ph)||'   (sin detalle adicional)'}
+${detalleFilosofiaAvanzada(ph,qAnswers.objetivo)||'   (sin detalle adicional)'}
 
 3. PROPIOCEPCIÓN NEUROSENSITIVA (se mantiene siempre, sin importar el entrenador)
    Cada ejercicio DEBE incluir una nota de dónde sentir el estímulo: qué músculo, en qué ángulo, hacia dónde dirigir la sensación. El campo "tip" DEBE ser instrucción propioceptiva específica, no técnica genérica.

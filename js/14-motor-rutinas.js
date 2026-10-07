@@ -287,6 +287,7 @@ function diversificarSemana(semana,ctx,filo,semilla){
   const pCambio=({1:.2,2:.4,3:.6,4:.8,5:.9})[variedad]||.6;
   const lista=s=>String(s||'').split(/[,;\n]+/).map(kbNorm).filter(x=>x.length>2);
   const nunca=lista(se.nunca), firma=lista(se.firma);
+  if(typeof filoModeloFirmas==='function') filoModeloFirmas(f,ctx.objetivo).forEach(n=>firma.push(n));   // ejercicios de su rutina modelo para este objetivo
   const rnd=prng('div|'+semilla);
   const usados=new Set();
   const libres=['mancuernas','rack','banco','funcional','disco'], guiadas=['maquina','polea'];

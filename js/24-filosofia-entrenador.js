@@ -54,7 +54,8 @@ function filoBase(){
     seleccion:{libreVsMaquina:3,unilateral:3,firma:'',nunca:''},
     sesion:{calentamiento:'',orden:'',tempo:'',core:'',cardio:''},
     horaPico:{sustitucion:'maquina',nota:''},
-    sampleRoutineNote:'',adjustmentPhilosophy:''};
+    sampleRoutineNote:'',adjustmentPhilosophy:'',
+    rutinasModelo:{}};   // hasta 3 rutinas reales del entrenador: fuerza · grasa · rendimiento (ver js/32-filosofia-modelos.js)
 }
 function filoMezclar(base,obj){
   const out=JSON.parse(JSON.stringify(base));
@@ -64,7 +65,7 @@ function filoMezclar(base,obj){
   });
   return out;
 }
-const FILO_TOTAL=9;
+const FILO_TOTAL=10;
 let filoEditId=null; // a quién se le está editando la filosofía (coordinador puede editar la de otros)
 function abrirMiFilosofia(idAjeno){
   const id = idAjeno || staffActivoEntId;
@@ -206,6 +207,8 @@ function renderFiloStep(){
         ${svgRadarFilosofia(F,110)}
         <div style="font-size:11.5px;color:var(--mu);line-height:1.7">Así se ve tu huella; esto verá el socio al elegirte.</div>
       </div>`;
+  } else if(filoStep===10){
+    html+=filoPasoModelos();
   }
   c.innerHTML=html;
   const nb=document.getElementById('filo-next-btn');

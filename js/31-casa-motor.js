@@ -88,6 +88,7 @@ function casaElegir(slot,pool,ctx,estado,rnd){
     if((x.nv||1)===nivel) v+=1.5; else if((x.nv||1)<nivel) v+=.5;
     if((x.eq||[]).length) v+=1;                              // aprovechar el equipo que sí tiene
     if(estado.prio.has(x.enf)) v+=1.5;                       // zona que quiere priorizar
+    if(estado.firmas && estado.firmas.has(kbNorm(x.nm))) v+=3;   // ejercicio de su rutina modelo
     if((ctx.obj==='F'||ctx.obj==='H') && x.lado && x.t==='c') v+=.8;   // unilateral = más carga sin pesas
     if(estado.semana.has(x.id)) v*=.2;                       // ya salió esta semana
     return Math.max(.05,v);
@@ -116,7 +117,8 @@ function casaRx(x,ctx,duracion){
   let reps;
   if(ctx.sinMetodos){ reps=(x.eq&&x.eq.length?'10':'12')+' reps'+lado+' — movilidad lenta'; e.series=2; e.peso=casaPesoTxt(x); e.descanso='—'; return e; }   // flexibilidad
   if(ctx.soloSuaves){ reps='10 reps'+lado+' — control'; e.reps=reps; e.series=3; e.peso=casaPesoTxt(x); e.descanso='60 s'; return e; }   // rehabilitación
-  if(ctx.obj==='F')      reps=(cargado?8:(nv>=3?8:10))+' reps'+lado+' — fuerza';
+  if(ctx.repsModelo) reps=(ctx.repsModelo.min===ctx.repsModelo.max?ctx.repsModelo.min:ctx.repsModelo.min+'-'+ctx.repsModelo.max)+' reps'+lado;
+  else if(ctx.obj==='F')      reps=(cargado?8:(nv>=3?8:10))+' reps'+lado+' — fuerza';
   else if(ctx.obj==='R') reps=(cargado?15:(nv>=3?20:15))+' reps'+lado+' — resistencia';
   else                   reps=(cargado?10:(nv>=3?15:12))+' reps'+lado+' — hipertrofia';
   e.reps=reps;
@@ -172,6 +174,9 @@ function casaGenerar(s,opts){
   }
 
   const estado={prio:casaZonasPrioridad(s), semana:new Set(), enDia:new Set()};
+  const filo=ent&&ent.filosofia;   // rutina modelo del entrenador para el objetivo del socio
+  estado.firmas=new Set(typeof filoModeloFirmas==='function'?filoModeloFirmas(filo,s.objetivo):[]);
+  ctx.repsModelo=typeof filoModeloReps==='function'?filoModeloReps(filo,s.objetivo):null;
   const nMax=duracion>=60?8:duracion>=45?6:5;
   const rutina={};
   const dias=[];
