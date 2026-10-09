@@ -1339,3 +1339,41 @@ input[type=range]::-webkit-slider-thumb{background:var(--lime);border-color:var(
 .sd-pri,.btn-main,.btn-next{box-shadow:var(--glow);}
 @media(min-width:760px){ .dash-section{padding-left:32px;padding-right:32px;} .hero-card{height:210px;} .hero-tx{font-size:30px;} }
 @media(max-width:380px){ .today-t{font-size:26px;} .hero-tx{right:70px;font-size:20px;} .logros{grid-template-columns:repeat(2,1fr);} }
+
+/* ═══ Ajustes visibles de experiencia (inicio, login, tema Vidrio) ═══ */
+/* Tarjetas y enlaces de inicio como <button> reales */
+button.ic,button.staff-link,button.btn-back-link{font:inherit;color:inherit;width:100%;-webkit-appearance:none;appearance:none;}
+button.ic{color:var(--tx);}
+button.ic.ic-ya{color:var(--btn-tx);}
+.ic-txt{display:flex;flex-direction:column;min-width:0;}
+.ic-sub{display:block;}
+@media(hover:hover){button.ic:hover{transform:translateY(-2px);}}
+button.ic:focus-visible{outline:3px solid var(--v2);outline-offset:3px;}
+button.staff-link{width:auto;background:none;border:0;align-self:center;font-size:13.5px;color:var(--mu);min-height:44px;padding:10px 12px;border-radius:999px;}
+button.staff-link:hover{color:var(--v);}
+button.btn-back-link{display:block;background:none;border:0;min-height:44px;color:var(--mu);}
+/* Etiquetas del hero: fila flexible, la fecha ya no se sale de la pantalla */
+.wc-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;}
+.wc-top .ib-tag{margin-bottom:0;min-width:0;max-width:100%;}
+.wc-gym span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.wc-fecha{flex-shrink:0;}
+/* Foto del hero anclada arriba: no corta la cabeza en pantallas anchas */
+.wc-pic .pic img{object-position:center 22%;}
+@media(min-width:1024px){
+  .wc-pic .pic img{object-position:center 34%;}
+  .wc-hero::after{right:-10px;}
+  #s-inicio .inicio-cards{gap:16px;}
+  #s-inicio .ic{padding:20px 22px;flex-direction:row;align-items:center;}
+  #s-inicio .ic-arrow{display:inline-flex;}
+}
+/* Tema Vidrio: fondo más calmado y botón principal legible */
+html[data-theme="light2"]{
+  --grad:linear-gradient(120deg,#5B4BE8 0%,#8E3FE0 55%,#D9480F 100%);
+  --mesh:
+    radial-gradient(85% 60% at 12% -6%, rgba(139,126,255,.30), transparent 60%),
+    radial-gradient(75% 55% at 78% 2%, rgba(64,150,255,.32), transparent 58%),
+    radial-gradient(100% 70% at 90% 110%, rgba(255,90,31,.28), transparent 62%),
+    linear-gradient(165deg,#F5F2FD 0%,#EEF2FE 45%,#F7EFFB 100%);
+}
+html[data-theme="light2"] .ic-ya .ic-sub,html[data-theme="light2"] .ic-ya .ic-arrow{color:#FFFFFF;}
+html[data-theme="light2"] .ic-ya .ic-label,html[data-theme="light2"] .ic-ya .ic-sub{text-shadow:0 1px 2px rgba(20,8,50,.35);}
