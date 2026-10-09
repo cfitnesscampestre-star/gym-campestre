@@ -126,22 +126,22 @@ function filoPasoModelos(){
   const tarj=Object.entries(FILO_MODELOS).map(([cat,F])=>{
     const m=R[cat]||{};
     return `<div style="border:1px solid var(--b);border-radius:14px;padding:12px;margin-bottom:12px;background:var(--in-bg2)">
-      <div style="font-weight:700;font-size:14px;margin-bottom:2px">${F.ic} ${F.nm}</div>
-      <div style="font-size:11px;color:var(--mu);margin-bottom:8px">Se usa con socios cuyo objetivo es: ${F.objs.map(o=>esc(o.charAt(0)+o.slice(1).toLowerCase())).join(' o ')}.</div>
-      <textarea id="fm-txt-${cat}" rows="6" maxlength="${FILO_MODELO_MAX}" style="width:100%;padding:11px;background:var(--in-bg);border:1px solid var(--b);border-radius:10px;font-family:var(--fb);font-size:12.5px;color:var(--tx);outline:none;resize:vertical" placeholder="${esc(F.ph)}" oninput="filoModeloEditar('${cat}',this.value)">${esc(m.texto||'')}</textarea>
+      <div style="font-weight:700;font-size:var(--fs-md);margin-bottom:2px">${F.ic} ${F.nm}</div>
+      <div style="font-size:var(--fs-2xs);color:var(--mu);margin-bottom:8px">Se usa con socios cuyo objetivo es: ${F.objs.map(o=>esc(o.charAt(0)+o.slice(1).toLowerCase())).join(' o ')}.</div>
+      <textarea id="fm-txt-${cat}" rows="6" maxlength="${FILO_MODELO_MAX}" style="width:100%;padding:11px;background:var(--in-bg);border:1px solid var(--b);border-radius:10px;font-family:var(--fb);font-size:var(--fs-sm);color:var(--tx);outline:none;resize:vertical" placeholder="${esc(F.ph)}" oninput="filoModeloEditar('${cat}',this.value)">${esc(m.texto||'')}</textarea>
       <div style="display:flex;gap:8px;align-items:center;margin-top:8px;flex-wrap:wrap">
-        <label style="cursor:pointer;border:1px solid var(--b);border-radius:999px;padding:7px 12px;font-size:12px;font-weight:600;color:var(--p)">📎 Subir archivo
+        <label style="cursor:pointer;border:1px solid var(--b);border-radius:999px;padding:7px 12px;font-size:var(--fs-xs);font-weight:600;color:var(--p)">📎 Subir archivo
           <input type="file" accept=".txt,.csv,.md,.json,text/plain,text/csv" style="display:none" onchange="filoModeloArchivo('${cat}',this)"></label>
-        <button type="button" onclick="filoModeloBorrar('${cat}')" style="border:1px solid var(--b);background:transparent;border-radius:999px;padding:7px 12px;font-size:12px;color:var(--mu);cursor:pointer">Borrar</button>
-        <span id="fm-arch-${cat}" style="font-size:11px;color:var(--mu)">${m.archivo?esc(m.archivo):''}</span>
+        <button type="button" onclick="filoModeloBorrar('${cat}')" style="border:1px solid var(--b);background:transparent;border-radius:999px;padding:7px 12px;font-size:var(--fs-xs);color:var(--mu);cursor:pointer">Borrar</button>
+        <span id="fm-arch-${cat}" style="font-size:var(--fs-2xs);color:var(--mu)">${m.archivo?esc(m.archivo):''}</span>
       </div>
-      <div id="fm-res-${cat}" style="font-size:12px;line-height:1.5;margin-top:8px">${filoModeloResumenHTML(cat)}</div>
+      <div id="fm-res-${cat}" style="font-size:var(--fs-xs);line-height:1.5;margin-top:8px">${filoModeloResumenHTML(cat)}</div>
     </div>`;
   }).join('');
-  return `<div class="q-title" style="font-size:20px">Tus rutinas modelo</div>
+  return `<div class="q-title" style="font-size:var(--fs-2xl)">Tus rutinas modelo</div>
     ${filoSub('Opcional pero muy útil: sube o pega una rutina tuya real por tipo de objetivo (hasta 3). Cuando un socio te elija como entrenador, sus rutinas se armarán con tu estilo: tus ejercicios, orden, series, repeticiones y métodos.')}
     ${tarj}
-    <div style="font-size:11px;color:var(--mu);line-height:1.5">Puedes subir archivos de texto o CSV. Si tu rutina está en PDF, Word, Excel o foto, copia el texto y pégalo aquí (en Excel: guárdala como CSV). Un solo día de ejemplo basta; mientras más completa, mejor.</div>`;
+    <div style="font-size:var(--fs-2xs);color:var(--mu);line-height:1.5">Puedes subir archivos de texto o CSV. Si tu rutina está en PDF, Word, Excel o foto, copia el texto y pégalo aquí (en Excel: guárdala como CSV). Un solo día de ejemplo basta; mientras más completa, mejor.</div>`;
 }
 function filoModeloEditar(cat,val){
   if(!filoDraft.rutinasModelo) filoDraft.rutinasModelo={};

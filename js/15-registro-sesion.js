@@ -257,7 +257,7 @@ function openModal(idx){
   const saved=sesionTemp.ej[idx].sets;
   const head=document.getElementById('m-sets-head');
   { const mv0=document.getElementById('m-mov'); if(mv0){ mv0.style.display='none'; mv0.innerHTML=''; } }
-  const cap=t=>`<div style="font-size:12.5px;color:var(--mu);font-family:var(--fb);line-height:1.5;padding:0 4px 8px">${t}</div>`;
+  const cap=t=>`<div style="font-size:var(--fs-sm);color:var(--mu);font-family:var(--fb);line-height:1.5;padding:0 4px 8px">${t}</div>`;
   const msgFc=(ult,tipo,r)=>{
     if(!ult||!ult.fc) return '';
     const lo=ult.fcMeta?ult.fcMeta[0]:r.lo, hi=ult.fcMeta?ult.fcMeta[1]:r.hi;
@@ -316,7 +316,7 @@ function openModal(idx){
   const esIso=esEjIsometrico(ej);
   if(head) head.style.display=esIso?'none':'';
   const metaIso=esIso?segMetaIso(ej):0, ladoI=esIso&&ladoIso(ej);
-  const capIso=esIso?`<div style="font-size:12px;color:var(--mu);font-family:var(--fb);line-height:1.45;padding:0 4px 6px">⏱ Se mide por <b>tiempo</b>: anota los segundos que sostuviste en cada ronda${ladoI?' (por lado)':''}. Si usas carga extra (disco, mancuerna), anótala en ${unidadPeso}.</div>`:'';
+  const capIso=esIso?`<div style="font-size:var(--fs-xs);color:var(--mu);font-family:var(--fb);line-height:1.45;padding:0 4px 6px">⏱ Se mide por <b>tiempo</b>: anota los segundos que sostuviste en cada ronda${ladoI?' (por lado)':''}. Si usas carga extra (disco, mancuerna), anótala en ${unidadPeso}.</div>`:'';
   document.getElementById('m-sets').innerHTML=capIso+Array.from({length:n},(_,i)=> esIso ? `
     <div class="set-r iso">
       <div class="set-n">${i+1}</div>

@@ -111,11 +111,11 @@ function renderClasesDetalle(){
     let c=qAnswers.clasesGrupales.find(x=>x.clase===nombre);
     if(!c){ c={clase:nombre,dias:[],entrenaMismoDia:false}; qAnswers.clasesGrupales.push(c); }
     return `<div style="padding:12px;background:var(--in-bg);border:1px solid var(--b);border-radius:12px;margin-bottom:8px">
-      <div style="font-family:var(--fb);font-weight:700;font-size:13px;margin-bottom:8px">${nombre}</div>
+      <div style="font-family:var(--fb);font-weight:700;font-size:var(--fs-sm);margin-bottom:8px">${nombre}</div>
       <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:10px">
-        ${diasCortos.map(([k,l])=>`<div class="chk chk-compact ${c.dias.includes(k)?'ck':''}" style="text-align:center;padding:8px 2px;font-size:11px" onclick="qToggleDiaClase('${esc2(nombre)}','${k}',this)">${l}</div>`).join('')}
+        ${diasCortos.map(([k,l])=>`<div class="chk chk-compact ${c.dias.includes(k)?'ck':''}" style="text-align:center;padding:8px 2px;font-size:var(--fs-2xs)" onclick="qToggleDiaClase('${esc2(nombre)}','${k}',this)">${l}</div>`).join('')}
       </div>
-      <div class="chk ${c.entrenaMismoDia?'ck':''}" style="justify-content:flex-start;text-align:left;font-size:12px;padding:10px 14px" onclick="qToggleMismoDia('${esc2(nombre)}',this)">
+      <div class="chk ${c.entrenaMismoDia?'ck':''}" style="justify-content:flex-start;text-align:left;font-size:var(--fs-xs);padding:10px 14px" onclick="qToggleMismoDia('${esc2(nombre)}',this)">
         <span class="chk-tick">✓</span><span>Ese día también quiero entrenar en el gym</span>
       </div>
     </div>`;
@@ -155,7 +155,7 @@ function mostrarSub(id){
 const DEPORTE_ICONOS={tenis:'racquet',golf:'golf',natacion:'swim',gimnasia:'stretch',futbol:'ball',padel:'racquet',frontenis:'racquet',basquet:'basketball',taekwondo:'belt',squash:'racquet',fitness:'flame'};
 function abrirDisciplinas(){
   const cont=document.getElementById('disc-opts');
-  cont.innerHTML=DEPORTES.map(d=>`<div class="opt" onclick="qSelDisc(this,'${d.id}')"><div class="oi">${ico(DEPORTE_ICONOS[d.id]||'star')}</div><div class="ol" style="font-size:15px">${d.nm}</div></div>`).join('');
+  cont.innerHTML=DEPORTES.map(d=>`<div class="opt" onclick="qSelDisc(this,'${d.id}')"><div class="oi">${ico(DEPORTE_ICONOS[d.id]||'star')}</div><div class="ol" style="font-size:var(--fs-base)">${d.nm}</div></div>`).join('');
 }
 function qSelDisc(el,id){
   el.parentElement.querySelectorAll('.opt').forEach(o=>o.classList.remove('sel'));
@@ -273,7 +273,7 @@ function gNext(paso){
 function abrirLesiones(){
   const cont=document.getElementById('lesion-opts');
 const REHAB_ICONOS={osgood:'leg',tobillo:'leg',plantar:'leg',muneca:'dumbbell',cadera:'leg',espalda:'stretch'};
-  cont.innerHTML=REHAB_PROTOCOLOS.map(p=>`<div class="opt" onclick="qSelLesion(this,'${p.id}')"><div class="oi">${ico(REHAB_ICONOS[p.id]||'medical')}</div><div class="ol" style="font-size:14px">${p.zona}</div><div class="os">${p.subtitulo}</div></div>`).join('');
+  cont.innerHTML=REHAB_PROTOCOLOS.map(p=>`<div class="opt" onclick="qSelLesion(this,'${p.id}')"><div class="oi">${ico(REHAB_ICONOS[p.id]||'medical')}</div><div class="ol" style="font-size:var(--fs-md)">${p.zona}</div><div class="os">${p.subtitulo}</div></div>`).join('');
 }
 function qSelLesion(el,id){
   el.parentElement.querySelectorAll('.opt').forEach(o=>o.classList.remove('sel'));

@@ -183,8 +183,8 @@ function staffRenderContent(s){
   const ev=calcEvolucion(s);
   const pesoNow=pesoActual(s);
   const limitHTML=s.limitaciones?.length
-    ? s.limitaciones.map(l=>`<span style="padding:2px 7px;border-radius:4px;font-size:11.5px;font-family:var(--fb);color:var(--r);border:1px solid color-mix(in srgb,var(--r) 30%,transparent);background:color-mix(in srgb,var(--r) 6%,transparent);margin-right:4px">${l}</span>`).join('')
-    : '<span style="font-size:12px;color:var(--v);font-family:var(--fb)">✓ Sin limitaciones</span>';
+    ? s.limitaciones.map(l=>`<span style="padding:2px 7px;border-radius:4px;font-size:var(--fs-xs);font-family:var(--fb);color:var(--r);border:1px solid color-mix(in srgb,var(--r) 30%,transparent);background:color-mix(in srgb,var(--r) 6%,transparent);margin-right:4px">${l}</span>`).join('')
+    : '<span style="font-size:var(--fs-xs);color:var(--v);font-family:var(--fb)">✓ Sin limitaciones</span>';
 
   if(!s.rutina) s.rutina={};
   const ini=tc(s.nombre).split(' ').filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase();

@@ -18,7 +18,7 @@ function renderTrainerPicker(){
   let list = listaEntrenadoresParaElegir();
   cont.innerHTML='';
   if(!list.length){
-    cont.innerHTML='<div style="padding:20px;text-align:center;color:var(--mu);font-size:12px;font-family:var(--fb)">Por ahora el sistema asignará tu entrenador automáticamente.</div>';
+    cont.innerHTML='<div style="padding:20px;text-align:center;color:var(--mu);font-size:var(--fs-xs);font-family:var(--fb)">Por ahora el sistema asignará tu entrenador automáticamente.</div>';
     document.getElementById('qbT').disabled=false;
     return;
   }
@@ -29,9 +29,9 @@ function renderTrainerPicker(){
     div.style.cssText='display:flex;gap:12px;align-items:center;padding:14px;border:1px solid '+(sel?'var(--v)':'var(--b)')+';border-radius:12px;margin-bottom:10px;cursor:pointer;background:'+(sel?'var(--gl2)':'var(--gl)');
     div.innerHTML=`
       <div style="flex:1;min-width:0">
-        <div style="font-family:var(--fd);font-size:17px">${esc(t.nombre)}</div>
-        <div style="font-size:11.5px;${tieneFilo?'color:var(--v);font-style:italic':'color:var(--mu)'};margin:2px 0 6px;line-height:1.35">${tieneFilo?'"'+esc(t.filosofia.tagline)+'"':'Aún sin filosofía propia — seguirá el enfoque general del club'}</div>
-        <div style="display:flex;flex-wrap:wrap;gap:4px">${(t.especialidades||[]).map(s=>`<span style="font-size:8.5px;text-transform:uppercase;letter-spacing:.03em;background:var(--in-bg2);border:1px solid var(--b);color:var(--mu);padding:2px 7px;border-radius:20px">${esc(s)}</span>`).join('')}</div>
+        <div style="font-family:var(--fd);font-size:var(--fs-xl)">${esc(t.nombre)}</div>
+        <div style="font-size:var(--fs-xs);${tieneFilo?'color:var(--v);font-style:italic':'color:var(--mu)'};margin:2px 0 6px;line-height:1.35">${tieneFilo?'"'+esc(t.filosofia.tagline)+'"':'Aún sin filosofía propia — seguirá el enfoque general del club'}</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px">${(t.especialidades||[]).map(s=>`<span style="font-size:var(--fs-2xs);text-transform:uppercase;letter-spacing:.03em;background:var(--in-bg2);border:1px solid var(--b);color:var(--mu);padding:2px 7px;border-radius:20px">${esc(s)}</span>`).join('')}</div>
       </div>
       <div style="flex:0 0 auto;${tieneFilo?'':'opacity:.3'}">${svgRadarFilosofia(t.filosofia,58)}</div>`;
     div.onclick=()=>{ qAnswers.entrenadorId=t.id; qAnswers.entrenadorNombre=t.nombre; renderTrainerPicker(); document.getElementById('qbT').disabled=false; };
