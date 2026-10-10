@@ -231,6 +231,6 @@ function resetDemo(){
     } else {
       staffRenderList(); showToast('⟲ Datos demo reiniciados localmente');
     }
-    document.getElementById('staff-content').innerHTML = '<div style="flex:1;display:flex;align-items:center;justify-content:center;color:var(--mu);font-family:var(--fb);font-size:11px;">Reiniciando...</div>';
+    document.getElementById('staff-content').innerHTML = '<div style="flex:1;display:flex;align-items:center;justify-content:center;color:var(--mu);font-family:var(--fb);font-size:var(--fs-2xs);">Reiniciando...</div>';
   },{label:'Borrar'});
 }

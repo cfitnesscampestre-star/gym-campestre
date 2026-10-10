@@ -539,11 +539,11 @@ function renderRehabTab(){
       const ejsHTML=fase.ejercicios.map((e,i)=>`
         <div style="background:var(--in-bg2);border-radius:9px;padding:10px 12px;margin-bottom:6px;">
           <div style="display:flex;gap:8px;align-items:start;">
-            <div style="font-family:var(--fd);font-size:15px;color:var(--v);min-width:22px">${String(i+1).padStart(2,'0')}</div>
+            <div style="font-family:var(--fd);font-size:var(--fs-base);color:var(--v);min-width:22px">${String(i+1).padStart(2,'0')}</div>
             <div style="flex:1">
-              <div style="font-size:13px;font-weight:600;color:var(--tx)">${e.nm}</div>
-              <div style="font-size:12px;color:var(--mu);font-family:var(--fb);margin-top:1px">${e.series} series · ${e.reps}</div>
-              <div style="font-size:12px;color:var(--n);margin-top:4px;font-family:var(--fb);line-height:1.5;padding:6px 8px;background:color-mix(in srgb, var(--n) 5%, transparent);border-radius:5px;border-left:2px solid color-mix(in srgb, var(--n) 30%, transparent)">💡 ${e.tip}</div>
+              <div style="font-size:var(--fs-sm);font-weight:600;color:var(--tx)">${e.nm}</div>
+              <div style="font-size:var(--fs-xs);color:var(--mu);font-family:var(--fb);margin-top:1px">${e.series} series · ${e.reps}</div>
+              <div style="font-size:var(--fs-xs);color:var(--n);margin-top:4px;font-family:var(--fb);line-height:1.5;padding:6px 8px;background:color-mix(in srgb, var(--n) 5%, transparent);border-radius:5px;border-left:2px solid color-mix(in srgb, var(--n) 30%, transparent)">💡 ${e.tip}</div>
             </div>
           </div>
         </div>`).join('');
@@ -557,16 +557,16 @@ function renderRehabTab(){
       <div class="card" style="border-color:color-mix(in srgb, var(--v) 30%, transparent)">
         <div style="display:flex;justify-content:space-between;align-items:start;gap:10px;margin-bottom:10px;">
           <div>
-            <div style="font-family:var(--fb);font-size:11.5px;letter-spacing:.02em;color:var(--v)">${p.emoji} ${p.zona} · EN REHABILITACIÓN</div>
-            <div style="font-family:var(--fd);font-size:20px;line-height:1.1;margin-top:2px">${p.nombre}</div>
+            <div style="font-family:var(--fb);font-size:var(--fs-xs);letter-spacing:.02em;color:var(--v)">${p.emoji} ${p.zona} · EN REHABILITACIÓN</div>
+            <div style="font-family:var(--fd);font-size:var(--fs-2xl);line-height:1.1;margin-top:2px">${p.nombre}</div>
           </div>
           <div class="chip ${chipColor}" style="white-space:nowrap">FASE ${les.faseActual+1}/${p.fases.length}</div>
         </div>
 
         <div style="padding:10px 12px;background:var(--gl2);border-radius:10px;margin-bottom:12px;">
-          <div style="font-family:var(--fd);font-size:15px;color:var(--v)">${fase.f}</div>
-          <div style="font-size:11px;color:var(--mu);font-family:var(--fb);margin-top:3px;line-height:1.5">${fase.meta}</div>
-          <div style="font-size:11.5px;color:var(--mu);font-family:var(--fb);margin-top:4px;opacity:.7">⏱ Duración orientativa: ${fase.dias}</div>
+          <div style="font-family:var(--fd);font-size:var(--fs-base);color:var(--v)">${fase.f}</div>
+          <div style="font-size:var(--fs-2xs);color:var(--mu);font-family:var(--fb);margin-top:3px;line-height:1.5">${fase.meta}</div>
+          <div style="font-size:var(--fs-xs);color:var(--mu);font-family:var(--fb);margin-top:4px;opacity:.7">⏱ Duración orientativa: ${fase.dias}</div>
         </div>
 
         <div class="esp-lbl" style="margin-bottom:8px">EJERCICIOS DE ESTA FASE</div>
@@ -574,11 +574,11 @@ function renderRehabTab(){
 
         <div class="esp-lbl" style="margin:14px 0 8px">¿CÓMO SENTISTE LA ZONA HOY?</div>
         <div style="display:flex;gap:6px;margin-bottom:6px">
-          <div onclick="rehabRegistrarDolor('${p.id}',1)" style="flex:1;text-align:center;padding:10px 4px;border-radius:9px;cursor:pointer;border:1px solid ${dolorHoy&&dolorHoy.dolor<=1?'#16a34a':'var(--b)'};background:${dolorHoy&&dolorHoy.dolor<=1?'color-mix(in srgb,#16a34a 12%,transparent)':'var(--gl)'};font-size:12px;font-family:var(--fb);color:${dolorHoy&&dolorHoy.dolor<=1?'#16a34a':'var(--mu)'}">💚<br>SIN DOLOR</div>
-          <div onclick="rehabRegistrarDolor('${p.id}',2)" style="flex:1;text-align:center;padding:10px 4px;border-radius:9px;cursor:pointer;border:1px solid ${dolorHoy&&dolorHoy.dolor===2?'var(--g)':'var(--b)'};background:${dolorHoy&&dolorHoy.dolor===2?'color-mix(in srgb,var(--g) 12%,transparent)':'var(--gl)'};font-size:12px;font-family:var(--fb);color:${dolorHoy&&dolorHoy.dolor===2?'var(--g)':'var(--mu)'}">💛<br>MOLESTIA LEVE</div>
-          <div onclick="rehabRegistrarDolor('${p.id}',3)" style="flex:1;text-align:center;padding:10px 4px;border-radius:9px;cursor:pointer;border:1px solid ${dolorHoy&&dolorHoy.dolor>=3?'var(--r)':'var(--b)'};background:${dolorHoy&&dolorHoy.dolor>=3?'color-mix(in srgb,var(--r) 12%,transparent)':'var(--gl)'};font-size:12px;font-family:var(--fb);color:${dolorHoy&&dolorHoy.dolor>=3?'var(--r)':'var(--mu)'}">❤️<br>DOLOR</div>
+          <div onclick="rehabRegistrarDolor('${p.id}',1)" style="flex:1;text-align:center;padding:10px 4px;border-radius:9px;cursor:pointer;border:1px solid ${dolorHoy&&dolorHoy.dolor<=1?'#16a34a':'var(--b)'};background:${dolorHoy&&dolorHoy.dolor<=1?'color-mix(in srgb,#16a34a 12%,transparent)':'var(--gl)'};font-size:var(--fs-xs);font-family:var(--fb);color:${dolorHoy&&dolorHoy.dolor<=1?'#16a34a':'var(--mu)'}">💚<br>SIN DOLOR</div>
+          <div onclick="rehabRegistrarDolor('${p.id}',2)" style="flex:1;text-align:center;padding:10px 4px;border-radius:9px;cursor:pointer;border:1px solid ${dolorHoy&&dolorHoy.dolor===2?'var(--g)':'var(--b)'};background:${dolorHoy&&dolorHoy.dolor===2?'color-mix(in srgb,var(--g) 12%,transparent)':'var(--gl)'};font-size:var(--fs-xs);font-family:var(--fb);color:${dolorHoy&&dolorHoy.dolor===2?'var(--g)':'var(--mu)'}">💛<br>MOLESTIA LEVE</div>
+          <div onclick="rehabRegistrarDolor('${p.id}',3)" style="flex:1;text-align:center;padding:10px 4px;border-radius:9px;cursor:pointer;border:1px solid ${dolorHoy&&dolorHoy.dolor>=3?'var(--r)':'var(--b)'};background:${dolorHoy&&dolorHoy.dolor>=3?'color-mix(in srgb,var(--r) 12%,transparent)':'var(--gl)'};font-size:var(--fs-xs);font-family:var(--fb);color:${dolorHoy&&dolorHoy.dolor>=3?'var(--r)':'var(--mu)'}">❤️<br>DOLOR</div>
         </div>
-        ${dolorHist.length?`<div style="font-size:11.5px;color:var(--mu);font-family:var(--fb);margin-top:4px">Últimos días: ${dolorHist.map(x=>x.dolor<=1?'💚':x.dolor===2?'💛':'❤️').join(' ')}</div>`:''}
+        ${dolorHist.length?`<div style="font-size:var(--fs-xs);color:var(--mu);font-family:var(--fb);margin-top:4px">Últimos días: ${dolorHist.map(x=>x.dolor<=1?'💚':x.dolor===2?'💛':'❤️').join(' ')}</div>`:''}
 
         <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
           ${les.faseActual>0?`<div class="btn-mini" style="border-color:var(--b);color:var(--mu)" onclick="rehabRetrocederFase('${p.id}')">‹ Fase anterior</div>`:''}
@@ -587,8 +587,8 @@ function renderRehabTab(){
         </div>
 
         <div style="margin-top:12px;padding:9px 12px;background:color-mix(in srgb,var(--r) 5%,transparent);border:1px solid color-mix(in srgb,var(--r) 20%,transparent);border-radius:9px">
-          <div style="font-size:11.5px;font-family:var(--fb);color:var(--r);letter-spacing:.02em;margin-bottom:4px">⚠ CONSULTA AL MÉDICO SI:</div>
-          <div style="font-size:12px;color:var(--mu);font-family:var(--fb);line-height:1.6">${p.banderas.map(b=>'• '+b).join('<br>')}</div>
+          <div style="font-size:var(--fs-xs);font-family:var(--fb);color:var(--r);letter-spacing:.02em;margin-bottom:4px">⚠ CONSULTA AL MÉDICO SI:</div>
+          <div style="font-size:var(--fs-xs);color:var(--mu);font-family:var(--fb);line-height:1.6">${p.banderas.map(b=>'• '+b).join('<br>')}</div>
         </div>
       </div>`;
     }).join('');
@@ -599,20 +599,20 @@ function renderRehabTab(){
   const catalogoHTML=REHAB_PROTOCOLOS.filter(p=>!activasIds.includes(p.id)).map(p=>`
     <div class="card" style="cursor:pointer" onclick="rehabVerDetalle('${p.id}')">
       <div style="display:flex;gap:12px;align-items:center">
-        <div style="font-size:30px">${p.emoji}</div>
+        <div style="font-size:var(--fs-5xl)">${p.emoji}</div>
         <div style="flex:1;min-width:0">
-          <div style="font-family:var(--fb);font-size:11.5px;letter-spacing:.02em;color:var(--v)">${p.zona}</div>
-          <div style="font-size:14px;font-weight:600;color:var(--tx);line-height:1.2">${p.nombre}</div>
-          <div style="font-size:12px;color:var(--mu);font-family:var(--fb);margin-top:2px">${p.subtitulo}</div>
+          <div style="font-family:var(--fb);font-size:var(--fs-xs);letter-spacing:.02em;color:var(--v)">${p.zona}</div>
+          <div style="font-size:var(--fs-md);font-weight:600;color:var(--tx);line-height:1.2">${p.nombre}</div>
+          <div style="font-size:var(--fs-xs);color:var(--mu);font-family:var(--fb);margin-top:2px">${p.subtitulo}</div>
         </div>
-        <div style="font-size:18px;color:var(--mu)">›</div>
+        <div style="font-size:var(--fs-xl);color:var(--mu)">›</div>
       </div>
     </div>`).join('');
 
   cont.innerHTML=`
     <div style="padding:12px 14px;border-radius:12px;margin-bottom:16px;background:color-mix(in srgb,var(--n) 5%,transparent);border:1px solid color-mix(in srgb,var(--n) 15%,transparent)">
-      <div style="font-family:var(--fd);font-size:18px;color:var(--n)">🏥 CENTRO DE REHABILITACIÓN</div>
-      <div style="font-size:12px;color:var(--mu);font-family:var(--fb);line-height:1.6;margin-top:4px">
+      <div style="font-family:var(--fd);font-size:var(--fs-xl);color:var(--n)">🏥 CENTRO DE REHABILITACIÓN</div>
+      <div style="font-size:var(--fs-xs);color:var(--mu);font-family:var(--fb);line-height:1.6;margin-top:4px">
         Protocolos de recuperación por fases para las lesiones más comunes al entrenar. Diseñados con la metodología del club: isométricos primero, progresión fuerza → retorno, y el dolor como semáforo.
       </div>
     </div>
@@ -623,7 +623,7 @@ function renderRehabTab(){
     ${catalogoHTML||'<div class="empty-msg">Tienes protocolos activos para todas las zonas disponibles.</div>'}
 
     <div style="margin-top:16px;padding:11px 14px;background:var(--gl);border:1px solid var(--b);border-radius:10px">
-      <div style="font-size:12px;color:var(--mu);font-family:var(--fb);line-height:1.7">
+      <div style="font-size:var(--fs-xs);color:var(--mu);font-family:var(--fb);line-height:1.7">
         ⚕️ <b style="color:var(--tx)">Importante:</b> este módulo es una guía de ejercicios de apoyo, no un diagnóstico médico. Ante dolor persistente, hinchazón o cualquier señal de alerta, acude con el médico o fisioterapeuta antes de continuar. Todos los ejercicios deben hacerse SIN dolor.
       </div>
     </div>`;
@@ -634,21 +634,21 @@ function rehabVerDetalle(protoId){
   const p=protoById(protoId); if(!p) return;
   const fasesHTML=p.fases.map((fase,i)=>`
     <div style="padding:10px 12px;background:var(--in-bg2);border-radius:9px;margin-bottom:6px">
-      <div style="font-family:var(--fd);font-size:14px;color:var(--v)">${fase.f}</div>
-      <div style="font-size:12px;color:var(--mu);font-family:var(--fb);margin-top:2px">${fase.meta}</div>
-      <div style="font-size:11.5px;color:var(--mu);font-family:var(--fb);margin-top:3px;opacity:.7">${fase.ejercicios.length} ejercicios · ${fase.dias}</div>
+      <div style="font-family:var(--fd);font-size:var(--fs-md);color:var(--v)">${fase.f}</div>
+      <div style="font-size:var(--fs-xs);color:var(--mu);font-family:var(--fb);margin-top:2px">${fase.meta}</div>
+      <div style="font-size:var(--fs-xs);color:var(--mu);font-family:var(--fb);margin-top:3px;opacity:.7">${fase.ejercicios.length} ejercicios · ${fase.dias}</div>
     </div>`).join('');
   document.getElementById('rehab-modal-body').innerHTML=`
     <div style="text-align:center;margin-bottom:14px">
       <div style="font-size:40px">${p.emoji}</div>
-      <div style="font-family:var(--fd);font-size:24px;line-height:1.1;margin-top:4px">${p.nombre}</div>
-      <div style="font-size:11px;color:var(--mu);font-family:var(--fb);margin-top:4px">${p.zona} · ${p.subtitulo}</div>
+      <div style="font-family:var(--fd);font-size:var(--fs-4xl);line-height:1.1;margin-top:4px">${p.nombre}</div>
+      <div style="font-size:var(--fs-2xs);color:var(--mu);font-family:var(--fb);margin-top:4px">${p.zona} · ${p.subtitulo}</div>
     </div>
-    <div style="font-size:11px;color:var(--tx);font-family:var(--fb);line-height:1.7;padding:11px 13px;background:var(--gl2);border-radius:10px;margin-bottom:14px">${p.contexto}</div>
+    <div style="font-size:var(--fs-2xs);color:var(--tx);font-family:var(--fb);line-height:1.7;padding:11px 13px;background:var(--gl2);border-radius:10px;margin-bottom:14px">${p.contexto}</div>
     <div class="esp-lbl" style="margin-bottom:8px">EL PROTOCOLO TIENE ${p.fases.length} FASES</div>
     ${fasesHTML}
     <button class="btn-main" style="margin-top:14px" onclick="rehabActivar('${p.id}');cerrarRehabModal();">Comenzar esta rehabilitación</button>
-    <div style="font-size:11.5px;color:var(--mu);font-family:var(--fb);line-height:1.6;margin-top:12px;text-align:center">
+    <div style="font-size:var(--fs-xs);color:var(--mu);font-family:var(--fb);line-height:1.6;margin-top:12px;text-align:center">
       ⚕️ Guía de apoyo, no diagnóstico. Ante dolor persistente o señales de alerta, consulta al médico.
     </div>`;
   document.getElementById('rehab-modal').classList.add('open');

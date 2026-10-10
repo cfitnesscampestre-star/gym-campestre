@@ -147,30 +147,30 @@ function abrirEntrenadores(){
       <div style="flex:0 0 auto;${tieneFilo?'':'opacity:.25'}">${svgRadarFilosofia(t.filosofia,54)}</div>
       <div style="flex:1;min-width:220px">
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-          <div style="font-family:var(--fd);font-size:18px">${esc(t.nombre)}</div>
-          <span style="font-size:8.5px;letter-spacing:.02em;color:var(--mu);font-family:var(--fb);border:1px solid var(--b);border-radius:10px;padding:2px 7px">${esc(entTipoLabel(t)).toUpperCase()}</span>
-          <span style="font-size:8.5px;letter-spacing:.02em;color:var(--mu);font-family:var(--fb)">usuario: ${esc(t.id)}</span>
+          <div style="font-family:var(--fd);font-size:var(--fs-xl)">${esc(t.nombre)}</div>
+          <span style="font-size:var(--fs-2xs);letter-spacing:.02em;color:var(--mu);font-family:var(--fb);border:1px solid var(--b);border-radius:10px;padding:2px 7px">${esc(entTipoLabel(t)).toUpperCase()}</span>
+          <span style="font-size:var(--fs-2xs);letter-spacing:.02em;color:var(--mu);font-family:var(--fb)">usuario: ${esc(t.id)}</span>
         </div>
-        <div style="font-size:11.5px;margin:5px 0;${tieneFilo?'color:var(--v);font-style:italic':'color:var(--mu)'}">${tieneFilo?'"'+esc(t.filosofia.tagline)+'"':'Sin filosofía definida todavía'}</div>
-        <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px">${(t.especialidades||[]).map(s=>`<span style="font-size:8.5px;text-transform:uppercase;letter-spacing:.03em;background:var(--in-bg2);border:1px solid var(--b);color:var(--mu);padding:2px 7px;border-radius:20px">${esc(s)}</span>`).join('')||'<span style="font-size:11px;color:var(--mu)">Sin especialidades registradas</span>'}</div>
-        ${esCoord?'':`<div style="font-size:11px;color:var(--mu);font-family:var(--fb)">${socios.length} socio${socios.length===1?'':'s'} asignado${socios.length===1?'':'s'} · ${activos} activos · ${pend} pendientes</div>`}
+        <div style="font-size:var(--fs-xs);margin:5px 0;${tieneFilo?'color:var(--v);font-style:italic':'color:var(--mu)'}">${tieneFilo?'"'+esc(t.filosofia.tagline)+'"':'Sin filosofía definida todavía'}</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px">${(t.especialidades||[]).map(s=>`<span style="font-size:var(--fs-2xs);text-transform:uppercase;letter-spacing:.03em;background:var(--in-bg2);border:1px solid var(--b);color:var(--mu);padding:2px 7px;border-radius:20px">${esc(s)}</span>`).join('')||'<span style="font-size:var(--fs-2xs);color:var(--mu)">Sin especialidades registradas</span>'}</div>
+        ${esCoord?'':`<div style="font-size:var(--fs-2xs);color:var(--mu);font-family:var(--fb)">${socios.length} socio${socios.length===1?'':'s'} asignado${socios.length===1?'':'s'} · ${activos} activos · ${pend} pendientes</div>`}
       </div>
       <div style="display:flex;gap:6px;flex-wrap:wrap">
-        <button onclick="abrirEditarEntrenador('${esc(t.id)}')" style="padding:7px 12px;border:1px solid var(--b);border-radius:7px;background:none;color:var(--tx);font-size:11px;cursor:pointer">✎ Editar</button>
-        ${esCoord?'':`<button onclick="abrirMiFilosofia('${esc(t.id)}')" style="padding:7px 12px;border:1px solid color-mix(in srgb,var(--p) 35%,transparent);border-radius:7px;background:none;color:var(--p);font-size:11px;cursor:pointer">🧬 ${tieneFilo?'Editar':'Llenar'} filosofía</button>`}
-        ${esCoord?'':`<button onclick="confirmarEliminarEntrenador('${esc(t.id)}')" style="padding:7px 12px;border:1px solid color-mix(in srgb,var(--r) 30%,transparent);border-radius:7px;background:none;color:var(--r);font-size:11px;cursor:pointer">🗑 Eliminar</button>`}
+        <button onclick="abrirEditarEntrenador('${esc(t.id)}')" style="padding:7px 12px;border:1px solid var(--b);border-radius:7px;background:none;color:var(--tx);font-size:var(--fs-2xs);cursor:pointer">✎ Editar</button>
+        ${esCoord?'':`<button onclick="abrirMiFilosofia('${esc(t.id)}')" style="padding:7px 12px;border:1px solid color-mix(in srgb,var(--p) 35%,transparent);border-radius:7px;background:none;color:var(--p);font-size:var(--fs-2xs);cursor:pointer">🧬 ${tieneFilo?'Editar':'Llenar'} filosofía</button>`}
+        ${esCoord?'':`<button onclick="confirmarEliminarEntrenador('${esc(t.id)}')" style="padding:7px 12px;border:1px solid color-mix(in srgb,var(--r) 30%,transparent);border-radius:7px;background:none;color:var(--r);font-size:var(--fs-2xs);cursor:pointer">🗑 Eliminar</button>`}
       </div>
     </div>`;
   };
   document.getElementById('staff-content').innerHTML=`
     <div style="padding:22px;max-width:820px">
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
-        <h2 style="font-family:var(--fd);font-size:30px;margin:0">Entrenadores</h2>
+        <h2 style="font-family:var(--fd);font-size:var(--fs-5xl);margin:0">Entrenadores</h2>
         <button class="tb-btn" onclick="abrirNuevoEntrenador()" style="padding:9px 14px;color:var(--v);border-color:color-mix(in srgb, var(--v) 30%, transparent)">➕ Nuevo entrenador</button>
       </div>
-      <p style="font-size:12px;color:var(--mu);margin:4px 0 18px">${lista.length} entrenador${lista.length===1?'':'es'}${coords.length?' · '+coords.length+' director'+(coords.length===1?'':'es'):''}</p>
-      ${lista.length?lista.map(t=>tarjeta(t,false)).join(''):'<p style="font-size:12px;color:var(--mu)">Aún no hay entrenadores dados de alta.</p>'}
-      ${coords.length?`<h3 style="font-family:var(--fd);font-size:16px;margin:22px 0 8px;color:var(--mu)">Coordinación</h3>${coords.map(t=>tarjeta(t,true)).join('')}`:''}
+      <p style="font-size:var(--fs-xs);color:var(--mu);margin:4px 0 18px">${lista.length} entrenador${lista.length===1?'':'es'}${coords.length?' · '+coords.length+' director'+(coords.length===1?'':'es'):''}</p>
+      ${lista.length?lista.map(t=>tarjeta(t,false)).join(''):'<p style="font-size:var(--fs-xs);color:var(--mu)">Aún no hay entrenadores dados de alta.</p>'}
+      ${coords.length?`<h3 style="font-family:var(--fd);font-size:var(--fs-lg);margin:22px 0 8px;color:var(--mu)">Coordinación</h3>${coords.map(t=>tarjeta(t,true)).join('')}`:''}
     </div>`;
 }
 // Compara especialidades ignorando emoji, mayúsculas y espacios — así "Tenis" y "🎾 TENIS" son la misma

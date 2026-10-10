@@ -198,32 +198,32 @@ function abrirConocimiento(){
   const notas=Object.entries(k.notas).filter(([,n])=>n&&n.t);
   document.getElementById('staff-content').innerHTML=`
   <div style="padding:22px;max-width:900px">
-    <h2 style="font-family:var(--fd);font-size:30px;margin:0">Base de conocimiento</h2>
-    <p style="font-size:13px;color:var(--mu);margin:4px 0 16px;line-height:1.5">Lo que consulta el sistema al crear cada rutina, junto con la filosofía del entrenador elegido. ${KB_EJERCICIOS.length} ejercicios, ${Object.keys(KB_METODOS).length} métodos de intensidad, ${KB_CLASES_GRUPALES.length} clases grupales, ${KB_PRINCIPIOS.length} principios y ${notas.length} nota(s).${esCoord?' Como director puedes agregar lo que falte.':''}</p>
+    <h2 style="font-family:var(--fd);font-size:var(--fs-5xl);margin:0">Base de conocimiento</h2>
+    <p style="font-size:var(--fs-sm);color:var(--mu);margin:4px 0 16px;line-height:1.5">Lo que consulta el sistema al crear cada rutina, junto con la filosofía del entrenador elegido. ${KB_EJERCICIOS.length} ejercicios, ${Object.keys(KB_METODOS).length} métodos de intensidad, ${KB_CLASES_GRUPALES.length} clases grupales, ${KB_PRINCIPIOS.length} principios y ${notas.length} nota(s).${esCoord?' Como director puedes agregar lo que falte.':''}</p>
 
     <h3 class="kb-h">Lineamientos del director</h3>
     <p class="kb-p">Reglas del club que la IA debe cumplir en todas las rutinas, por encima de la filosofía de cada entrenador.</p>
     ${esCoord
       ? `<textarea id="kb-lineamientos" rows="5" class="ti" style="padding:12px;resize:vertical" placeholder="Ej. Toda rutina de pierna lleva trabajo de glúteo medio.">${esc(DB.config&&DB.config.lineamientos&&DB.config.lineamientos.trim()||'')}</textarea>
          <button class="tb-btn" style="margin-top:8px" onclick="guardarLineamientos()">Guardar lineamientos</button>`
-      : `<div style="font-size:13px;line-height:1.6;white-space:pre-wrap;padding:12px;border:1px solid var(--b);border-radius:12px">${esc(DB.config&&DB.config.lineamientos&&DB.config.lineamientos.trim()||'Sin lineamientos todavía.')}</div>`}
+      : `<div style="font-size:var(--fs-sm);line-height:1.6;white-space:pre-wrap;padding:12px;border:1px solid var(--b);border-radius:12px">${esc(DB.config&&DB.config.lineamientos&&DB.config.lineamientos.trim()||'Sin lineamientos todavía.')}</div>`}
 
     <h3 class="kb-h">Notas y descripciones</h3>
     <p class="kb-p">Información libre que el sistema debe tener presente: protocolos, criterios, explicaciones.</p>
-    ${notas.length?notas.map(([id,n])=>`<div class="kb-card">${acciones(`kbFormNota('${id}')`,`kbEliminarNota('${id}')`)}<div style="font-weight:700;font-size:14px">${esc(n.t)}</div><div style="font-size:13px;line-height:1.55;white-space:pre-wrap;margin-top:4px">${esc(n.x)}</div></div>`).join(''):'<div class="kb-vacio">Aún no hay notas.</div>'}
+    ${notas.length?notas.map(([id,n])=>`<div class="kb-card">${acciones(`kbFormNota('${id}')`,`kbEliminarNota('${id}')`)}<div style="font-weight:700;font-size:var(--fs-md)">${esc(n.t)}</div><div style="font-size:var(--fs-sm);line-height:1.55;white-space:pre-wrap;margin-top:4px">${esc(n.x)}</div></div>`).join(''):'<div class="kb-vacio">Aún no hay notas.</div>'}
     ${btnAdd('kbFormNota()','Agregar nota')}
 
     <h3 class="kb-h">Principios del club</h3>
-    <ol style="font-size:13.5px;line-height:1.65;padding-left:20px;margin:0">${KB_PRINCIPIOS_BASE.map(p=>`<li>${esc(p)}</li>`).join('')}${principiosCustom.map(([id,p])=>`<li>${esc(p.t)} <button class="kb-mini kb-del" onclick="kbEliminarPrincipio('${id}')">Quitar</button></li>`).join('')}</ol>
+    <ol style="font-size:var(--fs-md);line-height:1.65;padding-left:20px;margin:0">${KB_PRINCIPIOS_BASE.map(p=>`<li>${esc(p)}</li>`).join('')}${principiosCustom.map(([id,p])=>`<li>${esc(p.t)} <button class="kb-mini kb-del" onclick="kbEliminarPrincipio('${id}')">Quitar</button></li>`).join('')}</ol>
     ${esCoord?`<div style="display:flex;gap:8px;margin-top:10px"><input class="ti" id="kb-nuevo-principio" maxlength="240" placeholder="Escribe un principio nuevo" style="min-height:46px"><button class="tb-btn" onclick="kbAgregarPrincipio()">Agregar</button></div>`:''}
 
     <h3 class="kb-h">Métodos de intensidad</h3>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:8px">
       ${Object.entries(KB_METODOS).map(([id,M])=>`<div class="kb-card" style="margin:0">
         ${M._custom?acciones(`kbFormMetodo('${id}')`,`kbEliminarMetodo('${id}')`):''}
-        <div style="font-weight:700;font-size:14px">${esc(M.nm)}${M._custom?' <span class="kb-tag">Agregado</span>':''}</div>
-        <div style="font-size:12.5px;color:var(--mu);margin:2px 0 6px">${nivelTxt[M.nivel]} · fatiga ${fatTxt[M.fatiga].toLowerCase()}${M.pareja?' · encadenado':''}</div>
-        <div style="font-size:13px;line-height:1.5">${esc(M.como)}</div></div>`).join('')}
+        <div style="font-weight:700;font-size:var(--fs-md)">${esc(M.nm)}${M._custom?' <span class="kb-tag">Agregado</span>':''}</div>
+        <div style="font-size:var(--fs-sm);color:var(--mu);margin:2px 0 6px">${nivelTxt[M.nivel]} · fatiga ${fatTxt[M.fatiga].toLowerCase()}${M.pareja?' · encadenado':''}</div>
+        <div style="font-size:var(--fs-sm);line-height:1.5">${esc(M.como)}</div></div>`).join('')}
     </div>
     ${btnAdd('kbFormMetodo()','Agregar método')}
 
@@ -231,15 +231,15 @@ function abrirConocimiento(){
     <p class="kb-p">De qué trata cada clase, para que el sistema NO programe el mismo enfoque muscular el día antes, el mismo día o el día después de una clase que ya toma el socio — así se evita sobrecargar sin que tenga que decírtelo. Se usa cuando un socio marca en el cuestionario que toma clases además del gimnasio.</p>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:8px">
       ${KB_CLASES_GRUPALES.map(c=>`<div class="kb-card" style="margin:0">
-        <div style="font-weight:700;font-size:14px">${esc(c.nm)}</div>
-        <div style="font-size:12.5px;color:var(--mu);margin:2px 0 6px">${esc(c.tipo)} · impacto ${esc(c.impacto)} · ${c.enfoque.map(e=>esc(KB_ENFOQUES[e]||e)).join(', ')}</div>
-        <div style="font-size:13px;line-height:1.5">${esc(c.desc)}</div></div>`).join('')}
+        <div style="font-weight:700;font-size:var(--fs-md)">${esc(c.nm)}</div>
+        <div style="font-size:var(--fs-sm);color:var(--mu);margin:2px 0 6px">${esc(c.tipo)} · impacto ${esc(c.impacto)} · ${c.enfoque.map(e=>esc(KB_ENFOQUES[e]||e)).join(', ')}</div>
+        <div style="font-size:var(--fs-sm);line-height:1.5">${esc(c.desc)}</div></div>`).join('')}
     </div>
 
     <h3 class="kb-h">Catálogo por zona del gimnasio</h3>
     <p class="kb-p">Las opciones por área ocupada se eligen de preferencia en otra zona.</p>
-    ${Object.entries(KB_ZONAS).map(([z,nm])=>`<details style="border-bottom:1px solid var(--b);padding:9px 0"><summary style="cursor:pointer;font-size:14px;font-weight:600">${esc(nm)} <span style="color:var(--mu);font-size:12.5px;font-weight:500">(${cuentaZona[z]||0})</span></summary>
-      <div style="font-size:13px;line-height:1.75;padding:6px 0 4px">${KB_EJERCICIOS.filter(e=>e.z===z).map(e=>`<div>${e._custom?acciones(`kbFormEjercicio('${e.id}')`,`kbEliminarEjercicio('${e.id}')`):''}<b>${esc(e.nm)}</b>${e._custom?' <span class="kb-tag">Agregado</span>':''} <span style="color:var(--mu)">— ${esc(e.ms)}</span></div>`).join('')||'<span style="color:var(--mu)">Sin ejercicios</span>'}</div></details>`).join('')}
+    ${Object.entries(KB_ZONAS).map(([z,nm])=>`<details style="border-bottom:1px solid var(--b);padding:9px 0"><summary style="cursor:pointer;font-size:var(--fs-md);font-weight:600">${esc(nm)} <span style="color:var(--mu);font-size:var(--fs-sm);font-weight:500">(${cuentaZona[z]||0})</span></summary>
+      <div style="font-size:var(--fs-sm);line-height:1.75;padding:6px 0 4px">${KB_EJERCICIOS.filter(e=>e.z===z).map(e=>`<div>${e._custom?acciones(`kbFormEjercicio('${e.id}')`,`kbEliminarEjercicio('${e.id}')`):''}<b>${esc(e.nm)}</b>${e._custom?' <span class="kb-tag">Agregado</span>':''} <span style="color:var(--mu)">— ${esc(e.ms)}</span></div>`).join('')||'<span style="color:var(--mu)">Sin ejercicios</span>'}</div></details>`).join('')}
     ${btnAdd('kbFormEjercicio()','Agregar ejercicio')}
   </div>`;
 }

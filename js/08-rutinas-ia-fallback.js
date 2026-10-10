@@ -369,17 +369,17 @@ function renderPreview(rutina){
   const tmpSocio={peso:qAnswers.peso,estatura:qAnswers.estatura,edad:qAnswers.edad,genero:qAnswers.genero,dias:qAnswers.dias,objetivo:qAnswers.objetivo,logs:{pesoCorporal:[]}};
   const nut=calcNutricion(tmpSocio);
   document.getElementById('pv-nutri').innerHTML=`
-    <div style="font-family:var(--fb);font-size:11.5px;letter-spacing:0;color:var(--mu);margin-bottom:10px;display:flex;align-items:center;gap:10px;">
+    <div style="font-family:var(--fb);font-size:var(--fs-xs);letter-spacing:0;color:var(--mu);margin-bottom:10px;display:flex;align-items:center;gap:10px;">
       TU PLAN DE NUTRICIÓN
       <div style="flex:1;height:1px;background:var(--b)"></div>
     </div>
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
-      <div class="mi" style="padding:10px 8px;background:var(--gl);border:1px solid var(--b);border-radius:9px;text-align:center;"><div style="font-family:var(--fd);font-size:20px;color:var(--v)">${nut.kcal}</div><div style="font-size:11.5px;color:var(--mu);font-family:var(--fb)">KCAL/DÍA</div></div>
-      <div class="mi" style="padding:10px 8px;background:var(--gl);border:1px solid var(--b);border-radius:9px;text-align:center;"><div style="font-family:var(--fd);font-size:20px;color:var(--n)">${nut.prot}g</div><div style="font-size:11.5px;color:var(--mu);font-family:var(--fb)">PROTEÍNA</div></div>
-      <div class="mi" style="padding:10px 8px;background:var(--gl);border:1px solid var(--b);border-radius:9px;text-align:center;"><div style="font-family:var(--fd);font-size:20px;color:var(--g)">${nut.carbs}g</div><div style="font-size:11.5px;color:var(--mu);font-family:var(--fb)">CARBS</div></div>
-      <div class="mi" style="padding:10px 8px;background:var(--gl);border:1px solid var(--b);border-radius:9px;text-align:center;"><div style="font-family:var(--fd);font-size:20px;color:var(--p)">${nut.grasas}g</div><div style="font-size:11.5px;color:var(--mu);font-family:var(--fb)">GRASAS</div></div>
+      <div class="mi" style="padding:10px 8px;background:var(--gl);border:1px solid var(--b);border-radius:9px;text-align:center;"><div style="font-family:var(--fd);font-size:var(--fs-2xl);color:var(--v)">${nut.kcal}</div><div style="font-size:var(--fs-xs);color:var(--mu);font-family:var(--fb)">KCAL/DÍA</div></div>
+      <div class="mi" style="padding:10px 8px;background:var(--gl);border:1px solid var(--b);border-radius:9px;text-align:center;"><div style="font-family:var(--fd);font-size:var(--fs-2xl);color:var(--n)">${nut.prot}g</div><div style="font-size:var(--fs-xs);color:var(--mu);font-family:var(--fb)">PROTEÍNA</div></div>
+      <div class="mi" style="padding:10px 8px;background:var(--gl);border:1px solid var(--b);border-radius:9px;text-align:center;"><div style="font-family:var(--fd);font-size:var(--fs-2xl);color:var(--g)">${nut.carbs}g</div><div style="font-size:var(--fs-xs);color:var(--mu);font-family:var(--fb)">CARBS</div></div>
+      <div class="mi" style="padding:10px 8px;background:var(--gl);border:1px solid var(--b);border-radius:9px;text-align:center;"><div style="font-family:var(--fd);font-size:var(--fs-2xl);color:var(--p)">${nut.grasas}g</div><div style="font-size:var(--fs-xs);color:var(--mu);font-family:var(--fb)">GRASAS</div></div>
     </div>
-    <div style="font-size:11.5px;color:var(--mu);font-family:var(--fb);margin-top:7px;">Mifflin-St Jeor · BMR ${nut.bmr} kcal × ${nut.factor} actividad = ${nut.tdee} kcal · ${nut.ajusteTxt}</div>
+    <div style="font-size:var(--fs-xs);color:var(--mu);font-family:var(--fb);margin-top:7px;">Mifflin-St Jeor · BMR ${nut.bmr} kcal × ${nut.factor} actividad = ${nut.tdee} kcal · ${nut.ajusteTxt}</div>
   `;
 
   const chipColors={
@@ -396,27 +396,27 @@ function renderPreview(rutina){
     const cc=chipColors[dia.color]||chipColors.verde;
     const isRest=!dia.ejercicios||dia.ejercicios.length===0;
     const ejHTML=isRest
-      ? `<div style="padding:8px 14px 10px;font-size:12px;color:var(--mu);font-family:var(--fb)">Recuperación activa · descanso</div>`
+      ? `<div style="padding:8px 14px 10px;font-size:var(--fs-xs);color:var(--mu);font-family:var(--fb)">Recuperación activa · descanso</div>`
       : dia.ejercicios.map((e,ei)=>`
           <div style="display:grid;grid-template-columns:28px 1fr;gap:8px;align-items:start;padding:8px 10px;background:var(--in-bg2);border-radius:7px;margin-bottom:5px;">
-            <div style="font-family:var(--fd);font-size:15px;color:var(--v)">${String(ei+1).padStart(2,'0')}</div>
+            <div style="font-family:var(--fd);font-size:var(--fs-base);color:var(--v)">${String(ei+1).padStart(2,'0')}</div>
             <div>
-              <div style="font-size:12px;font-weight:600">${esc(e.nm||e.nombre)}</div>
-              <div style="font-size:12px;color:var(--mu);font-family:var(--fb)">${esc(rxTexto(e,qAnswers).sr)} · ${esc(rxTexto(e,qAnswers).carga)}</div>
-              <div style="font-size:12px;color:var(--v);margin-top:2px">${e.ms||e.musculo||''}${e.descanso?' · descanso '+esc(e.descanso):''}</div>
-              ${e.metodo?`<div style="font-size:12px;margin-top:3px;color:var(--p)">${e.grupo?'<b>'+esc(e.grupo)+'</b> · ':''}⚡ ${esc(e.metodo.nm)}${e.metodo.detalle?' — '+esc(e.metodo.detalle):''}</div>`:''}
-              ${(e.alternativas||[]).length?`<div style="font-size:12px;margin-top:3px;color:var(--mu)">⇄ Si está ocupado: ${e.alternativas.map(a=>esc(a.nm)).join(' · ')}</div>`:''}
-              ${e.tip?`<div style="font-size:12px;color:var(--n);margin-top:4px;font-family:var(--fb);line-height:1.5;padding:6px 8px;background:color-mix(in srgb,var(--n) 4%,transparent);border-radius:5px;border-left:2px solid color-mix(in srgb,var(--n) 30%,transparent)">💡 ${e.tip}</div>`:''}
+              <div style="font-size:var(--fs-xs);font-weight:600">${esc(e.nm||e.nombre)}</div>
+              <div style="font-size:var(--fs-xs);color:var(--mu);font-family:var(--fb)">${esc(rxTexto(e,qAnswers).sr)} · ${esc(rxTexto(e,qAnswers).carga)}</div>
+              <div style="font-size:var(--fs-xs);color:var(--v);margin-top:2px">${e.ms||e.musculo||''}${e.descanso?' · descanso '+esc(e.descanso):''}</div>
+              ${e.metodo?`<div style="font-size:var(--fs-xs);margin-top:3px;color:var(--p)">${e.grupo?'<b>'+esc(e.grupo)+'</b> · ':''}⚡ ${esc(e.metodo.nm)}${e.metodo.detalle?' — '+esc(e.metodo.detalle):''}</div>`:''}
+              ${(e.alternativas||[]).length?`<div style="font-size:var(--fs-xs);margin-top:3px;color:var(--mu)">⇄ Si está ocupado: ${e.alternativas.map(a=>esc(a.nm)).join(' · ')}</div>`:''}
+              ${e.tip?`<div style="font-size:var(--fs-xs);color:var(--n);margin-top:4px;font-family:var(--fb);line-height:1.5;padding:6px 8px;background:color-mix(in srgb,var(--n) 4%,transparent);border-radius:5px;border-left:2px solid color-mix(in srgb,var(--n) 30%,transparent)">💡 ${e.tip}</div>`:''}
             </div>
           </div>`).join('');
     cont.innerHTML+=`
       <div style="background:var(--gl);border:1px solid var(--b);border-radius:11px;overflow:hidden;">
         <div style="display:grid;grid-template-columns:32px 1fr auto;align-items:center;gap:9px;padding:11px 14px;cursor:pointer;"
              onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">
-          <div style="font-family:var(--fd);font-size:17px;color:var(--mu)">${dia.dia.substring(0,3)}</div>
+          <div style="font-family:var(--fd);font-size:var(--fs-xl);color:var(--mu)">${dia.dia.substring(0,3)}</div>
           <div>
-            <div style="font-size:12px;font-weight:600">${dia.tipo}</div>
-            <div style="font-size:11.5px;color:var(--mu);font-family:var(--fb)">${isRest?'Descanso':dia.ejercicios.length+' ejercicios'}</div>
+            <div style="font-size:var(--fs-xs);font-weight:600">${dia.tipo}</div>
+            <div style="font-size:var(--fs-xs);color:var(--mu);font-family:var(--fb)">${isRest?'Descanso':dia.ejercicios.length+' ejercicios'}</div>
           </div>
           <div class="chip" style="${cc}">${dia.color.toUpperCase()}</div>
         </div>
@@ -1124,7 +1124,9 @@ function imgCands(bases){ const o=[]; bases.filter(Boolean).forEach(b=>IMG_EXT.f
 function imgSrc(p){ const D=window.IMG_DATA; return (D&&D.k[p]!=null)?D.u[D.k[p]]:IMG_BASE+p; }
 function pic(bases,icon,cls){
   const c=imgCands(bases);
-  return `<div class="pic ${cls||''}"><span class="pic-ph">${ico(icon||'dumbbell')}</span>${c.length?`<img alt="" loading="lazy" decoding="async" src="${imgSrc(c[0])}" data-c="${c.slice(1).join('|')}" onerror="imgErr(this)">`:''}</div>`;
+  // Las fotos de portada ('fill') se ven al abrir: cargarlas de inmediato y con prioridad.
+  const carga=/\bfill\b/.test(cls||'')?'loading="eager" fetchpriority="high"':'loading="lazy" decoding="async"';
+  return `<div class="pic ${cls||''}"><span class="pic-ph">${ico(icon||'dumbbell')}</span>${c.length?`<img alt="" ${carga} src="${imgSrc(c[0])}" data-c="${c.slice(1).join('|')}" onerror="imgErr(this)">`:''}</div>`;
 }
 function imgErr(el){
   const r=(el.dataset.c||'').split('|').filter(Boolean);

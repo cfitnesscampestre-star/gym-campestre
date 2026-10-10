@@ -93,7 +93,7 @@ function guardarEdicionSocio(){
 }
 function staffMostrarVacio(){
   staffVista('lista');
-  document.getElementById('staff-content').innerHTML=`<div style="flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;color:var(--mu);padding:40px;text-align:center;"><div style="font-family:var(--fd);font-size:24px;">Selecciona un socio</div><div style="font-size:13px;line-height:1.6;">Elige un socio para editar su rutina,<br>ver su evolución y su plan de nutrición.</div></div>`;
+  document.getElementById('staff-content').innerHTML=`<div style="flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;color:var(--mu);padding:40px;text-align:center;"><div style="font-family:var(--fd);font-size:var(--fs-4xl);">Selecciona un socio</div><div style="font-size:var(--fs-sm);line-height:1.6;">Elige un socio para editar su rutina,<br>ver su evolución y su plan de nutrición.</div></div>`;
 }
 function confirmarEliminarSocio(code){
   if(staffRol!=='coordinador'){ showToast('Solo el director puede eliminar socios'); return; }

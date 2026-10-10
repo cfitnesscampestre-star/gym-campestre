@@ -268,15 +268,15 @@ function casaCss(){
   st.textContent=`
   .cs-sec{font:700 12px var(--fb,inherit);letter-spacing:.06em;text-transform:uppercase;color:var(--mu);margin:16px 0 8px}
   .cs-row{display:flex;flex-wrap:wrap;gap:8px}
-  .cs-chip{border:1px solid var(--bd,#d9d9e3);background:transparent;color:var(--tx);border-radius:999px;padding:8px 12px;font-size:13px;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+  .cs-chip{border:1px solid var(--bd,#d9d9e3);background:transparent;color:var(--tx);border-radius:999px;padding:8px 12px;font-size:var(--fs-sm);cursor:pointer;display:inline-flex;gap:6px;align-items:center}
   .cs-chip.on{background:color-mix(in srgb,var(--v,#6c5ce7) 18%,transparent);border-color:var(--v,#6c5ce7);font-weight:700}
-  .cs-resumen{font-size:12.5px;line-height:1.55;color:var(--mu);background:color-mix(in srgb,var(--v,#6c5ce7) 7%,transparent);border-radius:12px;padding:10px 12px}
+  .cs-resumen{font-size:var(--fs-sm);line-height:1.55;color:var(--mu);background:color-mix(in srgb,var(--v,#6c5ce7) 7%,transparent);border-radius:12px;padding:10px 12px}
   .cs-resumen b{color:var(--tx)}
-  .cs-ban{border:1px solid color-mix(in srgb,var(--n,#00b894) 40%,transparent);background:color-mix(in srgb,var(--n,#00b894) 8%,transparent);border-radius:14px;padding:10px 12px;margin:0 0 12px;font-size:13px;line-height:1.5}
-  .cs-ban b{color:var(--tx)} .cs-ban ul{margin:6px 0 0 16px;padding:0;color:var(--mu);font-size:12.5px}
+  .cs-ban{border:1px solid color-mix(in srgb,var(--n,#00b894) 40%,transparent);background:color-mix(in srgb,var(--n,#00b894) 8%,transparent);border-radius:14px;padding:10px 12px;margin:0 0 12px;font-size:var(--fs-sm);line-height:1.5}
+  .cs-ban b{color:var(--tx)} .cs-ban ul{margin:6px 0 0 16px;padding:0;color:var(--mu);font-size:var(--fs-sm)}
   .cs-ban .sd-b{margin-top:8px}
-  .cs-socio{display:flex;gap:10px;align-items:center;border-radius:14px;padding:10px 12px;margin:0 0 12px;background:color-mix(in srgb,var(--n,#00b894) 10%,transparent);font-size:13px}
-  .cs-socio span{font-size:20px}
+  .cs-socio{display:flex;gap:10px;align-items:center;border-radius:14px;padding:10px 12px;margin:0 0 12px;background:color-mix(in srgb,var(--n,#00b894) 10%,transparent);font-size:var(--fs-sm)}
+  .cs-socio span{font-size:var(--fs-2xl)}
   .cs-acts{display:flex;gap:10px;margin-top:16px}.cs-acts>*{flex:1}
   `;
   document.head.appendChild(st);
@@ -311,7 +311,7 @@ function casaChipSocio(s){
   if(!s || s.modo!=='casa') return '';
   const eq=(s.casa&&s.casa.equipo)||[];
   const eqTxt=eq.length?eq.map(q=>CASA_EQUIPO[q]?CASA_EQUIPO[q].nm:q).join(' · '):'Solo peso corporal';
-  return `<div class="cs-socio"><span>🏠</span><div><b>Tu rutina es para entrenar en casa</b><div style="color:var(--mu);font-size:12px;margin-top:2px">${esc(eqTxt)}</div></div></div>`;
+  return `<div class="cs-socio"><span>🏠</span><div><b>Tu rutina es para entrenar en casa</b><div style="color:var(--mu);font-size:var(--fs-xs);margin-top:2px">${esc(eqTxt)}</div></div></div>`;
 }
 
 function casaAbrir(code){
@@ -341,7 +341,7 @@ function casaRender(){
   const nPool=casaDisponibles([...CASA_UI.equipo],lesionKeys(s.limitaciones||[])).length;
   document.getElementById('casa-body').innerHTML=`
     <div style="font:800 18px var(--fd,inherit);margin-bottom:4px">🏠 Rutina en casa</div>
-    <div style="color:var(--mu);font-size:13px;margin-bottom:12px">${esc(tc(s.nombre))} · genera una rutina completa para casa. Reemplaza la rutina actual y guardas una copia para volver al gimnasio.</div>
+    <div style="color:var(--mu);font-size:var(--fs-sm);margin-bottom:12px">${esc(tc(s.nombre))} · genera una rutina completa para casa. Reemplaza la rutina actual y guardas una copia para volver al gimnasio.</div>
     ${resumen}
     <div class="cs-sec">Paquetes rápidos de equipo</div><div class="cs-row">${paquetes}</div>
     <div class="cs-sec">Equipo que tiene en casa <span style="text-transform:none;letter-spacing:0;font-weight:400">(peso corporal, pared y piso ya cuentan)</span></div>
@@ -350,7 +350,7 @@ function casaRender(){
     <div class="cs-sec">Duración de cada sesión</div><div class="cs-row">${durs}</div>
     <div class="cs-sec">Impacto</div>
     <div class="cs-row"><button type="button" class="cs-chip${CASA_UI.impacto?' on':''}" onclick="casaToggleImpacto()">Evitar saltos y alto impacto</button></div>
-    <div style="font-size:12px;color:var(--mu);margin-top:12px">${nPool} ejercicios disponibles con este equipo y sus limitaciones.</div>
+    <div style="font-size:var(--fs-xs);color:var(--mu);margin-top:12px">${nPool} ejercicios disponibles con este equipo y sus limitaciones.</div>
     <div class="cs-acts"><button type="button" class="sd-b" onclick="casaCerrar()">Cancelar</button><button type="button" class="sd-pri" onclick="casaAplicar()">Generar rutina en casa</button></div>`;
 }
 function casaPaquete(id){ const p=CASA_PAQUETES[id]; if(!p) return; CASA_UI.equipo=new Set(p.eq); casaRender(); }
