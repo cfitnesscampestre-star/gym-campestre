@@ -112,7 +112,7 @@ function staffMenuCerrar(){ document.getElementById('modal-staff-menu').classLis
 function staffMenuIr(id){ staffMenuCerrar(); const b=document.getElementById(id); if(b) setTimeout(()=>b.click(),60); }
 
 function staffGetSocios(){
-  const todos=Object.values(DB.socios||{}).filter(Boolean);
+  const todos=(typeof sociosParaStaff==='function'?sociosParaStaff():Object.values(DB.socios||{})).filter(Boolean);
   if(staffRol==='coordinador' || !staffActivoEntId) return todos;
   // Cada entrenador o nutriólogo ve solo a quienes lo eligieron a él (entrenamiento) o se lo asignaron a él (nutrición).
   // Los socios sin asignar solo los ve el coordinador.
@@ -165,6 +165,14 @@ function staffFilterStatus(el,val){
 }
 function staffFilterSocios(v){ staffSearchVal=v; staffRenderList(); }
 function staffOpenSocio(code){
+  // El expediente completo se descarga al abrir al socio (la lista solo trae el índice ligero)
+  if(typeof idxCargarSocio==='function' && fbListo && !idxFallo && !(DB.socios[code] && !DB.socios[code]._lite)){
+    staffActivoId=code; staffRenderList(); staffVista('detalle');
+    const c=document.getElementById('staff-content');
+    if(c) c.innerHTML='<div class="empty-msg" style="padding:40px;text-align:center">Cargando expediente…</div>';
+    idxCargarSocio(code).then(s=>{ if(staffActivoId!==code) return; if(s) staffOpenSocio(code); else if(c) c.innerHTML='<div class="empty-msg" style="padding:40px;text-align:center">No se pudo cargar este socio. Revisa tu conexión.</div>'; });
+    return;
+  }
   staffActivoId=code; staffRenderList();
   const s=getSocio(code);
   if(s && staffTabCode!==code){ staffTabCode=code; staffTab=(s.status==='pendiente')?'rutina':'evolucion'; staffProgSel='actual'; }

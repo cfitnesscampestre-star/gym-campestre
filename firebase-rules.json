@@ -50,6 +50,13 @@
     "apariencia_prev": {
       ".read": "auth != null && root.child('roles').child(auth.uid).val() === 'coordinador'",
       ".write": "auth != null && root.child('roles').child(auth.uid).val() === 'coordinador'"
+    },
+    "indice": {
+      ".read": "auth != null && root.child('roles').child(auth.uid).exists()",
+      "$code": {
+        ".write": "auth != null && (root.child('roles').child(auth.uid).exists() || (root.child('socios').child($code).exists() && newData.exists()))",
+        ".validate": "root.child('roles').child(auth.uid).exists() || (newData.child('st').val() === root.child('socios').child($code).child('status').val() && newData.child('m/v').val() === root.child('socios').child($code).child('membresia/vence').val())"
+      }
     }
   }
 }

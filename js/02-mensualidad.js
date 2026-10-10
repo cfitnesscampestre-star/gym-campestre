@@ -51,7 +51,7 @@ function membTxt(s){
 // Pasa a "inactivo" (o regresa a "activo") lo que corresponda según las fechas y avisa al staff
 let membAvisoSig='';
 function membSincronizar(){
-  const socios=Object.values(DB.socios||{}).filter(Boolean);
+  const socios=((typeof sociosParaStaff==='function' && typeof fbEsStaff!=='undefined' && fbEsStaff)?sociosParaStaff():Object.values(DB.socios||{})).filter(Boolean);
   let tol=[], inact=[], cambios=0;
   socios.forEach(s=>{
     const e=membEstado(s);

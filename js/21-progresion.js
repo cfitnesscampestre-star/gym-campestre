@@ -390,7 +390,8 @@ function semaforoSocio(s){
   const a=analisisSocio(s);
   if(a.diasSin===null || a.diasSin>7) return 'r';
   const ev=calcEvolucion(s);
-  if(a.diasSin>=3 || ev.estaSemana<s.dias || a.estancados.length>=2) return 'y';
+  const nEst=s._lite?(s._est||0):a.estancados.length;
+  if(a.diasSin>=3 || ev.estaSemana<s.dias || nEst>=2) return 'y';
   return 'g';
 }
 function bloqueAnalisisStaff(s){

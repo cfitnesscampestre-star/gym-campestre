@@ -67,6 +67,7 @@ function abrirLugares(){
 }
 function abrirResumen(){
   if(staffRol!=='coordinador'){ showToast('Esta sección es solo para dirección'); return; }
+  if(typeof idxCargarTodos==='function' && fbListo && !idxTodosCargados){ idxCargarTodos().then(()=>{ if(idxTodosCargados) abrirResumen(); }); return; }
   staffActivoId=null; staffRenderList();
   const r=calcResumen();
   const kpi=(n,l,c)=>`<div style="padding:14px;border:1px solid var(--b);border-radius:10px;background:var(--gl)"><div style="font-family:var(--fd);font-size:var(--fs-5xl);line-height:1;color:${c||'var(--tx)'}">${n}</div><div style="font-size:var(--fs-2xs);color:var(--mu);margin-top:6px;line-height:1.35">${l}</div></div>`;
@@ -128,6 +129,7 @@ function exportarCSV(){
 }
 function descargarRespaldo(){
   if(staffRol!=='coordinador'){ showToast('Solo dirección'); return; }
+  if(typeof idxCargarTodos==='function' && fbListo && !idxTodosCargados){ idxCargarTodos().then(()=>{ if(idxTodosCargados) descargarRespaldo(); }); return; }
   const datos={exportado:new Date().toISOString(),socios:limpio(DB.socios),entrenadores:limpio(DB.entrenadores)};
   descargarArchivo('respaldo_gym_'+fechaISO(new Date())+'.json',JSON.stringify(datos,null,1),'application/json');
   showToast('💾 Respaldo descargado — guárdalo en un lugar seguro (contiene datos de salud)');

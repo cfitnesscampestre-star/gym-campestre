@@ -37,13 +37,13 @@ const APAR_TEXTOS = {
 };
 const APAR_GYM_ORIG = {nombre:GYM.nombre, color:GYM.colorPrincipal};
 
-let APAR = {cfg:{}, img:{}};        // lo guardado (Firebase o caché)
+let APAR = {cfg:{}, img:{}, imgVer:null};  // lo guardado (Firebase o caché); imgVer = versión de las imágenes en caché
 let aparDraft = null;               // edición en curso del director
 let aparEscuchando = false;
 
 /* ── Lectura de la caché local ── */
 function aparCargarLocal(){
-  try{ const v=JSON.parse(localStorage.getItem(APAR_LS)||'null'); if(v&&typeof v==='object') APAR={cfg:v.cfg||{}, img:v.img||{}}; }catch(e){}
+  try{ const v=JSON.parse(localStorage.getItem(APAR_LS)||'null'); if(v&&typeof v==='object') APAR={cfg:v.cfg||{}, img:v.img||{}, imgVer:v.imgVer}; }catch(e){}
 }
 function aparGuardarLocal(){
   try{ localStorage.setItem(APAR_LS, JSON.stringify(APAR)); }catch(e){ console.warn('apariencia: sin espacio local',e); }
@@ -103,8 +103,16 @@ function aparAplicarGuardado(){ aparAplicar(APAR.cfg, APAR.img); }
 function aparEscuchar(){
   if(aparEscuchando || typeof fbDB==='undefined' || !fbDB) return;
   aparEscuchando=true;
-  fbDB.ref('/apariencia').on('value', s=>{ APAR.cfg=s.val()||{}; aparGuardarLocal(); if(!aparDraft) aparAplicarGuardado(); }, e=>console.warn('apariencia',e));
-  fbDB.ref('/apariencia_img').on('value', s=>{ APAR.img=s.val()||{}; aparGuardarLocal(); if(!aparDraft) aparAplicarGuardado(); }, e=>console.warn('apariencia_img',e));
+  // Solo se escucha /apariencia (unos cuantos bytes). Las imágenes (hasta ~1 MB) se bajan
+  // una sola vez por versión: cuando el director guarda cambia «actualizado» y entonces sí se piden.
+  fbDB.ref('/apariencia').on('value', s=>{
+    APAR.cfg=s.val()||{};
+    const ver=APAR.cfg.actualizado||0;
+    if(ver===APAR.imgVer){ aparGuardarLocal(); if(!aparDraft) aparAplicarGuardado(); return; }
+    fbDB.ref('/apariencia_img').once('value').then(si=>{
+      APAR.img=si.val()||{}; APAR.imgVer=ver;
+    }).catch(e=>console.warn('apariencia_img',e)).finally(()=>{ aparGuardarLocal(); if(!aparDraft) aparAplicarGuardado(); });
+  }, e=>console.warn('apariencia',e));
 }
 
 /* ── Compresión de imágenes en el navegador ── */
@@ -237,7 +245,7 @@ async function aparEscribir(cfg, img, msg){
     await fbDB.ref('/apariencia_prev').set({cfg:APAR.cfg||{}, img:APAR.img||{}, guardado:Date.now()});
     await fbDB.ref('/apariencia_img').set(Object.keys(img).length?img:null);
     await fbDB.ref('/apariencia').set(cfg);
-    APAR={cfg, img}; aparGuardarLocal(); aparDraft=null; aparAplicarGuardado();
+    APAR={cfg, img, imgVer:cfg.actualizado||0}; aparGuardarLocal(); aparDraft=null; aparAplicarGuardado();
     showToast(msg); return true;
   }catch(e){
     console.warn('apariencia guardar',e);
@@ -251,7 +259,7 @@ function aparDeshacer(){
     try{
       const s=await fbDB.ref('/apariencia_prev').once('value'); const v=s.val();
       if(!v){ showToast('No hay una versión anterior guardada'); return; }
-      if(await aparEscribir(v.cfg||{}, v.img||{}, 'Se restauró la versión anterior')) abrirApariencia();
+      if(await aparEscribir(Object.assign({}, v.cfg||{}, {actualizado:Date.now()}), v.img||{}, 'Se restauró la versión anterior')) abrirApariencia();
     }catch(e){ showToast('No se pudo leer la versión anterior'); }
   },{label:'Volver a la anterior'});
 }
