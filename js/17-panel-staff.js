@@ -91,7 +91,7 @@ function actualizarFbBadge(){
 function staffMenu(){
   const grupos=[
     ['Personas',['btn-mi-filosofia','btn-ver-ent','btn-nuevo-ent','btn-conocimiento']],
-    ['Datos y sistema',['btn-resumen','btn-lugares','btn-respaldo','btn-firebase','btn-reset']],
+    ['Datos y sistema',['btn-resumen','btn-apariencia','btn-lugares','btn-respaldo','btn-firebase','btn-reset']],
     ['Cuenta',['btn-logout']]
   ];
   let html='';
