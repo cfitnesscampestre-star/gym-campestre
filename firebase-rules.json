@@ -12,7 +12,7 @@
       "$code": {
         ".read": "auth != null",
         ".write": "auth != null && (root.child('roles').child(auth.uid).exists() || newData.exists())",
-        ".validate": "newData.hasChildren(['nombre','objetivo'])"
+        ".validate": "newData.hasChildren(['nombre','objetivo']) && (root.child('roles').child(auth.uid).exists() || (data.exists() ? (newData.child('status').val() === data.child('status').val() && newData.child('membresia/vence').val() === data.child('membresia/vence').val() && newData.child('membresia/ancla').val() === data.child('membresia/ancla').val() && newData.child('membresia/suspendido').val() === data.child('membresia/suspendido').val() && newData.child('asignado').val() === data.child('asignado').val() && newData.child('entrenadorId').val() === data.child('entrenadorId').val() && newData.child('nutriologoId').val() === data.child('nutriologoId').val() && newData.child('nutriologo').val() === data.child('nutriologo').val()) : ($code.matches(/^[0-9]{4}$/) && newData.child('code').val() === $code && newData.child('status').val() === 'pendiente' && !newData.child('membresia').exists() && !newData.child('nutriologoId').exists() && !newData.child('nutriologo').exists())))"
       }
     },
     "entrenadores": {
