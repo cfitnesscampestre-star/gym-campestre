@@ -134,7 +134,7 @@ function fbEscuchar(){
 let fbStaffEscuchando=false;
 function fbEscucharStaff(){
   // v9: el panel usa el índice ligero (/indice) y carga cada expediente al abrirlo (js/35-indice-socios.js)
-  if(typeof idxEscucharStaff==='function'){ idxEscucharStaff(); return; }
+  if(typeof idxEscucharStaff==='function' && !idxFallo){ idxEscucharStaff(); return; }
   if(fbStaffEscuchando || !fbListo || !fbEsStaff) return;
   fbStaffEscuchando=true;
   fbDB.ref('/socios').on('value', snap=>{

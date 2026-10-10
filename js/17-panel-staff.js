@@ -166,7 +166,7 @@ function staffFilterStatus(el,val){
 function staffFilterSocios(v){ staffSearchVal=v; staffRenderList(); }
 function staffOpenSocio(code){
   // El expediente completo se descarga al abrir al socio (la lista solo trae el índice ligero)
-  if(typeof idxCargarSocio==='function' && fbListo && !(DB.socios[code] && !DB.socios[code]._lite)){
+  if(typeof idxCargarSocio==='function' && fbListo && !idxFallo && !(DB.socios[code] && !DB.socios[code]._lite)){
     staffActivoId=code; staffRenderList(); staffVista('detalle');
     const c=document.getElementById('staff-content');
     if(c) c.innerHTML='<div class="empty-msg" style="padding:40px;text-align:center">Cargando expediente…</div>';

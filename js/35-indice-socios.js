@@ -13,6 +13,7 @@
 const LS_IDX='fitkiosk_indice_v1';
 let IDX=(()=>{ try{ return JSON.parse(localStorage.getItem(LS_IDX))||{}; }catch(e){ return {}; } })();
 let IDX_LITE={};                  // fichas ligeras ya armadas (se rehacen cuando cambia el índice)
+let idxFallo=false;               // sin permiso para /indice (reglas sin publicar): el panel vuelve al modo anterior
 let idxEscuchando=false, idxConstruyendo=false, idxTodosCargados=false, idxAvisoReglas=false;
 const idxCargando=new Map();      // code -> promesa de carga del expediente completo
 const idxEscuchas=[];             // códigos con escucha activa (máx. IDX_MAX_ESCUCHAS)
@@ -90,6 +91,7 @@ function idxTrasEscritura(en, snapVal){
 
 /* ── Staff: escucha el índice en lugar de todos los expedientes ── */
 function idxEscucharStaff(){
+  if(idxFallo){ return; }
   if(idxEscuchando || !fbListo || !fbEsStaff) return;
   idxEscuchando=true;
   fbDB.ref('/indice').on('value', snap=>{
@@ -99,7 +101,13 @@ function idxEscucharStaff(){
     const n=Object.keys(raw).length;
     if(DB.config && DB.config.totalSocios!==n){ DB.config.totalSocios=n; fbDB.ref('/config/totalSocios').set(n).catch(()=>{}); }
     if(document.getElementById('s-panel')?.classList.contains('on')) staffRenderList();
-  }, e=>{ idxEscuchando=false; console.warn('indice',e); });
+  }, e=>{
+    idxEscuchando=false; console.warn('indice',e);
+    if(String(e&&(e.code||e.message)||'').toLowerCase().includes('permission')){
+      idxFallo=true; console.warn('Índice de socios sin permiso: publica las reglas nuevas (firebase-rules.json). Se usa la carga completa.');
+      fbEscucharStaff();
+    }
+  });
 }
 function idxDetener(){
   try{ if(idxEscuchando) fbDB.ref('/indice').off('value'); }catch(e){}
