@@ -22,7 +22,7 @@ function nutPuedeEditar(s){
 }
 function bloqueAsignacionStaff(s){
   if(staffRol!=='coordinador') return '';
-  const activosDe = id => Object.values(DB.socios||{}).filter(x=>x&&x.entrenadorId===id&&x.status==='activo').length;
+  const activosDe = id => (typeof sociosParaStaff==='function'?sociosParaStaff():Object.values(DB.socios||{})).filter(x=>x&&x.entrenadorId===id&&x.status==='activo').length;
   const ents=Object.values(DB.entrenadores||{}).filter(e=>e&&e.rol!=='coordinador'&&entHace(e,'entrenamiento'));
   const entPropio=s.entrenadorId?DB.entrenadores[s.entrenadorId]:null;
   const entPropioNut=entPropio&&entHace(entPropio,'nutricion');

@@ -67,4 +67,4 @@ async function crearNuevoEntrenadorFinal(usuario,pass,nombre,funciones){
 // ═════════════════════════════════════════
 // VER / EDITAR / ELIMINAR ENTRENADORES (coordinador)
 // ═════════════════════════════════════════
-function sociosDeEntrenador(id){ return Object.values(DB.socios||{}).filter(s=>s.entrenadorId===id); }
+function sociosDeEntrenador(id){ return (typeof sociosParaStaff==='function'?sociosParaStaff():Object.values(DB.socios||{})).filter(s=>s.entrenadorId===id); }

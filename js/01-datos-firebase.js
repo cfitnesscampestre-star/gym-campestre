@@ -133,6 +133,8 @@ function fbEscuchar(){
 // ── Staff: escucha TODA la lista de socios ──
 let fbStaffEscuchando=false;
 function fbEscucharStaff(){
+  // v9: el panel usa el índice ligero (/indice) y carga cada expediente al abrirlo (js/35-indice-socios.js)
+  if(typeof idxEscucharStaff==='function'){ idxEscucharStaff(); return; }
   if(fbStaffEscuchando || !fbListo || !fbEsStaff) return;
   fbStaffEscuchando=true;
   fbDB.ref('/socios').on('value', snap=>{
@@ -159,6 +161,7 @@ function fbEscucharStaff(){
   }, ()=>{ fbStaffEscuchando=false; const l=lsLoad(); if(l) DB=l; });
 }
 function fbDetenerStaff(){
+  if(typeof idxDetener==='function') idxDetener();
   if(!fbStaffEscuchando) return;
   try{ fbDB.ref('/socios').off('value'); }catch(e){}
   fbStaffEscuchando=false;
@@ -372,7 +375,9 @@ function enviar(en){
         }
         return limpio(fusionarSocio(code,local,asegurarLogs(cur)));
       }).then(res=>{
-        if(res && res.committed && res.snapshot && res.snapshot.val()){ BASE[code]=baseDeSocio(res.snapshot.val()); baseGuardar(); return true; }
+        if(res && res.committed && res.snapshot && res.snapshot.val()){ BASE[code]=baseDeSocio(res.snapshot.val()); baseGuardar();
+          if(typeof idxTrasEscritura==='function') idxTrasEscritura(en, res.snapshot.val());
+          return true; }
         return !!(res && res.committed);
       });
     }
@@ -389,6 +394,7 @@ function enviar(en){
     enVuelo.delete(id);
     if(ok===false){ actualizarPillSync(); return; }   // transacción en espera: se reintenta al llegar datos de Firebase
     const cur=OUTBOX.find(x=>x.id===id);
+    if(en.tipo!=='socio' && typeof idxTrasEscritura==='function') idxTrasEscritura(en, null);
     if(cur && cur.gen===gen) quitarEntrada(id);
     const cb=OUT_CB[id]; if(cb && cur && cur.gen===gen){ delete OUT_CB[id]; if(cb.ok) cb.ok(); }
     actualizarPillSync();
