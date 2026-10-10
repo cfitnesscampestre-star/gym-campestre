@@ -1124,7 +1124,9 @@ function imgCands(bases){ const o=[]; bases.filter(Boolean).forEach(b=>IMG_EXT.f
 function imgSrc(p){ const D=window.IMG_DATA; return (D&&D.k[p]!=null)?D.u[D.k[p]]:IMG_BASE+p; }
 function pic(bases,icon,cls){
   const c=imgCands(bases);
-  return `<div class="pic ${cls||''}"><span class="pic-ph">${ico(icon||'dumbbell')}</span>${c.length?`<img alt="" loading="lazy" decoding="async" src="${imgSrc(c[0])}" data-c="${c.slice(1).join('|')}" onerror="imgErr(this)">`:''}</div>`;
+  // Las fotos de portada ('fill') se ven al abrir: cargarlas de inmediato y con prioridad.
+  const carga=/\bfill\b/.test(cls||'')?'loading="eager" fetchpriority="high"':'loading="lazy" decoding="async"';
+  return `<div class="pic ${cls||''}"><span class="pic-ph">${ico(icon||'dumbbell')}</span>${c.length?`<img alt="" ${carga} src="${imgSrc(c[0])}" data-c="${c.slice(1).join('|')}" onerror="imgErr(this)">`:''}</div>`;
 }
 function imgErr(el){
   const r=(el.dataset.c||'').split('|').filter(Boolean);
