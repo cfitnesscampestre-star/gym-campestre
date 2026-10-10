@@ -1239,7 +1239,7 @@ function refreshDash(){
     <div class="hero-card">
       ${pic(['hero/inicio'],'bolt','fill')}
       <div class="hero-ov"></div>
-      <div class="hero-tx"><b>Disciplina hoy,</b><b>resultados mañana.</b></div>
+      <div class="hero-tx">${typeof aparHeroPanelHTML==='function'?aparHeroPanelHTML():'<b>Disciplina hoy,</b><b>resultados mañana.</b>'}</div>
     </div>
 
     <div class="today-c${hechoHoy?' done':''}">

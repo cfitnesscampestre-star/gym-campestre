@@ -41,6 +41,7 @@ function actualizarBotonMiFilosofia(){
   if(bN) bN.style.display = staffRol==='coordinador' ? 'inline-block' : 'none';
   const bV=document.getElementById('btn-ver-ent'); if(bV) bV.style.display = staffRol==='coordinador' ? 'inline-block' : 'none';
   const bRes=document.getElementById('btn-resumen'); if(bRes) bRes.style.display = staffRol==='coordinador' ? 'inline-block' : 'none';
+  const bAp=document.getElementById('btn-apariencia'); if(bAp) bAp.style.display = staffRol==='coordinador' ? 'inline-block' : 'none';
   const bLu=document.getElementById('btn-lugares'); if(bLu) bLu.style.display = staffRol==='coordinador' ? 'inline-block' : 'none';
   const bFb=document.getElementById('btn-firebase'); if(bFb) bFb.style.display = staffRol==='coordinador' ? 'inline-block' : 'none';
   const bR=document.getElementById('btn-respaldo'); if(bR) bR.style.display = staffRol==='coordinador' ? 'inline-block' : 'none';

@@ -19,9 +19,15 @@
       ".read": "auth != null",
       "$id": {
         ".write": "auth != null && (root.child('roles').child(auth.uid).val() === 'coordinador' || (root.child('roles').child(auth.uid).exists() && data.child('uid').val() === auth.uid && newData.exists()))",
-        "uid": { ".validate": "root.child('roles').child(auth.uid).val() === 'coordinador' || newData.val() === data.val()" },
-        "rol": { ".validate": "root.child('roles').child(auth.uid).val() === 'coordinador' || newData.val() === data.val()" },
-        "pass": { ".validate": false }
+        "uid": {
+          ".validate": "root.child('roles').child(auth.uid).val() === 'coordinador' || newData.val() === data.val()"
+        },
+        "rol": {
+          ".validate": "root.child('roles').child(auth.uid).val() === 'coordinador' || newData.val() === data.val()"
+        },
+        "pass": {
+          ".validate": false
+        }
       }
     },
     "config": {
@@ -29,6 +35,21 @@
       "$k": {
         ".write": "auth != null && root.child('roles').child(auth.uid).exists()"
       }
+    },
+    "apariencia": {
+      ".read": true,
+      ".write": "auth != null && root.child('roles').child(auth.uid).val() === 'coordinador'"
+    },
+    "apariencia_img": {
+      ".read": true,
+      ".write": "auth != null && root.child('roles').child(auth.uid).val() === 'coordinador'",
+      "$k": {
+        ".validate": "newData.isString() && newData.val().length < 400000 && newData.val().beginsWith('data:image/')"
+      }
+    },
+    "apariencia_prev": {
+      ".read": "auth != null && root.child('roles').child(auth.uid).val() === 'coordinador'",
+      ".write": "auth != null && root.child('roles').child(auth.uid).val() === 'coordinador'"
     }
   }
 }
